@@ -1,3 +1,4 @@
+import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/utils/helpers/logout.dart';
 import 'package:easysave/view/pages/my_goals_page.dart';
@@ -43,10 +44,11 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
         ),
 
         actions: [
+         
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon:  const Icon(Icons.logout),
             onPressed: () {
-              onLogout(context);
+              controller.onLogOut();
             },
           ),
         ],

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'transaction.dart';
+part of 'savings_transactions.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,14 @@ part of 'transaction.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetTransactionCollection on Isar {
-  IsarCollection<Transaction> get transactions => this.collection();
+extension GetSavingsTransactionsCollection on Isar {
+  IsarCollection<SavingsTransactions> get savingsTransactions =>
+      this.collection();
 }
 
-const TransactionSchema = CollectionSchema(
-  name: r'Transaction',
-  id: 5320225499417954855,
+const SavingsTransactionsSchema = CollectionSchema(
+  name: r'SavingsTransactions',
+  id: 8461615529432988598,
   properties: {
     r'amountExpended': PropertySchema(
       id: 0,
@@ -43,22 +44,22 @@ const TransactionSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _transactionEstimateSize,
-  serialize: _transactionSerialize,
-  deserialize: _transactionDeserialize,
-  deserializeProp: _transactionDeserializeProp,
+  estimateSize: _savingsTransactionsEstimateSize,
+  serialize: _savingsTransactionsSerialize,
+  deserialize: _savingsTransactionsDeserialize,
+  deserializeProp: _savingsTransactionsDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _transactionGetId,
-  getLinks: _transactionGetLinks,
-  attach: _transactionAttach,
+  getId: _savingsTransactionsGetId,
+  getLinks: _savingsTransactionsGetLinks,
+  attach: _savingsTransactionsAttach,
   version: '3.1.0+1',
 );
 
-int _transactionEstimateSize(
-  Transaction object,
+int _savingsTransactionsEstimateSize(
+  SavingsTransactions object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -67,8 +68,8 @@ int _transactionEstimateSize(
   return bytesCount;
 }
 
-void _transactionSerialize(
-  Transaction object,
+void _savingsTransactionsSerialize(
+  SavingsTransactions object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -80,13 +81,13 @@ void _transactionSerialize(
   writer.writeString(offsets[4], object.uid);
 }
 
-Transaction _transactionDeserialize(
+SavingsTransactions _savingsTransactionsDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Transaction(
+  final object = SavingsTransactions(
     amountExpended: reader.readDoubleOrNull(offsets[0]),
     amountSaved: reader.readDoubleOrNull(offsets[1]),
     savingsId: reader.readLong(offsets[2]),
@@ -97,7 +98,7 @@ Transaction _transactionDeserialize(
   return object;
 }
 
-P _transactionDeserializeProp<P>(
+P _savingsTransactionsDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -119,31 +120,33 @@ P _transactionDeserializeProp<P>(
   }
 }
 
-Id _transactionGetId(Transaction object) {
+Id _savingsTransactionsGetId(SavingsTransactions object) {
   return object.id ?? Isar.autoIncrement;
 }
 
-List<IsarLinkBase<dynamic>> _transactionGetLinks(Transaction object) {
+List<IsarLinkBase<dynamic>> _savingsTransactionsGetLinks(
+    SavingsTransactions object) {
   return [];
 }
 
-void _transactionAttach(
-    IsarCollection<dynamic> col, Id id, Transaction object) {
+void _savingsTransactionsAttach(
+    IsarCollection<dynamic> col, Id id, SavingsTransactions object) {
   object.id = id;
 }
 
-extension TransactionQueryWhereSort
-    on QueryBuilder<Transaction, Transaction, QWhere> {
-  QueryBuilder<Transaction, Transaction, QAfterWhere> anyId() {
+extension SavingsTransactionsQueryWhereSort
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QWhere> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension TransactionQueryWhere
-    on QueryBuilder<Transaction, Transaction, QWhereClause> {
-  QueryBuilder<Transaction, Transaction, QAfterWhereClause> idEqualTo(Id id) {
+extension SavingsTransactionsQueryWhere
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QWhereClause> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhereClause>
+      idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -152,8 +155,8 @@ extension TransactionQueryWhere
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -175,8 +178,8 @@ extension TransactionQueryWhere
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -184,8 +187,8 @@ extension TransactionQueryWhere
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -193,7 +196,8 @@ extension TransactionQueryWhere
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterWhereClause> idBetween(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterWhereClause>
+      idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -210,9 +214,9 @@ extension TransactionQueryWhere
   }
 }
 
-extension TransactionQueryFilter
-    on QueryBuilder<Transaction, Transaction, QFilterCondition> {
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+extension SavingsTransactionsQueryFilter on QueryBuilder<SavingsTransactions,
+    SavingsTransactions, QFilterCondition> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -221,7 +225,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -230,7 +234,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedEqualTo(
     double? value, {
     double epsilon = Query.epsilon,
@@ -244,7 +248,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedGreaterThan(
     double? value, {
     bool include = false,
@@ -260,7 +264,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedLessThan(
     double? value, {
     bool include = false,
@@ -276,7 +280,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountExpendedBetween(
     double? lower,
     double? upper, {
@@ -296,7 +300,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -305,7 +309,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -314,7 +318,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedEqualTo(
     double? value, {
     double epsilon = Query.epsilon,
@@ -328,7 +332,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedGreaterThan(
     double? value, {
     bool include = false,
@@ -344,7 +348,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedLessThan(
     double? value, {
     bool include = false,
@@ -360,7 +364,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       amountSavedBetween(
     double? lower,
     double? upper, {
@@ -380,7 +384,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idIsNull() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'id',
@@ -388,7 +393,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idIsNotNull() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'id',
@@ -396,8 +402,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idEqualTo(
-      Id? value) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -406,7 +412,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idGreaterThan(
     Id? value, {
     bool include = false,
   }) {
@@ -419,7 +426,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idLessThan(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idLessThan(
     Id? value, {
     bool include = false,
   }) {
@@ -432,7 +440,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> idBetween(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      idBetween(
     Id? lower,
     Id? upper, {
     bool includeLower = true,
@@ -449,7 +458,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -459,7 +468,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdGreaterThan(
     int value, {
     bool include = false,
@@ -473,7 +482,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdLessThan(
     int value, {
     bool include = false,
@@ -487,7 +496,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdBetween(
     int lower,
     int upper, {
@@ -505,7 +514,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       timeStampEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -515,7 +524,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       timeStampGreaterThan(
     DateTime value, {
     bool include = false,
@@ -529,7 +538,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       timeStampLessThan(
     DateTime value, {
     bool include = false,
@@ -543,7 +552,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       timeStampBetween(
     DateTime lower,
     DateTime upper, {
@@ -561,7 +570,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidEqualTo(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -574,7 +584,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidGreaterThan(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -589,7 +600,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidLessThan(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -604,7 +616,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidBetween(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -623,7 +636,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidStartsWith(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -636,7 +650,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidEndsWith(
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -649,9 +664,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'uid',
@@ -661,9 +675,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'uid',
@@ -673,7 +686,8 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> uidIsEmpty() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      uidIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'uid',
@@ -682,7 +696,7 @@ extension TransactionQueryFilter
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       uidIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -693,220 +707,246 @@ extension TransactionQueryFilter
   }
 }
 
-extension TransactionQueryObject
-    on QueryBuilder<Transaction, Transaction, QFilterCondition> {}
+extension SavingsTransactionsQueryObject on QueryBuilder<SavingsTransactions,
+    SavingsTransactions, QFilterCondition> {}
 
-extension TransactionQueryLinks
-    on QueryBuilder<Transaction, Transaction, QFilterCondition> {}
+extension SavingsTransactionsQueryLinks on QueryBuilder<SavingsTransactions,
+    SavingsTransactions, QFilterCondition> {}
 
-extension TransactionQuerySortBy
-    on QueryBuilder<Transaction, Transaction, QSortBy> {
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByAmountExpended() {
+extension SavingsTransactionsQuerySortBy
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QSortBy> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByAmountExpended() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountExpended', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
       sortByAmountExpendedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountExpended', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByAmountSaved() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByAmountSaved() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountSaved', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByAmountSavedDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByAmountSavedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountSaved', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortBySavingsId() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortBySavingsId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'savingsId', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortBySavingsIdDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortBySavingsIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'savingsId', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByTimeStamp() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByTimeStamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeStamp', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByTimeStampDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByTimeStampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeStamp', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByUid() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByUid() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByUidDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      sortByUidDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.desc);
     });
   }
 }
 
-extension TransactionQuerySortThenBy
-    on QueryBuilder<Transaction, Transaction, QSortThenBy> {
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByAmountExpended() {
+extension SavingsTransactionsQuerySortThenBy
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QSortThenBy> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByAmountExpended() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountExpended', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy>
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
       thenByAmountExpendedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountExpended', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByAmountSaved() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByAmountSaved() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountSaved', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByAmountSavedDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByAmountSavedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amountSaved', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenById() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenBySavingsId() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenBySavingsId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'savingsId', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenBySavingsIdDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenBySavingsIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'savingsId', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByTimeStamp() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByTimeStamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeStamp', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByTimeStampDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByTimeStampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeStamp', Sort.desc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByUid() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByUid() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.asc);
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByUidDesc() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterSortBy>
+      thenByUidDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'uid', Sort.desc);
     });
   }
 }
 
-extension TransactionQueryWhereDistinct
-    on QueryBuilder<Transaction, Transaction, QDistinct> {
-  QueryBuilder<Transaction, Transaction, QDistinct> distinctByAmountExpended() {
+extension SavingsTransactionsQueryWhereDistinct
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct> {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct>
+      distinctByAmountExpended() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'amountExpended');
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QDistinct> distinctByAmountSaved() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct>
+      distinctByAmountSaved() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'amountSaved');
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QDistinct> distinctBySavingsId() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct>
+      distinctBySavingsId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'savingsId');
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QDistinct> distinctByTimeStamp() {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct>
+      distinctByTimeStamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'timeStamp');
     });
   }
 
-  QueryBuilder<Transaction, Transaction, QDistinct> distinctByUid(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QDistinct>
+      distinctByUid({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'uid', caseSensitive: caseSensitive);
     });
   }
 }
 
-extension TransactionQueryProperty
-    on QueryBuilder<Transaction, Transaction, QQueryProperty> {
-  QueryBuilder<Transaction, int, QQueryOperations> idProperty() {
+extension SavingsTransactionsQueryProperty
+    on QueryBuilder<SavingsTransactions, SavingsTransactions, QQueryProperty> {
+  QueryBuilder<SavingsTransactions, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<Transaction, double?, QQueryOperations>
+  QueryBuilder<SavingsTransactions, double?, QQueryOperations>
       amountExpendedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amountExpended');
     });
   }
 
-  QueryBuilder<Transaction, double?, QQueryOperations> amountSavedProperty() {
+  QueryBuilder<SavingsTransactions, double?, QQueryOperations>
+      amountSavedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amountSaved');
     });
   }
 
-  QueryBuilder<Transaction, int, QQueryOperations> savingsIdProperty() {
+  QueryBuilder<SavingsTransactions, int, QQueryOperations> savingsIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'savingsId');
     });
   }
 
-  QueryBuilder<Transaction, DateTime, QQueryOperations> timeStampProperty() {
+  QueryBuilder<SavingsTransactions, DateTime, QQueryOperations>
+      timeStampProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'timeStamp');
     });
   }
 
-  QueryBuilder<Transaction, String, QQueryOperations> uidProperty() {
+  QueryBuilder<SavingsTransactions, String, QQueryOperations> uidProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'uid');
     });
@@ -917,7 +957,8 @@ extension TransactionQueryProperty
 // JsonSerializableGenerator
 // **************************************************************************
 
-Transaction _$TransactionFromJson(Map<Object?, Object?> json) => Transaction(
+SavingsTransactions _$SavingsTransactionsFromJson(Map<Object?, Object?> json) =>
+    SavingsTransactions(
       savingsId: json['savingsId'] as int,
       amountExpended: (json['amountExpended'] as num?)?.toDouble(),
       amountSaved: (json['amountSaved'] as num?)?.toDouble(),
@@ -925,7 +966,8 @@ Transaction _$TransactionFromJson(Map<Object?, Object?> json) => Transaction(
       uid: json['uid'] as String,
     )..id = json['id'] as int?;
 
-Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
+Map<String, dynamic> _$SavingsTransactionsToJson(
+        SavingsTransactions instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uid': instance.uid,

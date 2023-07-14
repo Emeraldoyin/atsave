@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc_folder/auth_bloc/authentication_bloc.dart';
 import '../../consts/app_colors.dart';
+import '../../utils/helpers/session_manager.dart';
 
 class SignIn extends StatefulWidget {
   //static const routeName = Strings.SCREEN_BLANK;
@@ -60,6 +61,10 @@ class SignInController extends State<SignIn> {
       const CircularProgressIndicator();
     }
     if (state is LoginSuccessState) {
+       WidgetsBinding.instance.addPostFrameCallback((_) async {
+            SessionManager manager = SessionManager();
+            manager.loggedIn(true);
+          });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('you have been successfully logged in'),
           backgroundColor: APPBAR_COLOR1));

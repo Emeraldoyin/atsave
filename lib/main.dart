@@ -10,23 +10,28 @@ import 'bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'config/theme/app_theme.dart';
 import 'manager/local_db_manager.dart';
 
+
+//this is the root of the application
 void main() async {
+  //initialising the databases(firebase and isar)
   WidgetsFlutterBinding.ensureInitialized();
   await LocalDbManager.openDb();
-  //Bloc.observer = Observer();
   await Firebase.initializeApp(
-      // name: Platform.isIOS ?'DEFAULT':null,
-      //  options: DefaultFirebaseOptions.currentPlatform,
       );
   runApp(const EasySaveApp());
 }
 
+///EASYSAVE Application(a.k.a ATSave) is a mobile application that enables users
+///to create and manage their savings goals, save money and monitor their savings
+///and expenses likewise.
 class EasySaveApp extends StatelessWidget {
   const EasySaveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return
+    //specifying the available state management(bloc) providers used in ATSave App
+     MultiBlocProvider(
       providers: [
         BlocProvider<AuthenticationBloc>(
           create: (BuildContext context) => AuthenticationBloc(),
@@ -38,7 +43,9 @@ class EasySaveApp extends StatelessWidget {
           create: (BuildContext context) => ConnectivityBloc(),
         ),
       ],
-      child: ScreenUtilInit(
+      child:
+      //applying a package that helps with app responsiveness on various platforms
+       ScreenUtilInit(
         designSize: ScreenUtil.defaultSize,
         minTextAdapt: true,
         splitScreenMode: false,
@@ -47,7 +54,7 @@ class EasySaveApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
               theme:
-                  AppTheme.lightTheme, // ThemeData(primarySwatch: Colors.blue),
+                  AppTheme.lightTheme, 
               darkTheme:
                   AppTheme.darkTheme, // ThemeData(primarySwatch: Colors.blue),
               //themeMode: ThemeMode.dark,

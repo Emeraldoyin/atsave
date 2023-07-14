@@ -1,17 +1,14 @@
 import 'dart:developer';
 
-import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/model/atsave_user.dart';
-import 'package:easysave/view/widgets/show_snackbar.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
 
 import '../../repository/authentication_repository.dart';
+import '../../repository/database_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -19,6 +16,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationRepository authRepo = AuthenticationRepository();
+  DatabaseRepository dbRepo = DatabaseRepository();
 
   AuthenticationBloc() : super(AuthenticationInitial()) {
     on<SignInEvent>((event, emit) => _login(event, emit));
@@ -66,4 +64,6 @@ class AuthenticationBloc
       emit(AuthErrorState(error: e.toString()));
     }
   }
+
+  
 }

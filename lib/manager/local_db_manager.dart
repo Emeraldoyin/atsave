@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:easysave/model/atsave_user.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/model/savings_transactions.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../model/category.dart';
+import '../model/expenses.dart';
 
 class LocalDbManager {
   static Isar? _isar;
@@ -15,6 +17,8 @@ class LocalDbManager {
       [
         ATSaveUserSchema,
         SavingsGoalsSchema,
+        ExpensesSchema,
+        SavingsTransactionsSchema
       ],
       directory: (await getApplicationSupportDirectory()).path,
     );
@@ -24,6 +28,7 @@ class LocalDbManager {
     await _isar?.writeTxn(() async {
       _isar?.aTSaveUsers.clear();
       _isar?.savingsGoals.clear();
+      _isar?.savingsTransactions.clear();
     });
   }
 
@@ -33,33 +38,130 @@ class LocalDbManager {
     });
   }
 
-
   Future<void> addSavingsGoal(SavingsGoals goal) async {
     await _isar?.writeTxn(() async {
       await _isar?.savingsGoals.put(goal);
     });
   }
-Future<void> storeCategories() async {
-  List<Category> categoryList = [
-    Category(name: 'Food', imagePath: 'assets/images/food.jpeg'),
-    Category(name: 'Car', imagePath: 'assets/images/car.jpeg'),
-    Category(name: 'Events', imagePath: 'assets/images/events.jpeg'),
-    Category(name: 'Family Needs', imagePath: 'assets/images/family.jpeg'),
-    Category(name: 'Apartment', imagePath: 'assets/images/apartment.jpeg'),
-    Category(name: 'Utility Bills', imagePath: 'assets/images/bills.jpeg'), 
-    Category(name: 'Non-specified', imagePath: 'assets/images/open home_safe_with_money.png'),
-    Category(name: 'Travels', imagePath: 'assets/images/travels.jpeg')
-  ];
+
+  Future updateGoals(List<SavingsGoals> goals) async {
+    return _isar!.writeTxn(() async {
+      await _isar!.savingsGoals.clear();
+
+      return _isar!.savingsGoals.putAll(goals);
+    });
+  }
+
+  Future<void> addSavingsTransactions(SavingsTransactions txn) async {
+    await _isar?.writeTxn(() async {
+      await _isar?.savingsTransactions.put(txn);
+    });
+  }
+
+  Future<void> storeCategories() async {
+    List<Category> categoryList = [
+      Category(name: 'Food', imagePath: 'assets/images/food.jpeg'),
+      Category(name: 'Car', imagePath: 'assets/images/car.jpeg'),
+      Category(name: 'Events', imagePath: 'assets/images/events.jpeg'),
+      Category(name: 'Family Needs', imagePath: 'assets/images/family.jpeg'),
+      Category(name: 'Apartment', imagePath: 'assets/images/apartment.jpeg'),
+      Category(name: 'Utility Bills', imagePath: 'assets/images/bills.jpeg'),
+      Category(
+          name: 'Non-specified',
+          imagePath: 'assets/images/open home_safe_with_money.png'),
+      Category(name: 'Travels', imagePath: 'assets/images/travels.jpeg')
+    ];
     await _isar?.writeTxn(() async {
       await _isar?.categorys.putAll(categoryList);
     });
   }
+
   Future<List<SavingsGoals>> getSavingsGoal() async {
     return _isar!.writeTxn(() async {
       return _isar!.savingsGoals.where().findAll();
     });
   }
-  
+
+    Future<List<SavingsTransactions>> getSavingsTransactions() async {
+    return _isar!.writeTxn(() async {
+      return _isar!.savingsTransactions.where().findAll();
+    });
+  }
+
+  Future<List<Expenses>> getExpenses() async {
+    return _isar!.writeTxn(() async {
+      return _isar!.expenses.where().findAll();
+    });
+  }
+
+  Future updateSavingsGoalsById(SavingsGoals goal) async {
+    SavingsGoals? formerGoal =
+        await _isar!.savingsGoals.filter().idEqualTo(goal.id).findFirst();
+    if (formerGoal != null) {
+      formerGoal = goal;
+    }
+    await _isar!.savingsGoals.put(formerGoal!);
+    await _isar!.close();
+  }
+
+  Future deleteSavingsGoalsById(SavingsGoals goal) async {
+    await _isar!.savingsGoals.delete(goal.id!);
+    await _isar!.close();
+  }
+
+  Future clearTxnByUserId(String uid) async {
+    await _isar!.savingsTransactions.filter().uidEqualTo(uid).deleteAll();
+    await _isar!.close();
+  }
+
+
+  Future saveExpenses(Expenses exp) async {
+    return await _isar!.writeTxn(() async {
+      return await _isar!.expenses.put(exp);
+    });
+  }
+
+  Future saveUser(ATSaveUser newUser) async {
+    return await _isar!.writeTxn(() async {
+      return await _isar!.aTSaveUsers.put(newUser);
+    });
+  }
+
+  Future<void> increaseProgressValue(int goalId, double newProgV) async {
+    SavingsGoals? goal =
+        await _isar!.savingsGoals.filter().idEqualTo(goalId).findFirst();
+    await _isar!.writeTxn(
+      () async {
+        goal!.progressPercentage == newProgV;
+      },
+    );
+  }
+
+
+  Future updateExpenses(List<Expenses> exp) async {
+    return _isar!.writeTxn(() async {
+      await _isar!.expenses.clear();
+
+      return _isar!.expenses.putAll(exp);
+    });
+  }
+
+  Future updateSavingsGoals(List<SavingsGoals> goals) async {
+    return _isar!.writeTxn(() async {
+      await _isar!.savingsGoals.clear();
+
+      return _isar!.savingsGoals.putAll(goals);
+    });
+  }
+
+  Future updateSavingsTransactions(List<SavingsTransactions> txn) async {
+    return _isar!.writeTxn(() async {
+      await _isar!.savingsTransactions.clear();
+
+      return _isar!.savingsTransactions.putAll(txn);
+    });
+  }
+
 
   // Future<List<Lesson>> getLessons() async {
   //   return _isar!.writeTxn(() async {
@@ -79,13 +181,7 @@ Future<void> storeCategories() async {
   //   });
   // }
 
-  Future updateCategories(List<SavingsGoals> category) async {
-    return _isar!.writeTxn(() async {
-      await _isar!.savingsGoals.clear();
-
-      return _isar!.savingsGoals.putAll(category);
-    });
-  }
+  
 
   // Future updateQuizzes(List<Quiz> quiz) async {
   //   return _isar!.writeTxn(() async {
@@ -102,21 +198,6 @@ Future<void> storeCategories() async {
   //     return _isar!.lessons.putAll(course);
   //   });
   // }
-
-  // Future updateTopics(List<Topic> topic) async {
-  //   return _isar!.writeTxn(() async {
-  //     await _isar!.topics.clear();
-
-  //     return _isar!.topics.putAll(topic);
-  //   });
-  // }
-
-  // Saving user details in Isar
-  Future saveUser(ATSaveUser newUser) async {
-    return await _isar!.writeTxn(() async {
-      return await _isar!.aTSaveUsers.put(newUser);
-    });
-  }
 
   // Future<List<Topic>> getTopicByLessonId(int lessonId, int categoryId) async {
   //   return await _isar!.topics
@@ -158,7 +239,6 @@ Future<void> storeCategories() async {
   //   }
   // }
 
-  // Future<void> increaseProgressValue(int lessonId, int topicId) async {
   //   SelectedLesson? selectedLesson = await _isar!.selectedLessons
   //       .filter()
   //       .lessonIdEqualTo(lessonId)

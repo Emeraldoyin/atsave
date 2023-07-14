@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:easysave/model/expenses.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/model/savings_transactions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -10,19 +12,25 @@ import 'package:firebase_database/firebase_database.dart';
 
 class RemoteDbManager {
   final FirebaseDatabase db = FirebaseDatabase.instance;
-  String uid = FirebaseAuth.instance.currentUser!.uid;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
 
   //int overallNoOfTopicsCompleted = 0;
 
-  Future<List<SavingsGoals?>?> fetchRemoteSavingsGoals() async {
+  Future<List<SavingsGoals>> fetchRemoteSavingsGoals() async {
     List<SavingsGoals> savingsGoals = [];
-    final snapshot = await db.ref().child('SavingsGoals').get();
+
+    final snapshot = await db.ref().child('SavingsGoals').child('id').get();
     try {
       if (snapshot.exists) {
+        Map<String, dynamic> isarData = {};
         for (var element in snapshot.children) {
-          savingsGoals.add(
-              SavingsGoals.fromJson(element.value as Map<Object?, Object?>));
+          String? convertedKey = element.key.toString();
+          dynamic convertedValue = element.value;
+
+          // Store the converted key-value pair in the isarData map
+          isarData[convertedKey] = convertedValue;
+
+          savingsGoals.add(SavingsGoals.fromJson(isarData));
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -30,6 +38,90 @@ class RemoteDbManager {
     }
     return savingsGoals;
   }
+
+  Future<List<SavingsTransactions>> fetchRemoteSavingsTransactions() async {
+    List<SavingsTransactions> savingsTransactions = [];
+
+    final snapshot =
+        await db.ref().child('SavingsTransactions').child('id').get();
+    try {
+      if (snapshot.exists) {
+        Map<String, dynamic> isarData = {};
+        for (var element in snapshot.children) {
+          String? convertedKey = element.key.toString();
+          dynamic convertedValue = element.value;
+
+          // Store the converted key-value pair in the isarData map
+          isarData[convertedKey] = convertedValue;
+
+          savingsTransactions.add(SavingsTransactions.fromJson(isarData));
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      log(e.message.toString(), name: 'Firebase');
+    }
+    return savingsTransactions;
+  }
+
+  Future<List<Expenses>> fetchRemoteExpenses() async {
+    List<Expenses> expenses = [];
+
+    final snapshot = await db.ref().child('Expenses').child('id').get();
+    try {
+      if (snapshot.exists) {
+        Map<String, dynamic> isarData = {};
+        for (var element in snapshot.children) {
+          String? convertedKey = element.key.toString();
+          dynamic convertedValue = element.value;
+
+          // Store the converted key-value pair in the isarData map
+          isarData[convertedKey] = convertedValue;
+
+          expenses.add(Expenses.fromJson(isarData));
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      log(e.message.toString(), name: 'Firebase');
+    }
+    return expenses;
+  }
+
+  Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
+    await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
+      "uid": goal.uid,
+      "targetAmount": goal.targetAmount,
+      "goalNotes": goal.goalNotes,
+      "categoryId": goal.categoryId,
+      "startAmount": goal.startAmount.toString(),
+      "endDate": goal.endDate.toIso8601String(),
+      "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
+    });
+  }
+
+  Future<void> saveSavingsTransactionsToServer(SavingsTransactions txn) async {
+    await db.ref().child('SavingsTransactions').child(txn.id.toString()).set({
+      "uid": txn.uid,
+      "savingsId": txn.savingsId,
+      "amountSaved": txn.amountSaved,
+      "timeStamp": txn.timeStamp.toIso8601String(),
+      "amountExpended": txn.amountExpended,
+    });
+  }
+
+  Future<void> updateSavingsGoalInServer(List<SavingsGoals> goals) async {
+    for (var goal in goals) {
+      await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
+        "uid": goal.uid,
+        "targetAmount": goal.targetAmount,
+        "goalNotes": goal.goalNotes,
+        "categoryId": goal.categoryId,
+        "startAmount": goal.startAmount,
+        "endDate": goal.endDate.toIso8601String(),
+        "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
+      });
+    }
+  }
+
   // Future<List<SavingsGoals?>?> fetchRemoteSavingsGoals() async {
   //   final snapshot = await ref.child('SavingsGoals').once();
   //   final goalMap = snapshot.snapshot.value as Map<Object?, dynamic>;
@@ -61,31 +153,6 @@ class RemoteDbManager {
   //   return savingsGoalData;
   // }
 
-  Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
-    await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
-      "uid": goal.uid,
-      "targetAmount": goal.targetAmount,
-      "goalNotes": goal.goalNotes,
-      "categoryId": goal.categoryId,
-      "startAmount": goal.startAmount.toString(),
-      "endDate": goal.endDate.toString(),
-      "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
-    });
-  }
-
-  Future<void> updateSavingsGoalInServer(List<SavingsGoals> goals) async {
-    for (var goal in goals) {
-      await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
-        "uid": goal.uid,
-        "targetAmount": goal.targetAmount,
-        "goalNotes": goal.goalNotes,
-        "categoryId": goal.categoryId,
-        "startDate": goal.startAmount,
-        "endDate": goal.endDate,
-        "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
-      });
-    }
-  }
 // Future<User?> googlesignIn() async {
 //    FirebaseAuth auth = FirebaseAuth.instance;
 //     User? user;

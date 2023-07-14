@@ -47,7 +47,7 @@ class myGoals extends StatelessWidget {
         child: SingleChildScrollView(
       child: controller.allGoals.isNotEmpty
           ? SizedBox(
-              height: 80.h,
+              height: 250.h,
               width: 130.w,
               child: ListView.builder(
                 itemCount: controller.allGoals.length,
@@ -56,7 +56,7 @@ class myGoals extends StatelessWidget {
                   return SavingsGoalCard(
                     goalName: goal.goalNotes,
                     goalAmount: goal.targetAmount,
-                    completionDate: goal.endDate,
+                    completionDate: goal.endDate.toIso8601String(),
                   );
                 },
               ),

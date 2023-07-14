@@ -17,13 +17,13 @@ class SignInEvent extends AuthenticationEvent {
   List<Object> get props => [email, password];
 }
 
-class SignInWithGoogleEvent extends AuthenticationEvent {
-  
+class LogoutEvent extends AuthenticationEvent {
+ final String uid;
 
-  const SignInWithGoogleEvent();
+  const LogoutEvent({required this.uid});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [uid];
 }
 
 class SignUpEvent extends AuthenticationEvent {

@@ -28,4 +28,13 @@ class LoginSuccessState extends AuthenticationState {
   List<Object> get props => [];
 }
 
+class LogoutSuccessState extends AuthenticationState {
+  final String uid;
+
+  const LogoutSuccessState({required this.uid});
+
+  @override
+  List<Object> get props => [];
+}
+
 class SignupSuccessState extends AuthenticationState {}

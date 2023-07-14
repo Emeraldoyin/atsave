@@ -24,7 +24,7 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
             child: Column(
               children: [
                 TextFormField(
-                  validator: (value) => controller.validate(value),
+                  validator: (value) => controller.validateAmount(value),
                   controller: controller.targetAmountController,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -45,11 +45,16 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                 ),
                 addVerticalSpace(16.h),
                 TextFormField(
-                  validator: (value) => controller.validate(value),
+                  validator: (value) => controller.validateAmount(value),
                   controller: controller.startAmountController,
                   decoration: const InputDecoration(
                     labelText: 'How much are you saving now?',
                   ),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(controller.decimalRegex),
+                  ],
                 ),
                 addVerticalSpace(16.h),
                 DropdownButtonFormField(
@@ -77,7 +82,7 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                 const SizedBox(height: 32.0),
                 ElevatedButton(
                   onPressed: () {
-                    controller.onSaveGoal(controller.addGoalFormKey);
+                    controller.onSaveGoal();
                   },
                   child: const Text('Save'),
                 ),

@@ -13,8 +13,51 @@ class DatabaseLoadingState extends DatabaseState {}
 
 class SavingsGoalAddedState extends DatabaseState {
   final SavingsGoals goal;
-
   const SavingsGoalAddedState({required this.goal});
+
+  @override
+  List<Object> get props => [goal];
+}
+
+class SavingsGoalDeletedState extends DatabaseState {
+  final SavingsGoals goal;
+  
+
+  const SavingsGoalDeletedState({required this.goal});
+
+  @override
+  List<Object> get props => [goal];
+}
+
+class SaveTransactionsSuccessState extends DatabaseState {
+   final SavingsTransactions txn;
+  
+
+  const SaveTransactionsSuccessState({required this.txn});
+
+  @override
+  List<Object> get props => [txn];
+}
+ 
+
+
+class SpendFromSavingsState extends DatabaseState {
+  final SavingsGoals goal;
+  final SavingsTransactions txn;
+  final Expenses exp;
+
+  const SpendFromSavingsState(
+      {required this.goal, required this.txn, required this.exp});
+
+  @override
+  List<Object> get props => [];
+}
+
+class EditSavingsGoalState extends DatabaseState {
+  final SavingsGoals goal;
+  final SavingsTransactions txn;
+
+  const EditSavingsGoalState({required this.goal, required this.txn});
 
   @override
   List<Object> get props => [];

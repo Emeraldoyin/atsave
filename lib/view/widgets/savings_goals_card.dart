@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class SavingsGoalCard extends StatelessWidget {
   final String? goalName;
   final double goalAmount;
-  final DateTime completionDate;
+  final String completionDate;
 
   const SavingsGoalCard({
     super.key,
@@ -38,7 +37,7 @@ class SavingsGoalCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Completion Date: ${DateFormat('MMM dd, yyyy').format(completionDate)}',
+              'Completion Date: $completionDate',
               style: const TextStyle(
                 fontSize: 16,
               ),

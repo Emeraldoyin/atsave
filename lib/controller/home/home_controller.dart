@@ -1,14 +1,18 @@
 import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
+import 'package:easysave/controller/signin/signin_controller.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/model/category.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/model/savings_transactions.dart';
+import 'package:easysave/view/pages/error_page.dart';
 import 'package:easysave/view/pages/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../consts/app_colors.dart';
 import '../../model/expenses.dart';
 import '../../utils/helpers/session_manager.dart';
 
@@ -102,7 +106,7 @@ class HomePageController extends State<Home>
     controller = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       SessionManager manager = SessionManager();
-      manager.hasUserAddedGoal(false);
+      // manager.hasUserAddedGoal(false);
     });
     // SavingsGoals(categoryId: int.parse(selectedCategory), targetAmount: targetAmountController., String? goalNotes, required int categoryId, required double startAmount, required DateTime endDate, required double progressPercentage)
   }
@@ -122,7 +126,6 @@ class HomePageController extends State<Home>
     controller!.animateTo(selectedIndex += 1);
   }
 
-
   String? validate(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -131,39 +134,94 @@ class HomePageController extends State<Home>
     }
   }
 
-  onSaveGoal(key) async {
-    if(key.currentState.validate){
-       double goal = double.parse(targetAmountController.text);
-    double startingAmount = double.parse(startAmountController.text);
-    double progressPercentage = startingAmount / goal * 100;
-    SavingsGoals newlyAddedGoal = SavingsGoals(
-        uid: user!.uid,
-        targetAmount: goal,
-        categoryId: categoryList
-            .indexWhere((element) => element.name == selectedCategory),
-        startAmount: startingAmount,
-        endDate: date,
-        progressPercentage: progressPercentage,
-        goalNotes: goalNotesController.text);
+  String? validateAmount(value) {
+    if (value.isEmpty) {
+      return 'Field cannot be empty';
+    } else if (value == 0) {
+      return 'Invalid amount to save';
+    } else {
+      return null;
+    }
+  }
+
+  onSaveGoal() async {
+    String inputText = proposedEndDateController.text;
+    DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
+    DateTime dateTime = inputFormat.parse(inputText);
+    // DateTime txnTime = inputFormat.parse(DateTime.now());
+
     if (addGoalFormKey.currentState!.validate()) {
-      context
-          .read<DatabaseBloc>()
-          .add(AddSavingsGoalsEvent(goal: newlyAddedGoal));
-      allGoals.add(newlyAddedGoal);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const Success(
-                    buttonText: 'Done',
-                    displayImageURL: 'assets/images/money and phone.png',
-                    displayMessage: 'Congratulations!!!',
-                    succcessful: true,
-                    displaySubText: 'You just added a new savings goals.',
-                    destination: Home(),
-                  )));
+      double goal = double.parse(targetAmountController.text);
+      double startingAmount = double.parse(startAmountController.text);
+      double progressPercentage = startingAmount / goal * 100;
+      SavingsGoals newlyAddedGoal = SavingsGoals(
+          uid: user!.uid,
+          targetAmount: goal,
+          categoryId: categoryList
+              .indexWhere((element) => element.name == selectedCategory),
+          startAmount: startingAmount,
+          endDate: dateTime,
+          progressPercentage: progressPercentage,
+          goalNotes: goalNotesController.text);
+
+      if (addGoalFormKey.currentState!.validate()) {
+        allGoals.add(newlyAddedGoal);
+
+        context
+            .read<DatabaseBloc>()
+            .add(AddSavingsGoalsEvent(goal: newlyAddedGoal));
+       
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const Success(
+                      buttonText: 'Done',
+                      displayImageURL: 'assets/images/money and phone.png',
+                      displayMessage: 'Congratulations!!!',
+                      succcessful: true,
+                      displaySubText: 'You just added a new savings goals.',
+                      destination: Home(),
+                    )));
+      }
     }
+  }
+
+  listener(state) {
+    if (state is DbLoadingState) {
+      const CircularProgressIndicator();
     }
-   
+    if (state is DbSuccessState) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        SessionManager manager = SessionManager();
+        manager.loggedIn(true);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('you have been successfully logged out'),
+          backgroundColor: APPBAR_COLOR1));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const SignIn())); // try {
+
+      // } catch (e) {
+      //   showSnackBar(
+      //     context,
+      //     e.toString(), Colors.red
+      //   );
+      // }
+    }
+    if (state is DbErrorState) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const ErrorPage()));
+    }
+
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //       content: Text('Login Error. Kindly try again.'),
+    //       backgroundColor: ICON_COLOR5),
+    // );
+  }
+
+  onLogOut() async {
+    context.read<ConnectivityBloc>().add(RetrieveDataEvent());
   }
 
   onTap() async {

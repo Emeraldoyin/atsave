@@ -1,22 +1,44 @@
 import 'package:easysave/model/atsave_user.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/model/savings_transactions.dart';
 import 'package:flutter/foundation.dart';
 
 import '../manager/local_db_manager.dart';
 import '../manager/remote_db_manager.dart';
+import '../model/expenses.dart';
 
 class DatabaseRepository {
   final LocalDbManager ldbm = LocalDbManager();
   final RemoteDbManager rdbm = RemoteDbManager();
 
-  Future<List<SavingsGoals?>?> fSavingGoals() async =>
+  Future<List<SavingsGoals>> fSavingGoals() async =>
       rdbm.fetchRemoteSavingsGoals();
 
   Future<List<SavingsGoals>> iSavingsGoals() async => ldbm.getSavingsGoal();
 
   updateSavingsGoals(List<SavingsGoals> goals) async {
-    rdbm.updateSavingsGoalInServer(goals);
+    ldbm.updateGoals(goals);
   }
+
+    Future<List<SavingsTransactions>> iSavingsTransactions() async => ldbm.getSavingsTransactions();
+
+    updateSavingsTransactions(List<SavingsTransactions> txn) async {
+    ldbm.updateSavingsTransactions(txn);
+  }
+
+      Future<List<Expenses>> iExpenses() async => ldbm.getExpenses();
+
+      updateExpenses(List<Expenses> exp) async {
+    ldbm.updateExpenses(exp);
+  }
+
+  Future<List<SavingsTransactions>> fSavingTxns() async =>
+      rdbm.fetchRemoteSavingsTransactions();
+
+Future<List<Expenses>> fExpenses() async =>
+      rdbm.fetchRemoteExpenses();
+
+
 
 //List<Category> getCategory() async => ldbm.getCategory();
 
@@ -47,6 +69,9 @@ class DatabaseRepository {
 
   Future saveGoal(SavingsGoals goal) async => await ldbm.addSavingsGoal(goal);
 
+  Future saveTransaction(SavingsTransactions txn) async =>
+      await ldbm.addSavingsTransactions(txn);
+
   // Future<List<Lesson>> lessonsForCategory(int categoryId) async =>
   //     await ldbm.getLessonsForCategoryId(categoryId);
 
@@ -76,6 +101,9 @@ class DatabaseRepository {
 
   saveSavingsGoalsToServer(SavingsGoals goal) =>
       rdbm.saveSavingsGoalToServer(goal);
+
+  saveSavingsTransactionsToServer(SavingsTransactions txn) =>
+      rdbm.saveSavingsTransactionsToServer(txn);
 
   // Future saveSelectedLessonToServer(SelectedLesson selectedLesson) async {
   //   await rdbm.saveSelectedLesson(SelectedLesson(

@@ -1,9 +1,9 @@
+import 'package:easysave/model/savings_goals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../controller/home/home_controller.dart';
-import '../../model/expenses.dart';
 import '../../utils/helpers/design_helpers.dart';
 
 class majorCard extends StatelessWidget {
@@ -11,10 +11,13 @@ class majorCard extends StatelessWidget {
     super.key,
     required this.username,
     required this.controller,
+    // required this.actionWord,
   });
 
   final String? username;
   final HomePageController controller;
+  //final String actionWord;
+  // final Widget action;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +36,12 @@ class majorCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
+//firstText,
                           'Welcome, $username!',
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                         addVerticalSpace(5.h),
+                        //SecondWidget,
                         Text(
                           'You do not have any savings goals yet.',
                           style: Theme.of(context).textTheme.bodySmall,
@@ -46,8 +51,13 @@ class majorCard extends StatelessWidget {
                   ),
                   ElevatedButton(
                       //style: ,
-                      onPressed: () {},
-                      child: const Text('Create new goal')),
+                      onPressed: () {
+                        // action
+                      },
+                      child:
+
+                          //  actionWord
+                          const Text('Create new goal')),
                   addVerticalSpace(10),
                 ],
               ),
@@ -68,7 +78,8 @@ class majorCard extends StatelessWidget {
                           style: TextStyle(),
                         ),
                         Text(
-                          '\$ 0 000',
+                          '35000',
+                          //  controller.allGoals[index].targetAmount.toString(),
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         )
@@ -77,7 +88,7 @@ class majorCard extends StatelessWidget {
                   ))
                 ],
                 series: <CircularSeries>[
-                  DoughnutSeries<Expenses, String>(
+                  DoughnutSeries<SavingsGoals, String>(
                     explodeOffset: '10%',
                     explodeAll: true,
                     explodeIndex: 2,
@@ -88,9 +99,10 @@ class majorCard extends StatelessWidget {
                     radius: '90%',
                     innerRadius: '70%',
                     //pointColorMapper: (Expenses data, _) => data.date,
-                    dataSource: controller.getExpenses(),
-                    xValueMapper: (Expenses data, _) => data.date,
-                    yValueMapper: (Expenses data, _) => data.amountSpent,
+                    dataSource: controller.allGoals,
+                    xValueMapper: (SavingsGoals goal, _) =>
+                        goal.startAmount.toStringAsFixed(2),
+                    yValueMapper: (SavingsGoals goal, _) => goal.startAmount,
                     dataLabelSettings:
                         const DataLabelSettings(isVisible: false),
                     enableTooltip: false,
