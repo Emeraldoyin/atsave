@@ -20,10 +20,9 @@ class MyGoalsPage extends StatelessView<Home, HomePageController> {
   }
 
   Widget body(context) {
-    String? username = controller.getUsername();
     return Scaffold(
       body: myGoals(
-          username: username,
+            username: controller.user!.displayName,
           controller: controller,
           allGoals: controller.allGoals),
     );
@@ -33,11 +32,11 @@ class MyGoalsPage extends StatelessView<Home, HomePageController> {
 class myGoals extends StatelessWidget {
   myGoals(
       {super.key,
-      required this.username,
+       required this.username,
       required this.controller,
       required this.allGoals});
 
-  final String? username;
+   final String? username;
   final HomePageController controller;
   List<SavingsGoals?> allGoals;
 
@@ -65,7 +64,7 @@ class myGoals extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: majorCard(username: username, controller: controller),
+                  child: majorCard(controller: controller, username: username,),
                 ),
                 SizedBox(
                   child: Image.asset('assets/images/onboard_img2.png'),

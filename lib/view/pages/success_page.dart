@@ -1,6 +1,7 @@
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:typewritertext/typewritertext.dart';
 
 import '../../consts/app_colors.dart';
@@ -80,12 +81,12 @@ class SuccessPage extends StatelessView<Success, SuccessController> {
             ),
           )),
           Positioned(
-            top: 650,
+            top: 680,
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              height: 180,
+              height: 120.h,
               width: double.infinity,
               decoration: const BoxDecoration(
                   gradient: RadialGradient(radius: 5, colors: [

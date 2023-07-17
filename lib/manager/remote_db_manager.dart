@@ -16,10 +16,11 @@ class RemoteDbManager {
 
   //int overallNoOfTopicsCompleted = 0;
 
-  Future<List<SavingsGoals>> fetchRemoteSavingsGoals() async {
+  Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
     List<SavingsGoals> savingsGoals = [];
 
-    final snapshot = await db.ref().child('SavingsGoals').child('id').get();
+    final snapshot =
+        await db.ref().child('SavingsGoals').child(uid).child('id').get();
     try {
       if (snapshot.exists) {
         Map<String, dynamic> isarData = {};
@@ -87,14 +88,19 @@ class RemoteDbManager {
   }
 
   Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
-    await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
+    await db
+        .ref()
+        .child('SavingsGoals')
+        .child(goal.uid.toString())
+        .child(goal.id.toString())
+        .set({
       "uid": goal.uid,
       "targetAmount": goal.targetAmount,
       "goalNotes": goal.goalNotes,
       "categoryId": goal.categoryId,
       "startAmount": goal.startAmount.toString(),
       "endDate": goal.endDate.toIso8601String(),
-      "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
+      "progresssPercentage": goal.progressPercentage.toStringAsFixed(2)
     });
   }
 
@@ -110,14 +116,19 @@ class RemoteDbManager {
 
   Future<void> updateSavingsGoalInServer(List<SavingsGoals> goals) async {
     for (var goal in goals) {
-      await db.ref().child('SavingsGoals').child(goal.id.toString()).set({
+      await db
+          .ref()
+          .child('SavingsGoals')
+          .child(goal.uid.toString())
+          .child(goal.id.toString())
+          .set({
         "uid": goal.uid,
         "targetAmount": goal.targetAmount,
         "goalNotes": goal.goalNotes,
         "categoryId": goal.categoryId,
         "startAmount": goal.startAmount,
         "endDate": goal.endDate.toIso8601String(),
-        "progresssPercentage": goal.progressPercentage.toStringAsFixed(0)
+        "progresssPercentage": goal.progressPercentage.toStringAsFixed(2)
       });
     }
   }

@@ -31,6 +31,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                   end: Alignment.bottomCenter)),
           child: SingleChildScrollView(
             child: Form(
+             
               key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,35 +69,12 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                             floatingLabelStyle:
                                 const TextStyle(color: BUTTON_COLOR1),
                             hintText: 'Enter your email',
-                            // hintStyle: const TextStyle(
-                            //   color: Colors.grey,
-                            // ),
                           ),
                           controller: controller.txtController,
                           keyboardType: TextInputType.text,
                           onSaved: (value) => controller.email = value,
                           validator:
                               ValidationBuilder().email().required().build(),
-
-                          //style:
-                          // decoration: InputDecoration(
-                          //     border: const OutlineInputBorder(),
-                          //     //filled: true,
-                          //     hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                          //     hintText: 'Enter your email',
-                          //     enabledBorder: OutlineInputBorder(
-                          //       borderRadius: BorderRadius.circular(10),
-                          //       borderSide: const BorderSide(color: Colors.white),
-                          //     ),
-                          //     focusedBorder: OutlineInputBorder(
-                          //         borderRadius: BorderRadius.circular(10),
-                          //         borderSide:
-                          //             const BorderSide(width: 1, color: Colors.grey)),
-                          //     suffixIcon: IconButton(
-                          //       icon: const Icon(Icons.clear),
-                          //       onPressed: () {},
-                          //       color: Colors.red,
-                          //     )),
                         ),
                       ],
                     ),
@@ -113,15 +91,14 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                           onSaved: (value) => controller.password = value,
                           validator: ValidationBuilder()
                               .required('password field cannot be empty')
-                              .minLength(7, 'provide your valid password')
+                              .minLength(6, 'provide a valid password of at least 6 characters')
                               .build(),
 
                           obscureText: controller.obscureText,
                           controller: controller.passwordController,
-                          // style: const TextStyle(color: Colors.white),
+                         
                           decoration: InputDecoration(
-                            // border: const OutlineInputBorder(),
-                            // labelText: 'password',
+                          
                             suffixIcon: IconButton(
                                 icon: Icon(
                                   controller.obscureText
@@ -130,20 +107,8 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                                   size: 16.r,
                                 ),
                                 onPressed: controller.changePasswordView),
-                            //labelStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                         
                             hintText: 'Enter password',
-                            // hintStyle: const TextStyle(
-                            //   color: Colors.grey,
-                            // ),
-                            //counterStyle: const TextStyle(color: Colors.red),
-                            // enabledBorder: OutlineInputBorder(
-                            //     borderRadius: BorderRadius.circular(10),
-                            //     borderSide:
-                            //         const BorderSide(width: 1, color: Colors.grey)),
-                            // focusedBorder: OutlineInputBorder(
-                            //     borderRadius: BorderRadius.circular(10),
-                            //     borderSide:
-                            //         const BorderSide(width: 1, color: Colors.grey))
                           ),
                         ),
                       ],
@@ -176,13 +141,13 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                   addVerticalSpace(54.h),
                   Container(
                     padding: EdgeInsets.all(5.h),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Or sign up using',
                         style: TextStyle(
                             color: HINT_TEXT_COLOR,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12),
+                            fontSize: 12.sp),
                       ),
                     ),
                   ),

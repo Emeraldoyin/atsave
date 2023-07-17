@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easysave/model/atsave_user.dart';
+import 'package:easysave/model/savings_goals.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -38,10 +39,14 @@ class AuthenticationBloc
         newUser = ATSaveUser.fromJson(datamap!);
         String displayName = newUser.firstName;
         final user = FirebaseAuth.instance.currentUser;
-        await user!.updateDisplayName(displayName);
+        String uid = user!.uid;
+        await user.updateDisplayName(displayName);
         await user.reload();
         await authRepo.saveUserToDb(newUser);
+        final userGoals = await dbRepo.fSavingGoals(uid);
+        await dbRepo.updateGoalsInLocalDB(userGoals);
       } else {
+        log('login user just added to realtime db', name: 'Admin');
         await FirebaseDatabase.instance.ref().child('User/$userId').set({});
       }
 
@@ -49,6 +54,8 @@ class AuthenticationBloc
     } on FirebaseAuthException catch (e) {
       log(e.message.toString(), name: 'auth error');
       emit(AuthErrorState(error: e.message.toString()));
+    } on FirebaseException catch (e) {
+      log(e.message.toString(), name: 'firebase error');
     }
   }
 
@@ -64,6 +71,4 @@ class AuthenticationBloc
       emit(AuthErrorState(error: e.toString()));
     }
   }
-
-  
 }

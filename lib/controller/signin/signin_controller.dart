@@ -61,28 +61,47 @@ class SignInController extends State<SignIn> {
       const CircularProgressIndicator();
     }
     if (state is LoginSuccessState) {
-       WidgetsBinding.instance.addPostFrameCallback((_) async {
-            SessionManager manager = SessionManager();
-            manager.loggedIn(true);
-          });
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        SessionManager manager = SessionManager();
+        manager.loggedIn(true);
+      });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('you have been successfully logged in'),
-          backgroundColor: APPBAR_COLOR1));
+        content: Text('you have been successfully logged in'),
+      ));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const Home()));
     }
     if (state is AuthErrorState) {
-      // showAlertDialog(
-      //     context,
-      //     'Login Failure',
-      //     'An error occured and we were unable to sign you in.\n Please ensure you\'re connected to internet and providing correct details.\n Kindly try again. ',
-      //     'Okay');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Login Error. Kindly try again.'),
-            backgroundColor: ICON_COLOR5),
-      );
+      if (state.error ==
+          'Network error (such as timeout, interrupted connection or unreachable host) has occurred.') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Network error has occurred. Check your connection and try again'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      } else if (state.error ==
+          'The password is invalid or the user does not have a password.') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid password. Try again with correct details'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      } else if (state.error ==
+          'There is no user record corresponding to this identifier. The user may have been deleted.') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'user login denied due to unrecognised login details. Please sign up to create an account'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      }
     }
   }
 

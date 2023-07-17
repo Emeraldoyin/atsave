@@ -26,6 +26,15 @@ class LogoutEvent extends AuthenticationEvent {
   List<Object> get props => [uid];
 }
 
+class ErrorEvent extends AuthenticationEvent {
+ final String error;
+
+  const ErrorEvent({required this.error});
+
+  @override
+  List<Object> get props => [error];
+}
+
 class SignUpEvent extends AuthenticationEvent {
   final String email;
   final String firstName;

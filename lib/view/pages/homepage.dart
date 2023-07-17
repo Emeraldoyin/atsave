@@ -1,9 +1,7 @@
 import 'package:easysave/config/theme/app_theme.dart';
 import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/view/pages/add_savings_goal_page.dart';
-import 'package:easysave/view/pages/budget.dart';
 import 'package:easysave/view/pages/dashboard_page.dart';
-import 'package:easysave/view/pages/more_page.dart';
 import 'package:easysave/view/pages/transactions_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +16,15 @@ class HomePage extends StatelessView<Home, HomePageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: body(context),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddSavingsGoalPage(controller)));
+          },
+          child: const Icon(Icons.add)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,
         useLegacyColorScheme: false,
@@ -31,19 +38,19 @@ class HomePage extends StatelessView<Home, HomePageController> {
             icon: Icons.dashboard,
             label: 'Dashboard',
           ),
-          controller.navbar(
-            icon: Icons.inventory_rounded,
-            label: 'Budget',
-          ),
-          controller.navbar(
-            icon: Icons.add_task,
-            label: 'Add',
-          ),
+          // controller.navbar(
+          //   icon: Icons.inventory_rounded,
+          //   label: 'Budget',
+          // ),
+          // controller.navbar(
+          //   icon: Icons.attach_money,
+          //   label: 'Add',
+          // ),
           controller.navbar(
             icon: Icons.account_balance_wallet,
             label: 'Wallet',
           ),
-          controller.navbar(icon: Icons.more, label: 'More'),
+          //  controller.navbar(icon: Icons.more, label: 'More'),
         ],
         currentIndex: controller.currentIndex,
         type: BottomNavigationBarType.fixed,
@@ -57,10 +64,10 @@ class HomePage extends StatelessView<Home, HomePageController> {
         index: controller.currentIndex,
         children: [
           DashBoardPage(controller),
-          const BudgetPage(),
-          AddSavingsGoalPage(controller),
+          // const BudgetPage(),
+          //  AddSavingsGoalPage(controller),
           const TransactionsPage(),
-          const MorePage()
+          // const MorePage()
         ],
       ),
     );

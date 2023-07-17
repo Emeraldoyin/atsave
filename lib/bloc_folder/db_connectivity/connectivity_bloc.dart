@@ -1,11 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:easysave/model/savings_transactions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../model/expenses.dart';
-import '../../model/savings_goals.dart';
 import '/repository/database_repository.dart';
+import '../../model/savings_goals.dart';
 
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
@@ -13,40 +11,74 @@ part 'connectivity_state.dart';
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   DatabaseRepository dbRepo = DatabaseRepository();
   ConnectivityBloc() : super(ConnectivityInitial()) {
-    on<RetrieveDataEvent>((event, emit) {
+    on<SyncDataEvent>((event, emit) {
+      return _syncData(event, emit);
+    });
+     on<RetrieveDataEvent>((event, emit) {
       return _retrieveData(event, emit);
     });
   }
 
-  _retrieveData(
-      RetrieveDataEvent event, Emitter<ConnectivityState> emit) async {
+  _syncData(SyncDataEvent event, Emitter<ConnectivityState> emit) async {
     emit(DbLoadingState());
     try {
       final presentGoals = await dbRepo.iSavingsGoals();
-      final incomingGoals = await dbRepo.fSavingGoals();
+      final incomingGoals = await dbRepo.fSavingGoals(event.uid);
       if (presentGoals != incomingGoals) {
         dbRepo.updateSavingsGoals(incomingGoals);
       }
-      final presentTransactions = await dbRepo.iSavingsTransactions();
-      final incomingTransactions = await dbRepo.fSavingTxns();
-      if (presentTransactions != incomingTransactions) {
-        dbRepo.updateSavingsTransactions(incomingTransactions);
-      }
-      final presentExpenses = await dbRepo.iExpenses();
-      final incomingExpenses = await dbRepo.fExpenses();
+      // final presentTransactions = await dbRepo.iSavingsTransactions();
+      // final incomingTransactions = await dbRepo.fSavingTxns();
+      // if (presentTransactions != incomingTransactions) {
+      //   dbRepo.updateSavingsTransactions(incomingTransactions);
+      // }
+      // final presentExpenses = await dbRepo.iExpenses();
+      // final incomingExpenses = await dbRepo.fExpenses();
 
-      if (presentExpenses != incomingExpenses) {
-        await dbRepo.updateExpenses(presentExpenses);
-      }
+      // if (presentExpenses != incomingExpenses) {
+      //   await dbRepo.updateExpenses(presentExpenses);
+      // }
       await FirebaseAuth.instance.signOut();
-       emit(DbSuccessState(
+      await dbRepo.closeDB();
+      emit(DbSuccessState(
         availableSavingsGoals: presentGoals,
-        availableExpenses: presentExpenses,
-        availableSavingsTransactions: presentTransactions));
+        // availableExpenses: presentExpenses,
+        // availableSavingsTransactions: presentTransactions
+      ));
     } on FirebaseAuthException catch (e) {
       emit(DbErrorState(error: e.toString()));
     }
-   
+  }
+
+  _retrieveData(RetrieveDataEvent event, Emitter<ConnectivityState> emit) async {
+    emit(DbLoadingState());
+    try {
+      final presentGoals = await dbRepo.iSavingsGoals();
+      final incomingGoals = await dbRepo.fSavingGoals(event.uid);
+      if (presentGoals != incomingGoals) {
+        dbRepo.updateSavingsGoals(incomingGoals);
+      }
+      // final presentTransactions = await dbRepo.iSavingsTransactions();
+      // final incomingTransactions = await dbRepo.fSavingTxns();
+      // if (presentTransactions != incomingTransactions) {
+      //   dbRepo.updateSavingsTransactions(incomingTransactions);
+      // }
+      // final presentExpenses = await dbRepo.iExpenses();
+      // final incomingExpenses = await dbRepo.fExpenses();
+
+      // if (presentExpenses != incomingExpenses) {
+      //   await dbRepo.updateExpenses(presentExpenses);
+      // }
+      await FirebaseAuth.instance.signOut();
+      await dbRepo.closeDB();
+      emit(DbSuccessState(
+        availableSavingsGoals: presentGoals,
+        // availableExpenses: presentExpenses,
+        // availableSavingsTransactions: presentTransactions
+      ));
+    } on FirebaseAuthException catch (e) {
+      emit(DbErrorState(error: e.toString()));
+    }
   }
   // final quizQuestions = await dbRepo.getAllQuizQuestions();
 

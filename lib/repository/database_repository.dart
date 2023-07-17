@@ -1,7 +1,6 @@
 import 'package:easysave/model/atsave_user.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
-import 'package:flutter/foundation.dart';
 
 import '../manager/local_db_manager.dart';
 import '../manager/remote_db_manager.dart';
@@ -11,34 +10,41 @@ class DatabaseRepository {
   final LocalDbManager ldbm = LocalDbManager();
   final RemoteDbManager rdbm = RemoteDbManager();
 
-  Future<List<SavingsGoals>> fSavingGoals() async =>
-      rdbm.fetchRemoteSavingsGoals();
+  Future<List<SavingsGoals>> fSavingGoals(String uid) async =>
+      rdbm.fetchRemoteSavingsGoals(uid);
 
-  Future<List<SavingsGoals>> iSavingsGoals() async => ldbm.getSavingsGoal();
+  Future<List<SavingsGoals>> iSavingsGoals() async => await ldbm.getSavingsGoal();
 
-  updateSavingsGoals(List<SavingsGoals> goals) async {
-    ldbm.updateGoals(goals);
+  // updateSavingsGoals(List<SavingsGoals> goals) async {
+  //   ldbm.updateGoals(goals);
+  // }
+  updateGoalsInLocalDB(List<SavingsGoals> goals) async {
+   await ldbm.updateSavingsGoals(goals);
   }
 
-    Future<List<SavingsTransactions>> iSavingsTransactions() async => ldbm.getSavingsTransactions();
+  updateSavingsGoals(List<SavingsGoals> goals) async {
+    rdbm.updateSavingsGoalInServer(goals);
+  }
 
-    updateSavingsTransactions(List<SavingsTransactions> txn) async {
+  closeDB() async => await ldbm.clearDb();
+
+  Future<List<SavingsTransactions>> iSavingsTransactions() async =>
+      ldbm.getSavingsTransactions();
+
+  updateSavingsTransactions(List<SavingsTransactions> txn) async {
     ldbm.updateSavingsTransactions(txn);
   }
 
-      Future<List<Expenses>> iExpenses() async => ldbm.getExpenses();
+  Future<List<Expenses>> iExpenses() async => ldbm.getExpenses();
 
-      updateExpenses(List<Expenses> exp) async {
+  updateExpenses(List<Expenses> exp) async {
     ldbm.updateExpenses(exp);
   }
 
   Future<List<SavingsTransactions>> fSavingTxns() async =>
       rdbm.fetchRemoteSavingsTransactions();
 
-Future<List<Expenses>> fExpenses() async =>
-      rdbm.fetchRemoteExpenses();
-
-
+  Future<List<Expenses>> fExpenses() async => rdbm.fetchRemoteExpenses();
 
 //List<Category> getCategory() async => ldbm.getCategory();
 
@@ -81,8 +87,6 @@ Future<List<Expenses>> fExpenses() async =>
   // Future saveSelectedLesson(SelectedLesson selectedLesson) async {
   //   return await ldbm.addSelectedLesson(selectedLesson);
   // }
-
-  closeDb() async => await ldbm.clearDb();
 
   // Future<List<SelectedLesson>> getAllSelectedLessons() async =>
   //     await ldbm.getAllSelectedLesson();

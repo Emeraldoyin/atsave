@@ -1,10 +1,10 @@
+import 'dart:developer';
+
 import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
-import 'package:easysave/controller/signin/signin_controller.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/model/category.dart';
 import 'package:easysave/model/savings_goals.dart';
-import 'package:easysave/model/savings_transactions.dart';
 import 'package:easysave/view/pages/error_page.dart';
 import 'package:easysave/view/pages/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../consts/app_colors.dart';
 import '../../model/expenses.dart';
 import '../../utils/helpers/session_manager.dart';
 
@@ -43,15 +42,15 @@ class HomePageController extends State<Home>
   //... //Initialization code, state vars etc, all go here
   int currentIndex = 0;
   final addGoalFormKey = GlobalKey<FormState>();
-  TabController? controller;
+  TabController? tabController;
   int selectedIndex = 0;
-  final user = FirebaseAuth.instance.currentUser;
+  String? selectedCategory;
   String? username;
   late DateTime date;
   List<SavingsGoals> allGoals = [];
   SavingsGoals? newlyAddedGoal;
   RegExp decimalRegex = RegExp(r'^-?\d+\.?\d*$');
-
+  final user = FirebaseAuth.instance.currentUser;
   List<Expenses> getExpenses() {
     final List<Expenses> expenses = [
       // Expenses(amountSpent: 20000, date: 'August', color: Colors.blue),
@@ -67,7 +66,6 @@ class HomePageController extends State<Home>
   TextEditingController goalNotesController = TextEditingController();
   TextEditingController startAmountController = TextEditingController();
   TextEditingController proposedEndDateController = TextEditingController();
-  String? selectedCategory;
 
   List<DropdownMenuItem<String>> dropdownItems = categoryList.map((category) {
     return DropdownMenuItem<String>(
@@ -92,7 +90,7 @@ class HomePageController extends State<Home>
           Theme.of(context).bottomNavigationBarTheme.backgroundColor,
       icon: Icon(
         icon,
-        color: value == currentIndex ? Colors.white : Colors.grey,
+        // color: value == currentIndex ? Colors.white : Colors.grey,
       ),
       label: label,
     );
@@ -102,8 +100,8 @@ class HomePageController extends State<Home>
   void initState() {
     super.initState();
     currentIndex = 0;
-    context.read<ConnectivityBloc>().add(RetrieveDataEvent());
-    controller = TabController(length: 3, vsync: this);
+
+    tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       SessionManager manager = SessionManager();
       // manager.hasUserAddedGoal(false);
@@ -113,17 +111,21 @@ class HomePageController extends State<Home>
 
   String? getUsername() {
     username = user!.displayName;
-    return username;
+    if (username == null) {
+      return 'Unknown';
+    } else {
+      return username!;
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    controller!.dispose();
+    tabController!.dispose();
   }
 
   onClick() {
-    controller!.animateTo(selectedIndex += 1);
+    tabController!.animateTo(selectedIndex += 1);
   }
 
   String? validate(value) {
@@ -170,7 +172,7 @@ class HomePageController extends State<Home>
         context
             .read<DatabaseBloc>()
             .add(AddSavingsGoalsEvent(goal: newlyAddedGoal));
-       
+
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -188,18 +190,21 @@ class HomePageController extends State<Home>
 
   listener(state) {
     if (state is DbLoadingState) {
-      const CircularProgressIndicator();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Waiting for network...'),
+      ));
     }
     if (state is DbSuccessState) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         SessionManager manager = SessionManager();
-        manager.loggedIn(true);
+        manager.loggedIn(false);
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('you have been successfully logged out'),
-          backgroundColor: APPBAR_COLOR1));
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const SignIn())); // try {
+        content: Text('you have been successfully logged out'),
+        behavior: SnackBarBehavior.floating,
+      ));
+      // Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (context) => const SignIn())); // try {
 
       // } catch (e) {
       //   showSnackBar(
@@ -221,7 +226,8 @@ class HomePageController extends State<Home>
   }
 
   onLogOut() async {
-    context.read<ConnectivityBloc>().add(RetrieveDataEvent());
+    log('pressing logout', name: 'admin');
+    context.read<ConnectivityBloc>().add(SyncDataEvent(uid: user!.uid));
   }
 
   onTap() async {

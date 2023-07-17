@@ -44,13 +44,13 @@ class LocalDbManager {
     });
   }
 
-  Future updateGoals(List<SavingsGoals> goals) async {
-    return _isar!.writeTxn(() async {
-      await _isar!.savingsGoals.clear();
+  // Future updateGoals(List<SavingsGoals> goals) async {
+  //   return _isar!.writeTxn(() async {
+  //     await _isar!.savingsGoals.clear();
 
-      return _isar!.savingsGoals.putAll(goals);
-    });
-  }
+  //     return _isar!.savingsGoals.putAll(goals);
+  //   });
+  // }
 
   Future<void> addSavingsTransactions(SavingsTransactions txn) async {
     await _isar?.writeTxn(() async {

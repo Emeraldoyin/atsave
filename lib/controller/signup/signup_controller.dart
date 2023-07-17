@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc_folder/auth_bloc/authentication_bloc.dart';
-import '../../view/widgets/show_dialog.dart';
 import '../signin/signin_controller.dart';
 
 class SignUp extends StatefulWidget {
@@ -76,21 +75,38 @@ class SignUpController extends State<SignUp> {
                       'Your account has been created. \n We\'re happy to have you onboard', destination: SignIn(),)));
     }
     if (state is AuthErrorState) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Ooops! Error occurred. Check your network and try again'),
-            backgroundColor: ICON_COLOR5),
-      );
-      
-      showAlertDialog(context, 'Invalid Signup Request',
-          'Unable to create an account for you. Please ensure that you provided a valid email and at least 8 characters for password', 'close');
-    
-      // Navigator.pop(context);
+      if (state.error ==
+          'Network error (such as timeout, interrupted connection or unreachable host) has occurred.') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Network error has occurred. Check your connection and try again'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      } else if (state.error ==
+          'Password should be at leadt 6 characters') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to sign you up. Please provide all details required'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      }
     }
   }
 
-  String? validateForEmail(value) {
+  validateForEmail(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
     } else if (isValidEmail(value)) {
@@ -100,7 +116,7 @@ class SignUpController extends State<SignUp> {
     }
   }
 
-  String? validateForName(value) {
+  validateForName(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
     } else {
@@ -108,7 +124,7 @@ class SignUpController extends State<SignUp> {
     }
   }
 
-  String? validateForPassword(value) {
+  validateForPassword(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
     } else if (value.length < 8) {

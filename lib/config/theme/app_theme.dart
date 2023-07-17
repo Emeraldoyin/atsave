@@ -75,7 +75,7 @@ class AppTheme {
         backgroundColor: BACKGROUND_COLOR2,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: BACKGROUND_COLOR2),
+          ),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
               foregroundColor:

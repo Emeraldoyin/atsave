@@ -36,8 +36,9 @@ class majorCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-//firstText,
-                          'Welcome, $username!',
+                        //firstText,
+                          'Welcome, $username',
+
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
                         addVerticalSpace(5.h),
@@ -49,10 +50,16 @@ class majorCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  //widget
                   ElevatedButton(
                       //style: ,
                       onPressed: () {
                         // action
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             AddSavingsGoalPage(controller)));
                       },
                       child:
 
@@ -78,7 +85,7 @@ class majorCard extends StatelessWidget {
                           style: TextStyle(),
                         ),
                         Text(
-                          '35000',
+                          '0,000',
                           //  controller.allGoals[index].targetAmount.toString(),
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
@@ -92,7 +99,7 @@ class majorCard extends StatelessWidget {
                     explodeOffset: '10%',
                     explodeAll: true,
                     explodeIndex: 2,
-                    name: 'total',
+                    name: 'total savings',
                     startAngle: 10,
                     endAngle: 10,
                     //endAngle: 10,

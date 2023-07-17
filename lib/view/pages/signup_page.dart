@@ -13,7 +13,7 @@ import '../../controller/signup/signup_controller.dart';
 class SignUpPage extends StatelessView<SignUp, SignUpController> {
   const SignUpPage(SignUpController controller, {Key? key})
       : super(controller, key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
@@ -71,29 +71,8 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                         controller: controller.emailController,
                         keyboardType: TextInputType.text,
                         onSaved: (value) => controller.email = value,
-                        validator: (value) {
-                          ValidationBuilder().email().required().build();
-                          return null;
-                        },
-                        //style:
-                        // decoration: InputDecoration(
-                        //     border: const OutlineInputBorder(),
-                        //     //filled: true,
-                        //     hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                        //     hintText: 'Enter your email',
-                        //     enabledBorder: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: const BorderSide(color: Colors.white),
-                        //     ),
-                        //     focusedBorder: OutlineInputBorder(
-                        //         borderRadius: BorderRadius.circular(10),
-                        //         borderSide:
-                        //             const BorderSide(width: 1, color: Colors.grey)),
-                        //     suffixIcon: IconButton(
-                        //       icon: const Icon(Icons.clear),
-                        //       onPressed: () {},
-                        //       color: Colors.red,
-                        //     )),
+                        validator:
+                            ValidationBuilder().email().required().build(),
                       ),
                     ],
                   ),
@@ -109,36 +88,28 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                           addVerticalSpace(5.h),
                           TextFormField(
                             onSaved: (value) => controller.password = value,
-                            validator: (value) {
-                              controller.validateForName(value);
-                              return null;
-                            },
-
+                            validator: ValidationBuilder()
+                                .required('password field cannot be empty')
+                                .minLength(6,
+                                    'provide a valid password of at least 6 characters')
+                                .build(),
                             controller: controller.firstNameController,
-                            // style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    size: 16.r,
+                                  ),
+                                  onPressed: () {
+                                    controller.firstNameController.clear();
+                                  }),
                               constraints: BoxConstraints.expand(
                                   width: 140.w, height: 40.h),
-                              // border: const OutlineInputBorder(),
-                              // labelText: 'password',
                               hintText: 'Andy',
-                              // hintStyle: const TextStyle(
-                              //   color: Colors.grey,
-                              // ),
-                              //counterStyle: const TextStyle(color: Colors.red),
-                              // enabledBorder: OutlineInputBorder(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //     borderSide:
-                              //         const BorderSide(width: 1, color: Colors.grey)),
-                              // focusedBorder: OutlineInputBorder(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //     borderSide:
-                              //         const BorderSide(width: 1, color: Colors.grey))
                             ),
                           ),
                         ],
                       ),
-                      //addHorizontalSpace(30),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -147,33 +118,22 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                           addVerticalSpace(5.h),
                           TextFormField(
                             onSaved: (value) => controller.password = value,
-                            validator: (value) {
-                              controller.validateForName(value);
-                              return null;
-                            },
-
+                            validator: ValidationBuilder()
+                                .required('this field is required')
+                                .build(),
                             controller: controller.lastNameController,
-                            // style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    size: 16.r,
+                                  ),
+                                  onPressed: () {
+                                    controller.lastNameController.clear();
+                                  }),
                               constraints: BoxConstraints.expand(
                                   width: 140.w, height: 40.h),
-                              // border: const OutlineInputBorder(),
-                              // labelText: 'password',
-
-                              //labelStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
                               hintText: 'Anderson',
-                              // hintStyle: const TextStyle(
-                              //   color: Colors.grey,
-                              // ),
-                              //counterStyle: const TextStyle(color: Colors.red),
-                              // enabledBorder: OutlineInputBorder(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //     borderSide:
-                              //         const BorderSide(width: 1, color: Colors.grey)),
-                              // focusedBorder: OutlineInputBorder(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //     borderSide:
-                              //         const BorderSide(width: 1, color: Colors.grey))
                             ),
                           ),
                         ],
@@ -189,16 +149,14 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                       addVerticalSpace(5.h),
                       TextFormField(
                         onSaved: (value) => controller.password = value,
-                        validator: (value) {
-                          controller.validateForPassword(value);
-                          return null;
-                        },
+                        validator: ValidationBuilder()
+                            .required('password field cannot be empty')
+                            .minLength(6,
+                                'provide a valid password of at least 6 characters')
+                            .build(),
                         obscureText: controller.obscureText,
                         controller: controller.passwordController,
-                        // style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          // border: const OutlineInputBorder(),
-                          // labelText: 'password',
                           suffixIcon: IconButton(
                               icon: Icon(
                                 controller.obscureText
@@ -207,20 +165,7 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                                 size: 16.r,
                               ),
                               onPressed: controller.changePasswordView),
-                          //labelStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
                           hintText: 'Enter preffered password',
-                          // hintStyle: const TextStyle(
-                          //   color: Colors.grey,
-                          // ),
-                          //counterStyle: const TextStyle(color: Colors.red),
-                          // enabledBorder: OutlineInputBorder(
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     borderSide:
-                          //         const BorderSide(width: 1, color: Colors.grey)),
-                          // focusedBorder: OutlineInputBorder(
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     borderSide:
-                          //         const BorderSide(width: 1, color: Colors.grey))
                         ),
                       ),
                     ],

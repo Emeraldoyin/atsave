@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 import '/utils/helpers/session_manager.dart';
 import '../home/home_controller.dart';
 
+///implementing controller for splash screen
 class Splash extends StatefulWidget {
-
   const Splash({Key? key}) : super(key: key);
 
   @override
   SplashController createState() => SplashController();
 }
 
+///controller class for splash screen
 class SplashController extends State<Splash> {
-  
-
   @override
   void initState() {
     super.initState();
@@ -33,7 +32,7 @@ class SplashController extends State<Splash> {
   Widget build(BuildContext context) => SplashScreen(this);
 
   isLoading() async {
-    Future.delayed(const Duration(seconds: 10), () async {
+    Future.delayed(const Duration(seconds: 2), () async {
       SessionManager manager = SessionManager();
       bool? hasUserSeenOnboardingPage = await manager.seenOnboardingScreen();
       bool? loggedIn = await manager.isUserLoggedIn();
