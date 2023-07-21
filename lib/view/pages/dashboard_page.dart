@@ -1,3 +1,4 @@
+import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/view/pages/my_goals_page.dart';
@@ -13,10 +14,19 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ConnectivityBloc, ConnectivityState>(
-      listener: (context, state) {
-        controller.listener(state);
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ConnectivityBloc, ConnectivityState>(
+          listener: (context, state) {
+            controller.secondListener(state);
+          },
+        ),
+        BlocListener<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state2) {
+            controller.firstListener(state2);
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
@@ -48,9 +58,31 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
           ),
 
           actions: [
-            BlocBuilder<ConnectivityBloc, ConnectivityState>(
-              builder: (context, state) {
-                return IconButton(
+            BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state2) {
+                return
+                    // AvatarGlow(
+                    //   glowColor:
+                    //       APPBAR_COLOR2, // Change this to your desired glow color
+                    //   endRadius: 80.0,
+                    //   duration: const Duration(milliseconds: 2000),
+                    //   repeat: true,
+                    //   showTwoGlows: true,
+                    //   repeatPauseDuration: const Duration(milliseconds: 100),
+                    //   child: Material(
+                    //     elevation: 8.0,
+                    //     shape: const CircleBorder(),
+                    //     child: CircleAvatar(
+                    //       backgroundColor: Colors.grey[100],
+                    //       radius: 30.0,
+                    //       child: Text(
+                    //         getInitials(controller.user!.displayName!),
+                    //         style: const TextStyle(fontSize: 20.0),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+                    IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
                     controller.onLogOut();

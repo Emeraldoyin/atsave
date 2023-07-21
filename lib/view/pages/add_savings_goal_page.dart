@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
 import '../../utils/helpers/design_helpers.dart';
+import '../../utils/helpers/input_formatter.dart';
 
 class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
   const AddSavingsGoalPage(HomePageController controller, {Key? key})
@@ -29,7 +30,8 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(controller.decimalRegex),
+                    //FilteringTextInputFormatter.allow(controller.decimalRegex),
+                    CommaTextInputFormatter()
                   ],
                   decoration: const InputDecoration(
                     labelText: 'Target Amount',
@@ -53,7 +55,8 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(controller.decimalRegex),
+                    
+                    CommaTextInputFormatter()
                   ],
                 ),
                 addVerticalSpace(16.h),

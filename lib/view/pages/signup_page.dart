@@ -89,9 +89,7 @@ class SignUpPage extends StatelessView<SignUp, SignUpController> {
                           TextFormField(
                             onSaved: (value) => controller.password = value,
                             validator: ValidationBuilder()
-                                .required('password field cannot be empty')
-                                .minLength(6,
-                                    'provide a valid password of at least 6 characters')
+                                .required('this field is required')
                                 .build(),
                             controller: controller.firstNameController,
                             decoration: InputDecoration(

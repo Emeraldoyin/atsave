@@ -25,7 +25,6 @@ class LogoutEvent extends AuthenticationEvent {
   @override
   List<Object> get props => [uid];
 }
-
 class ErrorEvent extends AuthenticationEvent {
  final String error;
 

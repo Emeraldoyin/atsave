@@ -4,6 +4,7 @@ import 'package:easysave/view/pages/add_savings_goal_page.dart';
 import 'package:easysave/view/pages/dashboard_page.dart';
 import 'package:easysave/view/pages/transactions_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
@@ -16,14 +17,18 @@ class HomePage extends StatelessView<Home, HomePageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: body(context),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddSavingsGoalPage(controller)));
-          },
-          child: const Icon(Icons.add)),
+      floatingActionButton: SizedBox(
+        height: 70.h,
+        width: 70.w,
+        child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddSavingsGoalPage(controller)));
+            },
+            child: const Icon(Icons.add)),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
@@ -14,10 +15,9 @@ import 'package:intl/intl.dart';
 
 import '../../model/expenses.dart';
 import '../../utils/helpers/session_manager.dart';
+import '../signin/signin_controller.dart';
 
 class Home extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
-
   const Home({Key? key}) : super(key: key);
 
   @override
@@ -90,7 +90,6 @@ class HomePageController extends State<Home>
           Theme.of(context).bottomNavigationBarTheme.backgroundColor,
       icon: Icon(
         icon,
-        // color: value == currentIndex ? Colors.white : Colors.grey,
       ),
       label: label,
     );
@@ -100,13 +99,9 @@ class HomePageController extends State<Home>
   void initState() {
     super.initState();
     currentIndex = 0;
-
+    context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
     tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      SessionManager manager = SessionManager();
-      // manager.hasUserAddedGoal(false);
-    });
-    // SavingsGoals(categoryId: int.parse(selectedCategory), targetAmount: targetAmountController., String? goalNotes, required int categoryId, required double startAmount, required DateTime endDate, required double progressPercentage)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
   String? getUsername() {
@@ -150,24 +145,28 @@ class HomePageController extends State<Home>
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
     DateTime dateTime = inputFormat.parse(inputText);
-    // DateTime txnTime = inputFormat.parse(DateTime.now());
 
     if (addGoalFormKey.currentState!.validate()) {
-      double goal = double.parse(targetAmountController.text);
-      double startingAmount = double.parse(startAmountController.text);
-      double progressPercentage = startingAmount / goal * 100;
+      var splitted = targetAmountController.text.split(',');
+      var splitted2 = startAmountController.text.split(',');
+
+      double saveTargetAmount = double.parse(splitted.join());
+
+      double startingAmount = double.parse(splitted2.join());
+      double progressPercentage = startingAmount / saveTargetAmount * 100;
       SavingsGoals newlyAddedGoal = SavingsGoals(
           uid: user!.uid,
-          targetAmount: goal,
+          targetAmount: saveTargetAmount,
           categoryId: categoryList
               .indexWhere((element) => element.name == selectedCategory),
           startAmount: startingAmount,
           endDate: dateTime,
-          progressPercentage: progressPercentage,
+          progressPercentage:
+              double.parse(progressPercentage.toStringAsFixed(2)),
           goalNotes: goalNotesController.text);
 
       if (addGoalFormKey.currentState!.validate()) {
-        allGoals.add(newlyAddedGoal);
+        // allGoals.add(newlyAddedGoal);
 
         context
             .read<DatabaseBloc>()
@@ -188,6 +187,56 @@ class HomePageController extends State<Home>
     }
   }
 
+  firstListener(state) {
+    if (state is AuthLoadingState) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Waiting for network...'),
+        duration: Duration(seconds: 2),
+      ));
+    }
+    if (state is LogoutSuccessState) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        SessionManager manager = SessionManager();
+        manager.loggedIn(false);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('you have been successfully logged out'),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const SignIn()));
+    }
+    if (state is AuthErrorState) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const ErrorPage()));
+    }
+  }
+
+  secondListener(state2) {
+    if (state2 is DbLoadingState) {
+      const CircularProgressIndicator();
+    }
+    if (state2 is DbSuccessState) {
+      allGoals.addAll(state2.availableSavingsGoals);
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text('you have been successfully logged out'),
+      //   behavior: SnackBarBehavior.floating,
+      //    duration: Duration(seconds: 2),
+      // ));
+    }
+    if (state2 is DbErrorState) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const ErrorPage()));
+    }
+  }
+
+  onLogOut() {
+    log('pressing logout', name: 'admin');
+    context.read<AuthenticationBloc>().add(LogoutEvent(uid: user!.uid));
+  }
+
   listener(state) {
     if (state is DbLoadingState) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -203,8 +252,9 @@ class HomePageController extends State<Home>
         content: Text('you have been successfully logged out'),
         behavior: SnackBarBehavior.floating,
       ));
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (context) => const SignIn())); // try {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const SignIn()));
+      // try {
 
       // } catch (e) {
       //   showSnackBar(
@@ -225,11 +275,6 @@ class HomePageController extends State<Home>
     // );
   }
 
-  onLogOut() async {
-    log('pressing logout', name: 'admin');
-    context.read<ConnectivityBloc>().add(SyncDataEvent(uid: user!.uid));
-  }
-
   onTap() async {
     date = (await showDatePicker(
         context: context,
@@ -243,7 +288,7 @@ class HomePageController extends State<Home>
 
     setState(() {
       proposedEndDateController.text =
-          formattedDate; //set output date to TextField value.
+          formattedDate; //setting output date to TextField value.
     });
   }
 

@@ -29,4 +29,9 @@ class SavingsGoals {
 
   /// Connect the generated [_$SavingsGoalsToJson] function to the `toJson` method.
   Map<Object?, Object?> toJson() => _$SavingsGoalsToJson(this);
+
+  @override
+  String toString() {
+    return 'SavingsGoals{uid: $uid, targetAmount: $targetAmount, goalNotes: $goalNotes, categoryId: $categoryId, startAmount: $startAmount, progressPercentage: $progressPercentage, endDate: $endDate}';
+  }
 }

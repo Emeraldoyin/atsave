@@ -16,28 +16,66 @@ class RemoteDbManager {
 
   //int overallNoOfTopicsCompleted = 0;
 
+  // Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
+  //   List<SavingsGoals> savingsGoals = [];
+
+  //   final snapshot = await db.ref().child('SavingsGoals').child(uid).get();
+  //   //  try {
+  //   if (snapshot.exists) {
+  //     Map<Object?, Object?> isarData = {};
+  //     for (var element in snapshot.children) {
+  //       if (element.value != null) {
+  //         Object? convertedKey = element.key as String;
+  //         Object? convertedValue = element.value;
+  //         //  savingsGoals.add(
+  //         //      SavingsGoals.fromJson(element.value as Map<Object?, Object?>));
+  //         // Store the converted key-value pair in the isarData map
+  //         // isarData[convertedKey] = convertedValue;
+  //         //  log(isarData.toString(), name: 'isar');
+  //         savingsGoals.add(
+  //             SavingsGoals.fromJson(element.value as Map<Object?, Object?>));
+  //         log(savingsGoals.toString(), name: 'new goals');
+  //       } else {
+  //         log(element.children.toString(), name: 'null values');
+  //       }
+  //     }
+  //   }
+
+  //   // } catch (e) {
+  //   //   log(e.toString(), name: 'Firebase');
+  //   // }
+  //   return savingsGoals;
+  // }
+
   Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
-    List<SavingsGoals> savingsGoals = [];
+    List<SavingsGoals> goals = [];
 
-    final snapshot =
-        await db.ref().child('SavingsGoals').child(uid).child('id').get();
-    try {
-      if (snapshot.exists) {
-        Map<String, dynamic> isarData = {};
-        for (var element in snapshot.children) {
-          String? convertedKey = element.key.toString();
-          dynamic convertedValue = element.value;
+    final snapshot = await db.ref().child('SavingsGoals').child(uid).get();
 
-          // Store the converted key-value pair in the isarData map
-          isarData[convertedKey] = convertedValue;
+    for (var element in snapshot.children) {
+      if (element.value != null) {
+        var data = element.value as Map<Object?, Object?>;
+        log(data.toString(), name: 'elements');
+        // Create a new SavingsGoals object and set its properties manually
+        SavingsGoals goal = SavingsGoals(
+          uid: uid,
+          targetAmount: (data['targetAmount'] as num).toDouble(),
+          goalNotes: data['goalNotes'] as String?,
+          categoryId: data['categoryId'] as int,
+          startAmount: double.parse(data['startAmount'].toString()),
+          endDate: DateTime.parse(data['endDate'] as String),
+          progressPercentage:
+              double.parse(data['progressPercentage'] as String),
+        );
 
-          savingsGoals.add(SavingsGoals.fromJson(isarData));
-        }
+        goals.add(goal);
+        log(goals.toString(), name: 'goals');
+      } else {
+        log('no data');
       }
-    } on FirebaseAuthException catch (e) {
-      log(e.message.toString(), name: 'Firebase');
     }
-    return savingsGoals;
+
+    return goals;
   }
 
   Future<List<SavingsTransactions>> fetchRemoteSavingsTransactions() async {
@@ -87,6 +125,23 @@ class RemoteDbManager {
     return expenses;
   }
 
+  // Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
+
+  //   final snapshot = await db.ref().child('SavingsGoals').child(uid).get();
+  //   try {
+  //     if (snapshot.exists) {
+  //       final List<SavingsGoals> goals = snapshot.children.map((e) {
+  //         final data = e.children as Map<String, dynamic>;
+  //       if (data != null){SavingsGoals.fromJson(data)}
+  //       else{log('no data available')}}).toList(); return goals;
+
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     log(e.message.toString(), name: 'Firebase');
+  //   }
+
+  // }
+
   Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
     await db
         .ref()
@@ -100,7 +155,7 @@ class RemoteDbManager {
       "categoryId": goal.categoryId,
       "startAmount": goal.startAmount.toString(),
       "endDate": goal.endDate.toIso8601String(),
-      "progresssPercentage": goal.progressPercentage.toStringAsFixed(2)
+      "progressPercentage": goal.progressPercentage.toStringAsFixed(2)
     });
   }
 
@@ -128,39 +183,25 @@ class RemoteDbManager {
         "categoryId": goal.categoryId,
         "startAmount": goal.startAmount,
         "endDate": goal.endDate.toIso8601String(),
-        "progresssPercentage": goal.progressPercentage.toStringAsFixed(2)
+        "progressPercentage": goal.progressPercentage.toStringAsFixed(2)
       });
     }
   }
 
-  // Future<List<SavingsGoals?>?> fetchRemoteSavingsGoals() async {
-  //   final snapshot = await ref.child('SavingsGoals').once();
-  //   final goalMap = snapshot.snapshot.value as Map<Object?, dynamic>;
-
+  // Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
+  //   final snapshot = await ref.child('SavingsGoals/$uid').once();
+  //   final goalMap = snapshot.snapshot.value as Map<String?, dynamic>;
+  //   log(goalMap.toString(), name: 'goalMap');
   //   final savingsGoalData = <SavingsGoals>[];
-  //   // loop through each user in the database
-  //   for (var element in goalMap.entries) {
-  //     categories.add(Category.fromJson(element.value as Map<Object?, Object?>));
+
+  //   // for (var element in goalMap.entries) {
+  //   //   savingsGoalData.add(SavingsGoals.fromJson(element.value as Map<Object?, Object?>));
+  //   // }
+  //   for (var value in goalMap) {
+  //     if (value != null) {
+  //       log(value.toString());
+  //     }
   //   }
-  //   goalMap.forEach((key, value) {
-  //     final String uid = value['uid'];
-  //     final double targetAmount = value['targetAmount'] ?? 'Unknown';
-  //     final String goalNotes = value['goalNotes'] ?? 'None specified';
-  //     final int categoryId = value['categoryId'];
-  //     final Object id = key ?? '';
-  //     final double startAmount = value['startAmount'];
-  //     final DateTime endDate = value['endDate'];
-  //     final double progressPercentage = value['progressPercentage'];
-  //     savingsGoalData.add(SavingsGoals(
-  //       categoryId: categoryId,
-  //       uid: uid,
-  //       targetAmount: targetAmount,
-  //       progressPercentage: progressPercentage,
-  //       endDate: endDate,
-  //       startAmount: startAmount,
-  //       goalNotes: goalNotes,
-  //     ));
-  //   });
   //   return savingsGoalData;
   // }
 

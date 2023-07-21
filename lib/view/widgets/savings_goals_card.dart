@@ -1,19 +1,20 @@
+import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/model/savings_goals.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+
+import '../../controller/home/goal_details_controller.dart';
 
 class SavingsGoalCard extends StatelessWidget {
-  final String? goalName;
-  final double goalAmount;
-  final String completionDate;
+  final SavingsGoals goal;
 
-  const SavingsGoalCard({
-    super.key,
-    required this.goalName,
-    required this.goalAmount,
-    required this.completionDate,
-  });
+  const SavingsGoalCard({super.key, required this.goal});
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = DateFormat('MMM d, yyyy').format(goal.endDate);
+    double val = goal.progressPercentage / 100;
     return Card(
       elevation: 2,
       child: Padding(
@@ -21,23 +22,46 @@ class SavingsGoalCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              goalName!,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(goal.goalNotes!,
+                    style: Theme.of(context).textTheme.displayMedium),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GoalDetails(goal: goal)));
+                    },
+                    child: const Text('view'))
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: 200.w,
+              height: 8.h,
+              child: LinearProgressIndicator(
+                value: val,
+                backgroundColor: APPBAR_COLOR1,
+                color: APPBAR_COLOR2,
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Savings Goal Amount: \$${goal.targetAmount.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.delete))
+              ],
             ),
             const SizedBox(height: 8),
             Text(
-              'Savings Goal Amount: \$${goalAmount.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Completion Date: $completionDate',
+              'Proposed Completion Date: $formattedDate',
               style: const TextStyle(
                 fontSize: 16,
               ),

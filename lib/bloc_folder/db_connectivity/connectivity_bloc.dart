@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,19 +13,21 @@ part 'connectivity_state.dart';
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   DatabaseRepository dbRepo = DatabaseRepository();
   ConnectivityBloc() : super(ConnectivityInitial()) {
-    on<SyncDataEvent>((event, emit) {
-      return _syncData(event, emit);
-    });
-     on<RetrieveDataEvent>((event, emit) {
+   
+    on<RetrieveDataEvent>((event, emit) {
       return _retrieveData(event, emit);
     });
   }
 
-  _syncData(SyncDataEvent event, Emitter<ConnectivityState> emit) async {
+  
+  _retrieveData(
+      RetrieveDataEvent event, Emitter<ConnectivityState> emit) async {
     emit(DbLoadingState());
     try {
       final presentGoals = await dbRepo.iSavingsGoals();
       final incomingGoals = await dbRepo.fSavingGoals(event.uid);
+      log(event.uid.toString(), name: 'event uid');
+      log(incomingGoals.toString(), name: 'from firebase');
       if (presentGoals != incomingGoals) {
         dbRepo.updateSavingsGoals(incomingGoals);
       }
@@ -38,10 +42,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       // if (presentExpenses != incomingExpenses) {
       //   await dbRepo.updateExpenses(presentExpenses);
       // }
-      await FirebaseAuth.instance.signOut();
-      await dbRepo.closeDB();
+
       emit(DbSuccessState(
-        availableSavingsGoals: presentGoals,
+        availableSavingsGoals: incomingGoals,
         // availableExpenses: presentExpenses,
         // availableSavingsTransactions: presentTransactions
       ));
@@ -49,67 +52,4 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       emit(DbErrorState(error: e.toString()));
     }
   }
-
-  _retrieveData(RetrieveDataEvent event, Emitter<ConnectivityState> emit) async {
-    emit(DbLoadingState());
-    try {
-      final presentGoals = await dbRepo.iSavingsGoals();
-      final incomingGoals = await dbRepo.fSavingGoals(event.uid);
-      if (presentGoals != incomingGoals) {
-        dbRepo.updateSavingsGoals(incomingGoals);
-      }
-      // final presentTransactions = await dbRepo.iSavingsTransactions();
-      // final incomingTransactions = await dbRepo.fSavingTxns();
-      // if (presentTransactions != incomingTransactions) {
-      //   dbRepo.updateSavingsTransactions(incomingTransactions);
-      // }
-      // final presentExpenses = await dbRepo.iExpenses();
-      // final incomingExpenses = await dbRepo.fExpenses();
-
-      // if (presentExpenses != incomingExpenses) {
-      //   await dbRepo.updateExpenses(presentExpenses);
-      // }
-      await FirebaseAuth.instance.signOut();
-      await dbRepo.closeDB();
-      emit(DbSuccessState(
-        availableSavingsGoals: presentGoals,
-        // availableExpenses: presentExpenses,
-        // availableSavingsTransactions: presentTransactions
-      ));
-    } on FirebaseAuthException catch (e) {
-      emit(DbErrorState(error: e.toString()));
-    }
-  }
-  // final quizQuestions = await dbRepo.getAllQuizQuestions();
-
-  // final presentLessons = await dbRepo.iLessons();
-  // final incomingLessons = await dbRepo.fLessons();
-
-  // if (presentLessons != incomingLessons) {
-  //   await dbRepo.updateLessons(incomingLessons);
-  // }
-  // final presentTopics = await dbRepo.iTopics();
-
-  // final incomingTopics = await dbRepo.fTopics();
-
-  // if (presentTopics != incomingTopics) {
-  //   await dbRepo.updateTopics(incomingTopics);
-  // }
-
-  // final incomingLeaderBoardEntries = await dbRepo.fEntries();
-  // final presentLeaderBoardEntries = await dbRepo.iEntries();
-
-  // if (presentLeaderBoardEntries != incomingLeaderBoardEntries) {
-  //   await dbRepo.updateLeaderBoardEntries(incomingLeaderBoardEntries);
-  // }
-
-  //   var allSelectedLessons = await dbRepo.getAllSelectedLessons();
-
-  //   await RemoteDbManager().saveAllSelectedLessons(allSelectedLessons);
-
-  //   //  final presentUser = await dbRepo.getCurrentUser(event.user);
-
-  //   if (presentTopics != incomingTopics) {
-  //     await dbRepo.updateTopics(incomingTopics);
-  //   }
 }

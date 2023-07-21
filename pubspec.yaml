@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  avatar_glow: 
   shared_preferences: ^2.0.20
   equatable: ^2.0.5
   flutter_bloc: ^8.1.3

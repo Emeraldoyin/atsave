@@ -13,13 +13,14 @@ class DatabaseRepository {
   Future<List<SavingsGoals>> fSavingGoals(String uid) async =>
       rdbm.fetchRemoteSavingsGoals(uid);
 
-  Future<List<SavingsGoals>> iSavingsGoals() async => await ldbm.getSavingsGoal();
+  Future<List<SavingsGoals>> iSavingsGoals() async =>
+      await ldbm.getSavingsGoal();
 
   // updateSavingsGoals(List<SavingsGoals> goals) async {
   //   ldbm.updateGoals(goals);
   // }
   updateGoalsInLocalDB(List<SavingsGoals> goals) async {
-   await ldbm.updateSavingsGoals(goals);
+    await ldbm.updateSavingsGoals(goals);
   }
 
   updateSavingsGoals(List<SavingsGoals> goals) async {

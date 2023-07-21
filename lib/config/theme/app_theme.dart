@@ -74,8 +74,10 @@ class AppTheme {
         indicatorColor: BUTTON_COLOR1,
         backgroundColor: BACKGROUND_COLOR2,
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        iconSize: 30.r,
+        backgroundColor: BUTTON_COLOR1,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
               foregroundColor:
@@ -108,8 +110,8 @@ class AppTheme {
               borderSide: BorderSide(color: Colors.red)),
           outlineBorder: const BorderSide(color: Colors.transparent),
           activeIndicatorBorder: const BorderSide(color: Colors.black),
-          border:
-              const OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.none, color: Colors.white)),
+          border: const OutlineInputBorder(
+              borderSide: BorderSide(style: BorderStyle.none, color: Colors.white)),
           filled: true,
           iconColor: Colors.black,
           suffixIconColor: Colors.black,

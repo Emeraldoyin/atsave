@@ -26,17 +26,17 @@ class majorCard extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0.r),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 80.h,
+                    height: 100.h,
                     width: 130.w,
                     child: Column(
                       children: [
                         Text(
-                        //firstText,
+                          //firstText,
                           'Welcome, $username',
 
                           style: Theme.of(context).textTheme.displayMedium,
@@ -50,7 +50,8 @@ class majorCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  //widget
+                  addVerticalSpace(4.h),
+                  //widgetKK
                   ElevatedButton(
                       //style: ,
                       onPressed: () {
@@ -65,14 +66,13 @@ class majorCard extends StatelessWidget {
 
                           //  actionWord
                           const Text('Create new goal')),
-                  addVerticalSpace(10),
                 ],
               ),
             ),
             // addHorizontalSpace(5),
             SizedBox(
               height: 200.h,
-              width: 180.w,
+              width: 160.w,
               child: SfCircularChart(
                 annotations: <CircularChartAnnotation>[
                   CircularChartAnnotation(

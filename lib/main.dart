@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'config/theme/app_theme.dart';
+import 'firebase_options.dart';
 import 'manager/local_db_manager.dart';
 
 
@@ -17,7 +18,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalDbManager.openDb();
   await Firebase.initializeApp(
-      );
+
+    options: DefaultFirebaseOptions.currentPlatform,
+
+  );
   runApp(const EasySaveApp());
 }
 

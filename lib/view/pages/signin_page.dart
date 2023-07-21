@@ -22,8 +22,8 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
       child: Scaffold(
         backgroundColor: ONBOARD_COLOR,
         body: Container(
-          height: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 33.w),
+          height: double.infinity.h,
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 33.w),
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                   colors: [ONBOARD_COLOR, BACKGROUND_COLOR1],
@@ -31,14 +31,13 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                   end: Alignment.bottomCenter)),
           child: SingleChildScrollView(
             child: Form(
-             
               key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 66.h),
+                  Padding(
+                    padding: EdgeInsets.only(top: 86.h),
+                    child: Center(
                       child: Text(
                         'Sign in',
                         style: TextStyle(
@@ -46,7 +45,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                       ),
                     ),
                   ),
-                  addVerticalSpace(32.h),
+                  addVerticalSpace(16.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8.h),
                     child: Column(
@@ -91,14 +90,12 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                           onSaved: (value) => controller.password = value,
                           validator: ValidationBuilder()
                               .required('password field cannot be empty')
-                              .minLength(6, 'provide a valid password of at least 6 characters')
+                              .minLength(6,
+                                  'provide a valid password of at least 6 characters')
                               .build(),
-
                           obscureText: controller.obscureText,
                           controller: controller.passwordController,
-                         
                           decoration: InputDecoration(
-                          
                             suffixIcon: IconButton(
                                 icon: Icon(
                                   controller.obscureText
@@ -107,14 +104,13 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                                   size: 16.r,
                                 ),
                                 onPressed: controller.changePasswordView),
-                         
                             hintText: 'Enter password',
                           ),
                         ),
                       ],
                     ),
                   ),
-                  addVerticalSpace(50.h),
+                  addVerticalSpace(32.h),
                   BlocBuilder<AuthenticationBloc, AuthenticationState>(
                     builder: (context, state) {
                       return ElevatedButton(
@@ -122,7 +118,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                             fixedSize: MaterialStatePropertyAll<Size>(
                                 Size(318.w, 48.h))),
                         onPressed: () {
-                          controller.login(state);
+                          controller.login(controller.formKey);
                         },
                         child: state is AuthLoadingState
                             ? const CircularProgressIndicator(
