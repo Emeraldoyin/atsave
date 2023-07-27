@@ -15,7 +15,7 @@ class DbSuccessState extends ConnectivityState {
   // final List<Expenses> availableExpenses;
   final List<SavingsGoals> availableSavingsGoals;
   final List<Category> availableCategories;
-  final List<SavingsGoals>? pinnedGoals;
+  //final List<SavingsGoals>? pinnedGoals;
   // final List<SavingsTransactions> availableSavingsTransactions;
 
   const DbSuccessState(
@@ -23,12 +23,12 @@ class DbSuccessState extends ConnectivityState {
       //required this.availableSavingsTransactions,
       required this.availableSavingsGoals,
       required this.availableCategories,
-      this.pinnedGoals
+     // this.pinnedGoals
       //required this.availableExpenses,
       });
 
   @override
-  List<Object> get props => [availableSavingsGoals, availableCategories, pinnedGoals!];
+  List<Object> get props => [availableSavingsGoals, availableCategories];
 }
 
 class DbErrorState extends ConnectivityState {

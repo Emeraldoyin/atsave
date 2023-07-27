@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../model/savings_transactions.dart';
 import '/repository/database_repository.dart';
 import '../../model/category.dart';
 import '../../model/savings_goals.dart';
@@ -22,6 +23,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     );
     on<UpdateCurrentAmountEvent>(
       (event, emit) => _updateCurrentAmount(event, emit),
+    );
+     on<EditGoalEvent>(
+      (event, emit) => _editGoal(event, emit),
     );
   }
 
@@ -88,4 +92,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       emit(DbErrorState(error: e.toString()));
     }
   }
+
+  _editGoal(){
+    
+  }
 }
+

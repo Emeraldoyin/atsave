@@ -38,6 +38,7 @@ class GoalDetailsPage
     Category myCategory = widget.categories
         .firstWhere((element) => element.id == widget.goal.categoryId);
     String formattedDate = formatDateTime(widget.goal.endDate);
+    double amountRemaining = widget.goal.targetAmount - widget.goal.currentAmount;
     return SafeArea(
         child: SingleChildScrollView(
       // physics: const AlwaysScrollableScrollPhysics(),
@@ -161,7 +162,7 @@ class GoalDetailsPage
                 addVerticalSpace(16.h),
                 ElevatedButton(
                     onPressed: () {
-                      showNumberInputDialog(context, controller);
+                      showNumberInputDialog(context, controller, amountRemaining);
                     },
                     child: const Text('Continue Saving'))
               ],

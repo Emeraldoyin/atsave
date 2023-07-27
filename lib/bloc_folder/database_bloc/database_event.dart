@@ -25,16 +25,6 @@ class SaveTransactionEvent extends DatabaseEvent {
   List<Object> get props => [txn];
 }
 
-class EditGoalsEvent extends DatabaseEvent {
-  final SavingsGoals goal;
-  final SavingsTransactions txn;
-
-  const EditGoalsEvent({required this.goal, required this.txn});
-
-  @override
-  List<Object> get props => [goal, txn];
-}
-
 class SpendFromSavingsEvent extends DatabaseEvent {
   final SavingsGoals goal;
   final SavingsTransactions txn;

@@ -45,3 +45,13 @@ class UpdateCurrentAmountEvent extends ConnectivityEvent {
   @override
   List<Object> get props => [goal, addedAmount];
 }
+
+class EditGoalsEvent extends ConnectivityEvent {
+  final SavingsGoals goal;
+  //final SavingsTransactions txn;
+
+  const EditGoalsEvent({required this.goal});
+
+  @override
+  List<Object> get props => [goal,];
+}

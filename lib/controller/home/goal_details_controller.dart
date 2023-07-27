@@ -41,6 +41,8 @@ class GoalDetailsController extends State<GoalDetails> {
   String? selectedCategory;
   List<SavingsGoals?> pinnedGoals = [];
 
+  final addAmountFormKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
@@ -179,13 +181,14 @@ class GoalDetailsController extends State<GoalDetails> {
     }
   }
 
-  onEditCurrentAmount(double amount) {
-    widget.goal.currentAmount +
-        parseStringToDouble(currentAmountController.text);
-    setState(() {});
-    context
-        .read<ConnectivityBloc>()
-        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
+  onEditCurrentAmount(double amount, double amountRemaining) {
+    
+      widget.goal.currentAmount +
+          parseStringToDouble(currentAmountController.text);
+      setState(() {});
+      context.read<ConnectivityBloc>().add(
+          UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
+    
   }
 
   @override
