@@ -4,6 +4,7 @@ import 'package:easysave/model/savings_transactions.dart';
 
 import '../manager/local_db_manager.dart';
 import '../manager/remote_db_manager.dart';
+import '../model/category.dart';
 import '../model/expenses.dart';
 
 class DatabaseRepository {
@@ -16,15 +17,18 @@ class DatabaseRepository {
   Future<List<SavingsGoals>> iSavingsGoals() async =>
       await ldbm.getSavingsGoal();
 
-  // updateSavingsGoals(List<SavingsGoals> goals) async {
-  //   ldbm.updateGoals(goals);
-  // }
+  deleteGoalFromLocalDB(SavingsGoals goal) async =>
+      await ldbm.deleteSavingsGoalsById(goal);
+
+  deleteGoalFromServer(SavingsGoals goal) async =>
+      await rdbm.deleteSavingsGoals(goal);
+
   updateGoalsInLocalDB(List<SavingsGoals> goals) async {
     await ldbm.updateSavingsGoals(goals);
   }
 
-  updateSavingsGoals(List<SavingsGoals> goals) async {
-    rdbm.updateSavingsGoalInServer(goals);
+  updateSavingsGoals(List<SavingsGoals> goals, String uid) async {
+    rdbm.updateSavingsGoalInServer(goals, uid);
   }
 
   closeDB() async => await ldbm.clearDb();
@@ -47,75 +51,25 @@ class DatabaseRepository {
 
   Future<List<Expenses>> fExpenses() async => rdbm.fetchRemoteExpenses();
 
-//List<Category> getCategory() async => ldbm.getCategory();
 
-  // Future updateCategories(List<Category> category) async =>
-  //     ldbm.updateCategories(category);
+  Future<List<Category>> fCategories() async => rdbm.getCategories();
 
-  // Future<List<Lesson>> iLessons() async => await ldbm.getLessons();
-
-  // Future<List<Lesson>> fLessons() async => await rdbm.getLessons();
-
-  // Future updateLessons(List<Lesson> lessons) async =>
-  //     await ldbm.updateLessons(lessons);
-
-  // Future<List<Topic>> iTopics() async => await ldbm.getTopics();
-
-  // Future<List<Topic>> fTopics() async => await rdbm.getTopics();
-
-  // Future updateTopics(List<Topic> topics) async =>
-  //     await ldbm.updateTopics(topics);
-
-  // Future<List<LeaderBoardEntry>> fEntries() async =>
-  //     await rdbm.fetchLeaderboardData();
-
-  // Future updateLeaderBoardEntries(List<LeaderBoardEntry> entries) async =>
-  //     await rdbm.getLeaderboardEntries();
+  Future<List<Category>> iCategories() async => ldbm.getCategories();
 
   Future getCurrentUser(ATSaveUser user) async => await ldbm.saveUser(user);
 
-  Future saveGoal(SavingsGoals goal) async => await ldbm.addSavingsGoal(goal);
+  Future<int?> saveGoal(SavingsGoals goal) async =>
+      await ldbm.addSavingsGoal(goal);
 
   Future saveTransaction(SavingsTransactions txn) async =>
       await ldbm.addSavingsTransactions(txn);
 
-  // Future<List<Lesson>> lessonsForCategory(int categoryId) async =>
-  //     await ldbm.getLessonsForCategoryId(categoryId);
-
-  // Future<List<Topic>> topicsForLesson(int lessonId, int categoryId) async =>
-  //     await ldbm.getTopicByLessonId(lessonId, categoryId);
-
-  // Future saveSelectedLesson(SelectedLesson selectedLesson) async {
-  //   return await ldbm.addSelectedLesson(selectedLesson);
-  // }
-
-  // Future<List<SelectedLesson>> getAllSelectedLessons() async =>
-  //     await ldbm.getAllSelectedLesson();
-
-  // Future<List<Quiz>> getAllQuizQuestions() async =>
-  //     await ldbm.getQuizzes();
 
   Future<List<ATSaveUser>> getAllUsers() async => await ldbm.getUser();
-
-  // Future incrementProgressValue(int lessonId, int topicId) async {
-  //   await ldbm.increaseProgressValue(lessonId, topicId);
-  // }
-
-  // Future IncrementNoOfTopicsCompleted(String uid) async =>
-  //     await ldbm.increaseNoOfTopicsCompleted(uid);
 
   saveSavingsGoalsToServer(SavingsGoals goal) =>
       rdbm.saveSavingsGoalToServer(goal);
 
   saveSavingsTransactionsToServer(SavingsTransactions txn) =>
       rdbm.saveSavingsTransactionsToServer(txn);
-
-  // Future saveSelectedLessonToServer(SelectedLesson selectedLesson) async {
-  //   await rdbm.saveSelectedLesson(SelectedLesson(
-  //     lessonId: selectedLesson.lessonId,
-  //     progressPercentage: selectedLesson.progressPercentage,
-  //     userId: selectedLesson.userId,
-  //     noOfTopics: selectedLesson.noOfTopics,
-  //   ));
-  // }
 }

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-
 import 'package:easysave/model/expenses.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/repository/database_repository.dart';
@@ -21,6 +20,7 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
     on<SaveTransactionEvent>(
       (event, emit) => _addTxn(event, emit),
     );
+   
   }
 
   _addTxn(SaveTransactionEvent event, emit) async {
@@ -38,14 +38,18 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
     emit(DatabaseLoadingState());
 
     try {
-      await dbRepo.saveGoal(event.goal);
-
+      int? id = await dbRepo.saveGoal(event.goal);
+      event.goal.id = id ?? 1;
       await dbRepo.saveSavingsGoalsToServer(event.goal);
 
-      emit(SavingsGoalAddedState(goal: event.goal,));
+      emit(SavingsGoalAddedState(
+        goal: event.goal,
+      ));
     } on FirebaseAuthException catch (e) {
       log(e.message.toString(), name: 'auth error');
       emit(ErrorState(error: e.message.toString()));
     }
   }
+
+ 
 }

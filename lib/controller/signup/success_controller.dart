@@ -2,7 +2,6 @@ import 'package:easysave/view/pages/success_page.dart';
 import 'package:flutter/material.dart';
 
 class Success extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
 
   const Success(
       {Key? key,

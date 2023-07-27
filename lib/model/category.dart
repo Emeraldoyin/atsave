@@ -10,7 +10,7 @@ class Category {
   final String name;
   final String imagePath;
 
-  Category({required this.name, required this.imagePath});
+  Category({required this.name, required this.imagePath, this.id});
 
   factory Category.fromJson(Map<Object?, Object?> json) =>
       _$CategoryFromJson(json);

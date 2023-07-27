@@ -7,7 +7,23 @@ abstract class ConnectivityEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class DeleteSavingsGoalsEvent extends ConnectivityEvent {
+  final SavingsGoals goal;
 
+  const DeleteSavingsGoalsEvent({required this.goal});
+  
+    @override
+  List<Object> get props => [goal];
+}
+
+class PinSavingsGoalEvent extends ConnectivityEvent{
+   final SavingsGoals goal;
+
+  const PinSavingsGoalEvent({required this.goal});
+  
+    @override
+  List<Object> get props => [goal];
+}
 
 class RetrieveDataEvent extends ConnectivityEvent {
   final String uid;

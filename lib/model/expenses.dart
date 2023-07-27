@@ -14,7 +14,8 @@ class Expenses {
   final String uid;
 
   Expenses(
-      {required this.amountSpent, required this.date, required this.savingsId, required this.uid});
+      {
+        required this.amountSpent, required this.date, required this.savingsId, required this.uid});
 
   factory Expenses.fromJson(Map<Object?, Object?> json) =>
       _$ExpensesFromJson(json);

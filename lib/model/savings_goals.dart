@@ -11,16 +11,17 @@ class SavingsGoals {
   final double targetAmount;
   String? goalNotes;
   final int categoryId;
-  final double startAmount;
+  final double currentAmount;
   final DateTime endDate;
   final double progressPercentage;
 
   SavingsGoals(
-      {required this.uid,
+      {this.id,
+      required this.uid,
       required this.targetAmount,
       this.goalNotes,
       required this.categoryId,
-      required this.startAmount,
+      required this.currentAmount,
       required this.endDate,
       required this.progressPercentage});
 
@@ -32,6 +33,6 @@ class SavingsGoals {
 
   @override
   String toString() {
-    return 'SavingsGoals{uid: $uid, targetAmount: $targetAmount, goalNotes: $goalNotes, categoryId: $categoryId, startAmount: $startAmount, progressPercentage: $progressPercentage, endDate: $endDate}';
+    return 'SavingsGoals{uid: $uid, targetAmount: $targetAmount, goalNotes: $goalNotes, categoryId: $categoryId, startAmount: $currentAmount, progressPercentage: $progressPercentage, endDate: $endDate}';
   }
 }

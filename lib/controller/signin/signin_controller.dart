@@ -92,6 +92,16 @@ class SignInController extends State<SignIn> {
           ),
         );
       } else if (state.error ==
+          'com.google.firebase.FirebaseException: An internal error has occurred. [ unexpected end of stream on com.android.okhttp.Address@95ceba6f ]') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Network error has occurred. Check your connection and try again'),
+            backgroundColor: ICON_COLOR5,
+            showCloseIcon: true,
+          ),
+        );
+      } else if (state.error ==
           'There is no user record corresponding to this identifier. The user may have been deleted.') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

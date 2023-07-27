@@ -3,17 +3,17 @@ import 'dart:developer';
 import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
+import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/model/category.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/view/pages/add_savings_goal_page.dart';
 import 'package:easysave/view/pages/error_page.dart';
 import 'package:easysave/view/pages/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
-import '../../model/expenses.dart';
 import '../../utils/helpers/session_manager.dart';
 import '../signin/signin_controller.dart';
 
@@ -26,15 +26,16 @@ class Home extends StatefulWidget {
 
 List<Category> categoryList = [
   Category(name: 'Food', imagePath: 'assets/images/food.jpeg'),
-  Category(name: 'Car', imagePath: 'assets/images/car.jpeg'),
+  Category(name: 'Auto & Gas', imagePath: 'assets/images/car.jpeg'),
   Category(name: 'Events', imagePath: 'assets/images/events.jpeg'),
   Category(name: 'Family Needs', imagePath: 'assets/images/family.jpeg'),
   Category(name: 'Apartment', imagePath: 'assets/images/apartment.jpeg'),
   Category(name: 'Utility Bills', imagePath: 'assets/images/bills.jpeg'),
+  Category(name: 'Travels', imagePath: 'assets/images/travels.jpeg'),
+  Category(name: 'Books', imagePath: ''),
   Category(
       name: 'Non-specified',
       imagePath: 'assets/images/open home_safe_with_money.png'),
-  Category(name: 'Travels', imagePath: 'assets/images/travels.jpeg')
 ];
 
 class HomePageController extends State<Home>
@@ -51,17 +52,6 @@ class HomePageController extends State<Home>
   SavingsGoals? newlyAddedGoal;
   RegExp decimalRegex = RegExp(r'^-?\d+\.?\d*$');
   final user = FirebaseAuth.instance.currentUser;
-  List<Expenses> getExpenses() {
-    final List<Expenses> expenses = [
-      // Expenses(amountSpent: 20000, date: 'August', color: Colors.blue),
-      // Expenses(amountSpent: 20000, date: 'September', color: Colors.pink),
-      // Expenses(amountSpent: 10, date: 'May', color: Colors.orange),
-      // Expenses(amountSpent: 20000, date: 'June', color: Colors.green),
-      // Expenses(amountSpent: 20000, date: 'January', color: Colors.yellow),
-    ];
-    return expenses;
-  }
-
   TextEditingController targetAmountController = TextEditingController();
   TextEditingController goalNotesController = TextEditingController();
   TextEditingController startAmountController = TextEditingController();
@@ -145,28 +135,34 @@ class HomePageController extends State<Home>
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
     DateTime dateTime = inputFormat.parse(inputText);
+    var splitted = targetAmountController.text.split(',');
+    var splitted2 = startAmountController.text.split(',');
 
-    if (addGoalFormKey.currentState!.validate()) {
-      var splitted = targetAmountController.text.split(',');
-      var splitted2 = startAmountController.text.split(',');
+    double targetAmount = double.parse(splitted.join());
 
-      double saveTargetAmount = double.parse(splitted.join());
-
-      double startingAmount = double.parse(splitted2.join());
-      double progressPercentage = startingAmount / saveTargetAmount * 100;
-      SavingsGoals newlyAddedGoal = SavingsGoals(
-          uid: user!.uid,
-          targetAmount: saveTargetAmount,
-          categoryId: categoryList
-              .indexWhere((element) => element.name == selectedCategory),
-          startAmount: startingAmount,
-          endDate: dateTime,
-          progressPercentage:
-              double.parse(progressPercentage.toStringAsFixed(2)),
-          goalNotes: goalNotesController.text);
-
+    double startingAmount = double.parse(splitted2.join());
+    double progressPercentage = startingAmount / targetAmount * 100;
+    if (startingAmount > targetAmount) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'The amount you\'re saving now should be less the target amount.'),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 5),
+        backgroundColor: APPBAR_COLOR2,
+      ));
+    } else {
       if (addGoalFormKey.currentState!.validate()) {
-        // allGoals.add(newlyAddedGoal);
+        SavingsGoals newlyAddedGoal = SavingsGoals(
+          
+            uid: user!.uid,
+            targetAmount: targetAmount,
+            categoryId: categoryList
+                .indexWhere((element) => element.name == selectedCategory),
+            currentAmount: startingAmount,
+            endDate: dateTime,
+            progressPercentage:
+                double.parse(progressPercentage.toStringAsFixed(2)),
+            goalNotes: goalNotesController.text);
 
         context
             .read<DatabaseBloc>()
@@ -235,6 +231,11 @@ class HomePageController extends State<Home>
   onLogOut() {
     log('pressing logout', name: 'admin');
     context.read<AuthenticationBloc>().add(LogoutEvent(uid: user!.uid));
+  }
+
+  gotoAdd() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => AddSavingsGoalPage(this)));
   }
 
   listener(state) {

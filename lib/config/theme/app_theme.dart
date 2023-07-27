@@ -36,17 +36,24 @@ class AppTheme {
         color: ICON_COLOR4,
       ),
       textTheme: const TextTheme(
-          displayMedium: TextStyle(
+          headlineMedium: TextStyle(
               fontFamily:
                   'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-BoldItalic.ttf',
               fontStyle: FontStyle.italic,
               fontSize: 20,
               fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(
+              fontFamily:
+                  'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-BoldItalic.ttf',
+              fontStyle: FontStyle.italic,
+              fontSize: 20,
+              fontWeight: FontWeight.w800),
           displayLarge: TextStyle(
             color: HEADING_COLOR1,
             fontFamily:
                 'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
-            fontSize: 30.0,
+            fontSize: 25.0,
+            fontWeight: FontWeight.w600,
           ),
           titleLarge: TextStyle(
             color: HEADING_COLOR1,
@@ -64,7 +71,7 @@ class AppTheme {
             color: HEADING_COLOR1,
             fontSize: 16.0,
           ),
-          bodySmall: TextStyle(fontSize: 14, height: 1.5)),
+          bodySmall: TextStyle(fontSize: 14, height: 1.5,)),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: Colors.black, // Change the cursor color here
       ),
@@ -110,8 +117,8 @@ class AppTheme {
               borderSide: BorderSide(color: Colors.red)),
           outlineBorder: const BorderSide(color: Colors.transparent),
           activeIndicatorBorder: const BorderSide(color: Colors.black),
-          border: const OutlineInputBorder(
-              borderSide: BorderSide(style: BorderStyle.none, color: Colors.white)),
+          border:
+              const OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.none, color: Colors.white)),
           filled: true,
           iconColor: Colors.black,
           suffixIconColor: Colors.black,

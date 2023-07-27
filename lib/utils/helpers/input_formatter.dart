@@ -7,17 +7,18 @@ class CommaTextInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     String text = newValue.text;
-    String newText = '';
 
-    // Check if the new value has a decimal point
-    bool hasDecimal = text.contains('.');
+    // Remove any non-digit characters from the input value
+    String digitsOnly = text.replaceAll(RegExp(r'[^\d]'), '');
 
     // Split the text into parts before and after the decimal point (if any)
-    List<String> parts = text.split('.');
+    bool hasDecimal = digitsOnly.contains('.');
+    List<String> parts = digitsOnly.split('.');
 
     // Format the part before the decimal point (if any) with commas
+    String newText = '';
     if (parts.isNotEmpty) {
-      String partBeforeDecimal = parts[0].replaceAll(',', '');
+      String partBeforeDecimal = parts[0];
       String formattedPartBeforeDecimal = _addCommasToNumber(partBeforeDecimal);
       newText += formattedPartBeforeDecimal;
     }

@@ -2,7 +2,6 @@ import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../controller/home/home_controller.dart';
 import '../../controller/signin/signin_controller.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -38,7 +37,7 @@ class ErrorPage extends StatelessWidget {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Home()));
+                                    builder: (context) => const SignIn()));
                           },
                           child: const Row(
                             children: [

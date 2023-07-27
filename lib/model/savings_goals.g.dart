@@ -93,7 +93,7 @@ void _savingsGoalsSerialize(
   writer.writeDateTime(offsets[1], object.endDate);
   writer.writeString(offsets[2], object.goalNotes);
   writer.writeDouble(offsets[3], object.progressPercentage);
-  writer.writeDouble(offsets[4], object.startAmount);
+  writer.writeDouble(offsets[4], object.currentAmount);
   writer.writeDouble(offsets[5], object.targetAmount);
   writer.writeString(offsets[6], object.uid);
 }
@@ -109,7 +109,7 @@ SavingsGoals _savingsGoalsDeserialize(
     endDate: reader.readDateTime(offsets[1]),
     goalNotes: reader.readStringOrNull(offsets[2]),
     progressPercentage: reader.readDouble(offsets[3]),
-    startAmount: reader.readDouble(offsets[4]),
+    currentAmount: reader.readDouble(offsets[4]),
     targetAmount: reader.readDouble(offsets[5]),
     uid: reader.readString(offsets[6]),
   );
@@ -1215,7 +1215,7 @@ SavingsGoals _$SavingsGoalsFromJson(Map<Object?, Object?> json) => SavingsGoals(
       targetAmount: (json['targetAmount'] as num).toDouble(),
       goalNotes: json['goalNotes'] as String?,
       categoryId: json['categoryId'] as int,
-      startAmount: (json['startAmount'] as num).toDouble(),
+      currentAmount: (json['startAmount'] as num).toDouble(),
       endDate: DateTime.parse(json['endDate'] as String),
       progressPercentage: (json['progressPercentage'] as num).toDouble(),
     )..id = json['id'] as int?;
@@ -1227,7 +1227,7 @@ Map<String, dynamic> _$SavingsGoalsToJson(SavingsGoals instance) =>
       'targetAmount': instance.targetAmount,
       'goalNotes': instance.goalNotes,
       'categoryId': instance.categoryId,
-      'startAmount': instance.startAmount,
+      'startAmount': instance.currentAmount,
       'endDate': instance.endDate.toIso8601String(),
       'progressPercentage': instance.progressPercentage,
     };

@@ -20,13 +20,11 @@ class SavingsGoalAddedState extends DatabaseState {
 }
 
 class SavingsGoalDeletedState extends DatabaseState {
-  final SavingsGoals goal;
-  
-
-  const SavingsGoalDeletedState({required this.goal});
+ final List<SavingsGoals> goals;
+  const SavingsGoalDeletedState({required this.goals});
 
   @override
-  List<Object> get props => [goal];
+  List<Object> get props => [goals];
 }
 
 class SaveTransactionsSuccessState extends DatabaseState {

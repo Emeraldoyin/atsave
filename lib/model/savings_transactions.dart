@@ -13,8 +13,9 @@ class SavingsTransactions {
   double? amountSaved;
   double? amountExpended;
 
-  SavingsTransactions(
-      {required this.savingsId,
+  SavingsTransactions({
+
+        required this.savingsId,
       required this.amountExpended,
       this.amountSaved,
       required this.timeStamp,
