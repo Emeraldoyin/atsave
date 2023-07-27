@@ -1,4 +1,5 @@
 import 'package:easysave/config/theme/app_theme.dart';
+import 'package:easysave/utils/helpers/comma_formatter.dart';
 import 'package:easysave/utils/helpers/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,15 +28,22 @@ class EditSavingsGoalPage
 
   Widget body(context) {
     controller.currentAmountController.text =
-        widget.goal.currentAmount.toString();
+        formatDoubleWithComma(widget.goal.currentAmount);
     controller.targetAmountController.text =
-        widget.goal.targetAmount.toString();
+        formatDoubleWithComma(widget.goal.targetAmount);
     String datee = formatDateTime(widget.goal.endDate);
     controller.goalNotesController.text = widget.goal.goalNotes.toString();
     controller.proposedEndDateController.text = datee;
-    controller.categoryController.text = widget.goal.categoryId.toString();
+    List<DropdownMenuItem<String>> dropdownItems =
+        widget.categories.map((category) {
+      return DropdownMenuItem<String>(
+        value: category.name,
+        child: Text(category.name),
+      );
+    }).toList();
+    // controller.categoryController.text = widget.goal.categoryId.toString();
     return Padding(
-      padding: EdgeInsets.all(32.0.r),
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 32.0.w),
       child: SingleChildScrollView(
         child: Form(
           key: controller.editGoalFormKey,
@@ -84,7 +92,7 @@ class EditSavingsGoalPage
               DropdownButtonFormField(
                 validator: (value) => controller.validate(value),
                 value: controller.selectedCategory,
-                items: controller.dropdownItems,
+                items: dropdownItems,
                 onChanged: (value) {
                   controller.onCategoryClicked(value);
                 },

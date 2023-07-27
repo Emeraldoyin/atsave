@@ -27,6 +27,10 @@ class DatabaseRepository {
     await ldbm.updateSavingsGoals(goals);
   }
 
+  updateCurrentAmount(double amount, int id) async {
+    await ldbm.updateSavingsAmount(amount, id);
+  }
+
   updateSavingsGoals(List<SavingsGoals> goals, String uid) async {
     rdbm.updateSavingsGoalInServer(goals, uid);
   }

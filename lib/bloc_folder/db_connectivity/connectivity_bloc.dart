@@ -13,12 +13,19 @@ part 'connectivity_state.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   DatabaseRepository dbRepo = DatabaseRepository();
+  List<SavingsGoals>? updatedPinnedGoals;
   ConnectivityBloc() : super(ConnectivityInitial()) {
     on<RetrieveDataEvent>((event, emit) {
       return _retrieveData(event, emit);
     });
     on<DeleteSavingsGoalsEvent>(
       (event, emit) => _deleteGoal(event, emit),
+    );
+    on<UpdateCurrentAmountEvent>(
+      (event, emit) => _updateCurrentAmount(event, emit),
+    );
+    on<PinSavingsGoalEvent>(
+      (event, emit) => _pinGoal(event, emit),
     );
   }
 
@@ -30,11 +37,12 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       final incomingGoals = await dbRepo.fSavingGoals(event.uid);
       log(event.uid.toString(), name: 'event uid');
       log(incomingGoals.toString(), name: 'from firebase');
-      if (presentGoals != incomingGoals) {
-        dbRepo.updateGoalsInLocalDB(incomingGoals);
-      }
-      final presentCategories = await dbRepo.iCategories();
+      // if (presentGoals != incomingGoals) {
+      //   dbRepo.updateGoalsInLocalDB(incomingGoals);
+      // }
+      //   final presentCategories = await dbRepo.iCategories();
       final incomingCategories = await dbRepo.fCategories();
+
       // final presentTransactions = await dbRepo.iSavingsTransactions();
       // final incomingTransactions = await dbRepo.fSavingTxns();
       // if (presentTransactions != incomingTransactions) {
@@ -48,7 +56,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       // }
 
       emit(DbSuccessState(
-        availableSavingsGoals: incomingGoals,
+        availableSavingsGoals: presentGoals,
         availableCategories: incomingCategories,
         // availableExpenses: presentExpenses,
         // availableSavingsTransactions: presentTransactions
@@ -60,6 +68,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
 
   _deleteGoal(DeleteSavingsGoalsEvent event, emit) async {
     emit(DbLoadingState());
+
     await dbRepo.deleteGoalFromLocalDB(event.goal);
     await dbRepo.deleteGoalFromServer(event.goal);
     final presentCategories = await dbRepo.iCategories();
@@ -67,5 +76,33 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
     emit(DbSuccessState(
         availableSavingsGoals: goals, availableCategories: presentCategories));
+  }
+
+  _updateCurrentAmount(UpdateCurrentAmountEvent event, emit) async {
+    emit(DbLoadingState());
+    final presentCategories = await dbRepo.iCategories();
+    try {
+      List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
+      await dbRepo.updateCurrentAmount(event.addedAmount, event.goal.id!);
+
+      emit(DbSuccessState(
+          availableCategories: presentCategories,
+          availableSavingsGoals: goals));
+    } catch (e) {
+      log(e.toString(), name: 'error');
+      emit(DbErrorState(error: e.toString()));
+    }
+  }
+
+  _pinGoal(PinSavingsGoalEvent event, emit) async {
+   
+  // Update the list of pinned goals
+   updatedPinnedGoals!.add(event.goal);
+    final presentCategories = await dbRepo.iCategories();
+    List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
+    emit(DbSuccessState(
+        pinnedGoals: updatedPinnedGoals,
+        availableSavingsGoals: goals,
+        availableCategories: presentCategories));
   }
 }

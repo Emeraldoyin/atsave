@@ -19,6 +19,13 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
       builder: (context, state) {
         if (state is DbSuccessState) {
           List<Category> categories = state.availableCategories;
+          List<DropdownMenuItem<String>> dropdownItems =
+              categories.map((category) {
+            return DropdownMenuItem<String>(
+              value: category.name,
+              child: Text(category.name),
+            );
+          }).toList();
           return Scaffold(
             appBar: AppBar(
               title: const Text('Add Savings Goal'),
@@ -65,7 +72,7 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                       DropdownButtonFormField(
                         validator: (value) => controller.validate(value),
                         value: controller.selectedCategory,
-                        items: controller.dropdownItems,
+                        items: dropdownItems,
                         onChanged: (value) {
                           controller.onCategoryClicked(value);
                         },

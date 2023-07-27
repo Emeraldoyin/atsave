@@ -8,15 +8,16 @@ import '../../consts/app_colors.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
 
 class SuccessPage extends StatelessView<Success, SuccessController> {
-  const SuccessPage(SuccessController controller,
-      {Key? key,
-      required this.succcessful,
-      required this.displayMessage,
-      required this.displayImageURL,
-      required this.buttonText,
-      required this.displaySubText,
-      required this.destination})
-      : super(controller, key: key);
+  const SuccessPage(
+    SuccessController controller, {
+    Key? key,
+    required this.succcessful,
+    required this.displayMessage,
+    required this.displayImageURL,
+    required this.buttonText,
+    required this.displaySubText,
+    required this.destination,
+  }) : super(controller, key: key);
   final bool succcessful;
   final String displayMessage;
   final String displaySubText;
@@ -75,6 +76,8 @@ class SuccessPage extends StatelessView<Success, SuccessController> {
                     onPressed: () {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => destination));
+                   
+                      // Navigator.pop(context, controller.widget.amount);
                     },
                     child: Text(buttonText)),
               ],

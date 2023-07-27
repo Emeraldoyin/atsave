@@ -23,8 +23,8 @@ class majorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 300,
-      height: 200,
+      width: 300.w,
+      height: 200.h,
       child: Card(
           elevation: 2,
           shape: CustomCardShape(),
@@ -37,30 +37,26 @@ class majorCard extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 100.h,
-                        width: 130.w,
-                        child: Column(
-                          children: [
-                            Text(
-                              //firstText,
-                              'Welcome,',
+                      Column(
+                        children: [
+                          Text(
+                            //firstText,
+                            'Welcome,',
 
-                              style: Theme.of(context).textTheme.displayMedium,
-                            ),
-                            Text(
-                              username!,
-                              style: const TextStyle(
-                                  color: APPBAR_COLOR2, fontSize: 25),
-                            ),
-                            addVerticalSpace(5.h),
-                            //SecondWidget,
-                            Text(
-                              'You do not have any savings goals yet.',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
+                            style: Theme.of(context).textTheme.displayMedium,
+                          ),
+                          Text(
+                            username!,
+                            style: const TextStyle(
+                                color: APPBAR_COLOR2, fontSize: 25),
+                          ),
+                          addVerticalSpace(5.h),
+                          //SecondWidget,
+                          Text(
+                            'You do not have any savings goals yet.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                       ),
                       addVerticalSpace(4.h),
                       //widgetKK

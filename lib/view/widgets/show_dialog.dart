@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../model/savings_goals.dart';
 
 Future<void> showDeleteDialog(
-    SavingsGoals goal, BuildContext context, state) async {
+    SavingsGoals goal, BuildContext context) async {
   String? name = goal.goalNotes;
   // int id = widget.eachTask.id!;
 
@@ -51,7 +51,7 @@ Future<void> showDeleteDialog(
 }
 
 Future<void> showPinDialog(
-    SavingsGoals goal, BuildContext context, state) async {
+    SavingsGoals goal, BuildContext context ) async {
   String? name = goal.goalNotes;
   // int id = widget.eachTask.id!;
 

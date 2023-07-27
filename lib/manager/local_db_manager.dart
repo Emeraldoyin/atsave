@@ -41,9 +41,21 @@ class LocalDbManager {
     });
   }
 
+  // Future<int?> addSavingsGoal(SavingsGoals goal) async {
+  //   final goals = await _isar!.savingsGoals.where().findAll();
+  //   int len = goals.length + 1;
+  //   goal.id = len;
+  //   log(len.toString(), name: 'goal');
+  //   return await _isar?.writeTxn(() async {
+  //     await _isar?.savingsGoals.put(goal);
+  //     return goal.id!;
+  //   });
+  // }
+
   Future<int?> addSavingsGoal(SavingsGoals goal) async {
     final goals = await _isar!.savingsGoals.where().findAll();
-    int len = goals.length + 1;
+    // ignore: prefer_is_empty
+    int len = goals.length != 0 ? goals.last.id! + 1 : 1;
     goal.id = len;
     log(len.toString(), name: 'goal');
     return await _isar?.writeTxn(() async {
@@ -98,6 +110,23 @@ class LocalDbManager {
     }
     await _isar!.savingsGoals.put(formerGoal!);
     // await _isar!.close();
+  }
+
+  Future updateSavingsAmount(double amount, int id) async {
+    SavingsGoals? formerGoal;
+    await _isar!.writeTxn(() async {
+      formerGoal = await _isar!.savingsGoals.filter().idEqualTo(id).findFirst();
+      if (formerGoal != null) {
+        formerGoal!.currentAmount = formerGoal!.currentAmount + amount;
+        formerGoal!.progressPercentage =
+            formerGoal!.currentAmount / formerGoal!.targetAmount * 100;
+      }
+      await _isar!.savingsGoals.put(formerGoal!);
+      log(amount.toString(), name: 'amount');
+      log(formerGoal!.currentAmount.toString(), name: 'current amount');
+      log(formerGoal!.progressPercentage.toString(),
+          name: 'progress percentage');
+    });
   }
 
   Future deleteSavingsGoalsById(SavingsGoals goal) async {

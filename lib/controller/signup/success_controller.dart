@@ -1,8 +1,10 @@
+import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/view/pages/success_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Success extends StatefulWidget {
-
   const Success(
       {Key? key,
       required this.succcessful,
@@ -10,6 +12,7 @@ class Success extends StatefulWidget {
       required this.displayImageURL,
       required this.buttonText,
       required this.displaySubText,
+      this.amount,
       required this.destination})
       : super(key: key);
   final bool succcessful;
@@ -18,6 +21,8 @@ class Success extends StatefulWidget {
   final String buttonText;
   final String displaySubText;
   final Widget destination;
+  final String? amount;
+  
 
   @override
   SuccessController createState() => SuccessController();
@@ -25,6 +30,7 @@ class Success extends StatefulWidget {
 
 class SuccessController extends State<Success> {
   //... //Initialization code, state vars etc, all go here
+  final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     super.initState();
@@ -33,6 +39,13 @@ class SuccessController extends State<Success> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
+    super.deactivate();
   }
 
   @override

@@ -5,8 +5,8 @@ import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
-import 'package:easysave/model/category.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/utils/helpers/double_parser.dart';
 import 'package:easysave/view/pages/add_savings_goal_page.dart';
 import 'package:easysave/view/pages/error_page.dart';
 import 'package:easysave/view/pages/homepage.dart';
@@ -14,12 +14,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import '../../model/category.dart';
 import '../../utils/helpers/session_manager.dart';
 import '../signin/signin_controller.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
+  const Home({Key? key, this.categories}) : super(key: key);
+  final List<Category>? categories;
   @override
   HomePageController createState() => HomePageController();
 }
@@ -56,13 +58,6 @@ class HomePageController extends State<Home>
   TextEditingController goalNotesController = TextEditingController();
   TextEditingController startAmountController = TextEditingController();
   TextEditingController proposedEndDateController = TextEditingController();
-
-  List<DropdownMenuItem<String>> dropdownItems = categoryList.map((category) {
-    return DropdownMenuItem<String>(
-      value: category.name,
-      child: Text(category.name),
-    );
-  }).toList();
 
   onCategoryClicked(value) {
     setState(() {
@@ -135,12 +130,8 @@ class HomePageController extends State<Home>
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
     DateTime dateTime = inputFormat.parse(inputText);
-    var splitted = targetAmountController.text.split(',');
-    var splitted2 = startAmountController.text.split(',');
-
-    double targetAmount = double.parse(splitted.join());
-
-    double startingAmount = double.parse(splitted2.join());
+    double targetAmount = parseStringToDouble(targetAmountController.text);
+    double startingAmount = parseStringToDouble(startAmountController.text);
     double progressPercentage = startingAmount / targetAmount * 100;
     if (startingAmount > targetAmount) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -153,7 +144,6 @@ class HomePageController extends State<Home>
     } else {
       if (addGoalFormKey.currentState!.validate()) {
         SavingsGoals newlyAddedGoal = SavingsGoals(
-          
             uid: user!.uid,
             targetAmount: targetAmount,
             categoryId: categoryList
@@ -194,13 +184,13 @@ class HomePageController extends State<Home>
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         SessionManager manager = SessionManager();
         manager.loggedIn(false);
-      });
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('you have been successfully logged out'),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-      ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('you have been successfully logged out'),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+        ));
+      });
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const SignIn()));
     }
@@ -294,7 +284,9 @@ class HomePageController extends State<Home>
   }
 
   @override
-  Widget build(BuildContext context) => HomePage(this);
+  Widget build(BuildContext context) => HomePage(
+        this,
+      );
   changeTab(value) {
     setState(() {
       currentIndex = value;

@@ -52,7 +52,7 @@ class AppTheme {
             color: HEADING_COLOR1,
             fontFamily:
                 'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
-            fontSize: 25.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.w600,
           ),
           titleLarge: TextStyle(
@@ -71,7 +71,10 @@ class AppTheme {
             color: HEADING_COLOR1,
             fontSize: 16.0,
           ),
-          bodySmall: TextStyle(fontSize: 14, height: 1.5,)),
+          bodySmall: TextStyle(
+            fontSize: 14,
+            height: 1.5,
+          )),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: Colors.black, // Change the cursor color here
       ),

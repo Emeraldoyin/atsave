@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
 import 'package:easysave/view/pages/edit_savings_goals_page.dart';
@@ -11,13 +13,16 @@ import '../../bloc_folder/database_bloc/database_bloc.dart';
 import '../../bloc_folder/db_connectivity/connectivity_bloc.dart';
 import '../../consts/app_colors.dart';
 import '../../model/category.dart';
+import '../../utils/helpers/double_parser.dart';
 import '../signup/success_controller.dart';
 import 'home_controller.dart';
 
 class GoalDetails extends StatefulWidget {
   //static const routeName = Strings.SCREEN_GoalDetails;
   final SavingsGoals goal;
-  const GoalDetails({Key? key, required this.goal}) : super(key: key);
+  final List<Category> categories;
+  const GoalDetails({Key? key, required this.goal, required this.categories})
+      : super(key: key);
 
   @override
   GoalDetailsController createState() => GoalDetailsController();
@@ -29,21 +34,34 @@ class GoalDetailsController extends State<GoalDetails> {
   TextEditingController goalNotesController = TextEditingController();
   TextEditingController currentAmountController = TextEditingController();
   TextEditingController proposedEndDateController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
+  TextEditingController newAmountController = TextEditingController();
   final user = FirebaseAuth.instance.currentUser;
   final editGoalFormKey = GlobalKey<FormState>();
   late DateTime date;
   String? selectedCategory;
+  List<SavingsGoals?> pinnedGoals = [];
 
   @override
   void initState() {
-    context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
+    // context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
     super.initState();
+    log(pinnedGoals.toString(), name: 'pinnedGoals');
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void onPinGoal(SavingsGoals goal) {
+    setState(() {
+      if (pinnedGoals.contains(goal)) {
+        pinnedGoals.remove(goal);
+      } else {
+        pinnedGoals.add(goal);
+      }
+    });
+    log(pinnedGoals.toString(), name: 'pinnedGoals');
   }
 
   int calculateDaysLeft(DateTime goalCompletionDate) {
@@ -84,13 +102,6 @@ class GoalDetailsController extends State<GoalDetails> {
     });
   }
 
-  List<DropdownMenuItem<String>> dropdownItems = categoryList.map((category) {
-    return DropdownMenuItem<String>(
-      value: category.name,
-      child: Text(category.name),
-    );
-  }).toList();
-
   String? validateAmount(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -112,12 +123,10 @@ class GoalDetailsController extends State<GoalDetails> {
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
     DateTime dateTime = inputFormat.parse(inputText);
-    var splitted = targetAmountController.text.split(',');
-    var splitted2 = currentAmountController.text.split(',');
 
-    double targetAmount = double.parse(splitted.join());
+    double targetAmount = parseStringToDouble(targetAmountController.text);
 
-    double currentAmount = double.parse(splitted2.join());
+    double currentAmount = parseStringToDouble(currentAmountController.text);
     double progressPercentage = currentAmount / targetAmount * 100;
     if (currentAmount > targetAmount) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -132,7 +141,7 @@ class GoalDetailsController extends State<GoalDetails> {
         SavingsGoals newlyAddedGoal = SavingsGoals(
             uid: user!.uid,
             targetAmount: targetAmount,
-            categoryId: categoryList
+            categoryId: widget.categories
                 .indexWhere((element) => element.name == selectedCategory),
             currentAmount: currentAmount,
             endDate: dateTime,
@@ -140,24 +149,46 @@ class GoalDetailsController extends State<GoalDetails> {
                 double.parse(progressPercentage.toStringAsFixed(2)),
             goalNotes: goalNotesController.text);
 
-        SavingsTransactions newTxn = SavingsTransactions(amountExpended: 0, amountSaved: double.parse(currentAmountController.text), savingsId: newlyAddedGoal.id!, uid: user!.uid, timeStamp: DateTime.now(), );
-        context.read<DatabaseBloc>().add(EditGoalsEvent(goal: newlyAddedGoal, txn:newTxn));
-        
-        Navigator.push(
+        SavingsTransactions newTxn = SavingsTransactions(
+          amountExpended: 0,
+          amountSaved: double.parse(currentAmountController.text),
+          savingsId: newlyAddedGoal.id!,
+          uid: user!.uid,
+          timeStamp: DateTime.now(),
+        );
+        context
+            .read<DatabaseBloc>()
+            .add(EditGoalsEvent(goal: newlyAddedGoal, txn: newTxn));
+
+        String amount = await Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const Success(
+                builder: (context) => Success(
                       buttonText: 'Done',
                       displayImageURL: 'assets/images/money and phone.png',
                       displayMessage: 'Congratulations!!!',
                       succcessful: true,
+                      amount: currentAmountController.text,
                       displaySubText: 'You just added a new savings goals.',
-                      destination: Home(),
+                      destination: Home(
+                        categories: widget.categories,
+                      ),
                     )));
+        log(amount, name: 'amount text');
       }
     }
   }
 
+  onEditCurrentAmount(double amount) {
+    widget.goal.currentAmount +
+        parseStringToDouble(currentAmountController.text);
+    setState(() {});
+    context
+        .read<ConnectivityBloc>()
+        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
+  }
+
   @override
-  Widget build(BuildContext context) => GoalDetailsPage(this, widget.goal);
+  Widget build(BuildContext context) =>
+      GoalDetailsPage(this, widget.goal, widget.categories);
 }

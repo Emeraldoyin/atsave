@@ -8,14 +8,14 @@ class CommaTextInputFormatter extends TextInputFormatter {
   ) {
     String text = newValue.text;
 
-    // Remove any non-digit characters from the input value
+    // Removing any non-digit characters from the input value
     String digitsOnly = text.replaceAll(RegExp(r'[^\d]'), '');
 
-    // Split the text into parts before and after the decimal point (if any)
+    // Splitting the text into parts before and after the decimal point (if any)
     bool hasDecimal = digitsOnly.contains('.');
     List<String> parts = digitsOnly.split('.');
 
-    // Format the part before the decimal point (if any) with commas
+    // Formatting the part before the decimal point (if any) with commas
     String newText = '';
     if (parts.isNotEmpty) {
       String partBeforeDecimal = parts[0];
@@ -23,7 +23,7 @@ class CommaTextInputFormatter extends TextInputFormatter {
       newText += formattedPartBeforeDecimal;
     }
 
-    // Add the decimal point and format the part after the decimal point (if any)
+    // Adding the decimal point and format the part after the decimal point (if any)
     if (hasDecimal && parts.length > 1) {
       newText += '.${parts[1]}';
     }

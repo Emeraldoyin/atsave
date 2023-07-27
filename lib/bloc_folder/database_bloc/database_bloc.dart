@@ -20,7 +20,7 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
     on<SaveTransactionEvent>(
       (event, emit) => _addTxn(event, emit),
     );
-   
+  
   }
 
   _addTxn(SaveTransactionEvent event, emit) async {

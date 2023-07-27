@@ -11,9 +11,9 @@ class SavingsGoals {
   final double targetAmount;
   String? goalNotes;
   final int categoryId;
-  final double currentAmount;
+ double currentAmount;
   final DateTime endDate;
-  final double progressPercentage;
+ double progressPercentage;
 
   SavingsGoals(
       {this.id,

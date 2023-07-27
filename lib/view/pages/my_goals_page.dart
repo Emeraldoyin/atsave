@@ -10,7 +10,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../controller/home/home_controller.dart';
+import '../../model/category.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
+import '../../utils/helpers/comma_formatter.dart';
 import '../widgets/major_card.dart';
 import '../widgets/savings_goals_card.dart';
 
@@ -67,7 +69,7 @@ class MyGoals extends StatelessWidget {
                 state.availableSavingsGoals.isNotEmpty) {
           String user = controller.user!.displayName!;
           List<SavingsGoals> goals = state.availableSavingsGoals;
-
+          List<Category> categories = state.availableCategories;
           List<double> targetAmounts =
               goals.map((goal) => goal.targetAmount.toDouble()).toList();
           List<double> currentAmounts =
@@ -84,6 +86,13 @@ class MyGoals extends StatelessWidget {
           double totalTarget =
               targetAmounts.reduce((value, element) => value + element);
           double totalSaved = totalCurrentAmount;
+          List<DropdownMenuItem<String>> dropdownItems =
+              categoryList.map((category) {
+            return DropdownMenuItem<String>(
+              value: category.name,
+              child: Text(category.name),
+            );
+          }).toList();
           List<PieData> getPieData() {
             double remainingAmount = totalTarget - totalSaved;
             return [
@@ -100,6 +109,10 @@ class MyGoals extends StatelessWidget {
             margin: EdgeInsets.all(16.r),
             child: Column(children: [
               addVerticalSpace(32.h),
+              SizedBox(
+                  width: 70.w,
+                  child: const ChoiceChip(
+                      label: Text('All Goals'), selected: false)),
               Container(
                   height: 200,
                   width: 380.w,
@@ -113,12 +126,13 @@ class MyGoals extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [APPBAR_COLOR1, BACKGROUND_COLOR1])),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: 140.w,
+                            width: 150.w,
                             height: 150.h,
                             padding: EdgeInsets.only(left: 8.h),
                             child: Column(
@@ -133,14 +147,14 @@ class MyGoals extends StatelessWidget {
                                 Text('Total Savings Goals:',
                                     style:
                                         Theme.of(context).textTheme.bodySmall),
-                                Text('\$$totalTarget',
+                                Text('\$${formatDoubleWithComma(totalTarget)}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge),
                                 Text('Already Saved:',
                                     style:
                                         Theme.of(context).textTheme.bodySmall),
-                                Text('\$$totalSaved',
+                                Text('\$${formatDoubleWithComma(totalSaved)}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge),
@@ -180,19 +194,30 @@ class MyGoals extends StatelessWidget {
                       ),
                       (totalSaved * 100) / totalTarget > 50 &&
                               (totalSaved * 100) / totalTarget != 100
-                          ? Text(
-                              'Great job! You are beyond halfway there already!',
-                              style: Theme.of(context).textTheme.bodySmall,
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                'Great job! You are beyond halfway there already!',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
                             )
                           // )
                           : (totalSaved * 100) / totalTarget == 100
-                              ? Text(
-                                  'Amazing Work, $user!. You aced all your savings goals!',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    'Amazing Work, $user! You aced all your savings goals!',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
                                 )
-                              : Text(
-                                  'Let\'s get you closer to your target, $user. You can do this!',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                              : Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    'Let\'s get you closer to your target, $user. You can do this!',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
                                 ),
                       //  addVerticalSpace(4.h)
                     ],
@@ -236,7 +261,7 @@ class MyGoals extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final goal = goals[index];
-                  return SavingsGoalCard(goal: goal);
+                  return SavingsGoalCard(goal: goal, categories: categories);
                 },
               ),
             ]),
@@ -266,15 +291,14 @@ class MyGoals extends StatelessWidget {
             ),
           );
         }
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 40.w, top: 100.h),
-              child: Image.asset('assets/images/Piggy bank with coins.png'),
-            ),
-            const CircularProgressIndicator(),
-          ],
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/Piggy bank with coins.png'),
+              const CircularProgressIndicator(),
+            ],
+          ),
         );
       },
     );

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/home/home_controller.dart';
+import '../../model/savings_goals.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
 
 class HomePage extends StatelessView<Home, HomePageController> {
