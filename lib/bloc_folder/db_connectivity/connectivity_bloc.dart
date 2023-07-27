@@ -13,7 +13,6 @@ part 'connectivity_state.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   DatabaseRepository dbRepo = DatabaseRepository();
-  List<SavingsGoals>? updatedPinnedGoals;
   ConnectivityBloc() : super(ConnectivityInitial()) {
     on<RetrieveDataEvent>((event, emit) {
       return _retrieveData(event, emit);
@@ -23,9 +22,6 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     );
     on<UpdateCurrentAmountEvent>(
       (event, emit) => _updateCurrentAmount(event, emit),
-    );
-    on<PinSavingsGoalEvent>(
-      (event, emit) => _pinGoal(event, emit),
     );
   }
 
@@ -37,12 +33,11 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       final incomingGoals = await dbRepo.fSavingGoals(event.uid);
       log(event.uid.toString(), name: 'event uid');
       log(incomingGoals.toString(), name: 'from firebase');
-      // if (presentGoals != incomingGoals) {
-      //   dbRepo.updateGoalsInLocalDB(incomingGoals);
-      // }
-      //   final presentCategories = await dbRepo.iCategories();
+      if (presentGoals != incomingGoals) {
+        dbRepo.updateGoalsInLocalDB(incomingGoals);
+      }
+      final presentCategories = await dbRepo.iCategories();
       final incomingCategories = await dbRepo.fCategories();
-
       // final presentTransactions = await dbRepo.iSavingsTransactions();
       // final incomingTransactions = await dbRepo.fSavingTxns();
       // if (presentTransactions != incomingTransactions) {
@@ -56,7 +51,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       // }
 
       emit(DbSuccessState(
-        availableSavingsGoals: presentGoals,
+        availableSavingsGoals: incomingGoals,
         availableCategories: incomingCategories,
         // availableExpenses: presentExpenses,
         // availableSavingsTransactions: presentTransactions
@@ -92,17 +87,5 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       log(e.toString(), name: 'error');
       emit(DbErrorState(error: e.toString()));
     }
-  }
-
-  _pinGoal(PinSavingsGoalEvent event, emit) async {
-   
-  // Update the list of pinned goals
-   updatedPinnedGoals!.add(event.goal);
-    final presentCategories = await dbRepo.iCategories();
-    List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
-    emit(DbSuccessState(
-        pinnedGoals: updatedPinnedGoals,
-        availableSavingsGoals: goals,
-        availableCategories: presentCategories));
   }
 }

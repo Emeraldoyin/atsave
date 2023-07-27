@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easysave/config/theme/app_theme.dart';
-import 'package:easysave/controller/home/home_controller.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:easysave/view/widgets/savings_goals_card.dart';
@@ -36,7 +35,7 @@ class GoalDetailsPage
   }
 
   Widget body(context) {
-    Category myCategory = categoryList
+    Category myCategory = widget.categories
         .firstWhere((element) => element.id == widget.goal.categoryId);
     String formattedDate = formatDateTime(widget.goal.endDate);
     return SafeArea(

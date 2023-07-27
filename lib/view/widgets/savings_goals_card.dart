@@ -17,10 +17,11 @@ class SavingsGoalCard extends StatelessWidget {
   final SavingsGoals goal;
   final List<Category> categories;
 
-  const SavingsGoalCard(
-      {super.key,
-      required this.goal,
-      required this.categories,});
+  const SavingsGoalCard({
+    super.key,
+    required this.goal,
+    required this.categories,
+  });
 
   @override
   Widget build(BuildContext context) {

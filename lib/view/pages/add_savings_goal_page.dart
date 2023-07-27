@@ -28,7 +28,10 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
           }).toList();
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Add Savings Goal'),
+              title: Padding(
+                padding: EdgeInsets.only(left: 20.w),
+                child: const Text('Add Savings Goal'),
+              ),
             ),
             body: Padding(
               padding: EdgeInsets.all(32.0.r),
