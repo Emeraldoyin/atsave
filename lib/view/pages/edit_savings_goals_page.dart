@@ -1,6 +1,4 @@
 import 'package:easysave/config/theme/app_theme.dart';
-import 'package:easysave/utils/helpers/comma_formatter.dart';
-import 'package:easysave/utils/helpers/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,13 +25,13 @@ class EditSavingsGoalPage
   }
 
   Widget body(context) {
-    controller.currentAmountController.text =
-        formatDoubleWithComma(widget.goal.currentAmount);
-    controller.targetAmountController.text =
-        formatDoubleWithComma(widget.goal.targetAmount);
-    String datee = formatDateTime(widget.goal.endDate);
-    controller.goalNotesController.text = widget.goal.goalNotes.toString();
-    controller.proposedEndDateController.text = datee;
+    // controller.currentAmountController.text =
+    //     formatDoubleWithComma(widget.goal.currentAmount);
+    // controller.targetAmountController.text =
+    //     formatDoubleWithComma(widget.goal.targetAmount);
+    // String datee = formatDateTime(widget.goal.endDate);
+    // controller.goalNotesController.text = widget.goal.goalNotes.toString();
+    // controller.proposedEndDateController.text = datee;
     List<DropdownMenuItem<String>> dropdownItems =
         widget.categories.map((category) {
       return DropdownMenuItem<String>(

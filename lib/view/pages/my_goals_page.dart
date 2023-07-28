@@ -80,7 +80,7 @@ class MyGoals extends StatelessWidget {
               progressPercentages.reduce((value, element) => value + element);
           double totalProgress =
               totalProgressSum / (progressPercentages.length * 100) * 100;
-          //log(totalProgress.toString(), name: 'tp');
+
           double totalCurrentAmount =
               currentAmounts.reduce((value, element) => value + element);
           double totalTarget =
@@ -108,11 +108,11 @@ class MyGoals extends StatelessWidget {
                   child: Margin(
             margin: EdgeInsets.all(16.r),
             child: Column(children: [
-              addVerticalSpace(32.h),
-              SizedBox(
-                  width: 70.w,
-                  child: const ChoiceChip(
-                      label: Text('All Goals'), selected: false)),
+              addVerticalSpace(16.h),
+              // SizedBox(
+              //     width: 70.w,
+              //     child: const ChoiceChip(
+              //         label: Text('All Goals'), selected: false)),
               Container(
                   height: 200,
                   width: 380.w,
@@ -125,104 +125,112 @@ class MyGoals extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [APPBAR_COLOR1, BACKGROUND_COLOR1])),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: 150.w,
-                            height: 150.h,
-                            padding: EdgeInsets.only(left: 8.h),
-                            child: Column(
-                              children: [
-                                addVerticalSpace(8.h),
-                                Text(
-                                  'Hi, $user',
-                                  style:
-                                      Theme.of(context).textTheme.displayMedium,
-                                ),
-                                addVerticalSpace(8.h),
-                                Text('Total Savings Goals:',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall),
-                                Text('\$${formatDoubleWithComma(totalTarget)}',
+                  child: SizedBox(
+                    height: 180,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 150.w,
+                              height: 130.h,
+                              padding: EdgeInsets.only(left: 8.h),
+                              child: Column(
+                                children: [
+                                  addVerticalSpace(8.h),
+                                  Text(
+                                    'Hi, $user',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .displayLarge),
-                                Text('Already Saved:',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall),
-                                Text('\$${formatDoubleWithComma(totalSaved)}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge),
-                                Text(
-                                  '${totalProgress.toStringAsFixed(0)}% progress made',
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
-                                )
-                              ],
-                            ),
-                          ),
-                          addHorizontalSpace(8.w),
-                          Expanded(
-                            child: SizedBox(
-                              height: 150.h,
-                              // width: 120.w,
-                              child: SfCircularChart(
-                                margin: EdgeInsets.only(bottom: 4.w, top: 4.h),
-                                legend: const Legend(
-                                    isVisible: true,
-                                    height: '12%',
-                                    position: LegendPosition.top),
-                                series: <PieSeries<PieData, String>>[
-                                  PieSeries<PieData, String>(
-                                    dataSource: data,
-                                    xValueMapper: (PieData data, _) =>
-                                        data.category,
-                                    yValueMapper: (PieData data, _) =>
-                                        data.value,
-                                    // Display data labels outside the pie chart
+                                        .displayMedium,
                                   ),
+                                  addVerticalSpace(8.h),
+                                  Text('Total Savings Goals:',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text(
+                                      '\$${formatDoubleWithComma(totalTarget)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge),
+                                  Text('Already Saved:',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall),
+                                  Text('\$${formatDoubleWithComma(totalSaved)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge),
+                                  Text(
+                                    '${totalProgress.toStringAsFixed(0)}% progress made',
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
+                                  )
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      (totalSaved * 100) / totalTarget > 50 &&
-                              (totalSaved * 100) / totalTarget != 100
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                'Great job! You are beyond halfway there already!',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            )
-                          // )
-                          : (totalSaved * 100) / totalTarget == 100
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    'Amazing Work, $user! You aced all your savings goals!',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    'Let\'s get you closer to your target, $user. You can do this!',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
+                            addHorizontalSpace(8.w),
+                            Expanded(
+                              child: SizedBox(
+                                height: 130.h,
+                                // width: 120.w,
+                                child: SfCircularChart(
+                                  margin:
+                                      EdgeInsets.only(bottom: 4.w, top: 4.h),
+                                  legend: const Legend(
+                                      isVisible: true,
+                                      height: '12%',
+                                      position: LegendPosition.top),
+                                  series: <PieSeries<PieData, String>>[
+                                    PieSeries<PieData, String>(
+                                      dataSource: data,
+                                      xValueMapper: (PieData data, _) =>
+                                          data.category,
+                                      yValueMapper: (PieData data, _) =>
+                                          data.value,
+                                      // Display data labels outside the pie chart
+                                    ),
+                                  ],
                                 ),
-                      //  addVerticalSpace(4.h)
-                    ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        (totalSaved * 100) / totalTarget > 50 &&
+                                (totalSaved * 100) / totalTarget != 100
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  'Great job! You are beyond halfway there already!',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              )
+                            // )
+                            : (totalSaved * 100) / totalTarget == 100
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'Amazing Work, $user! You aced all your savings goals!',
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'Let\'s get you closer to your target, $user. You can do this!',
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ),
+                        //  addVerticalSpace(4.h)
+                      ],
+                    ),
                   )),
-              addVerticalSpace(32.h),
+              addVerticalSpace(16.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -247,14 +255,14 @@ class MyGoals extends StatelessWidget {
                         Text(
                           'ADD GOAL',
                           style: Theme.of(context).textTheme.bodySmall,
-                          selectionColor: APPBAR_COLOR1,
+                          selectionColor: Colors.blueAccent,
                         ),
                       ],
                     ),
                   )
                 ],
               ),
-              addVerticalSpace(16.h),
+              addVerticalSpace(8.h),
               ListView.builder(
                 itemCount: goals.length,
                 physics: const NeverScrollableScrollPhysics(),

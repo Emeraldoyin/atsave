@@ -38,7 +38,8 @@ class GoalDetailsPage
     Category myCategory = widget.categories
         .firstWhere((element) => element.id == widget.goal.categoryId);
     String formattedDate = formatDateTime(widget.goal.endDate);
-    double amountRemaining = widget.goal.targetAmount - widget.goal.currentAmount;
+    double amountRemaining =
+        widget.goal.targetAmount - widget.goal.currentAmount;
     return SafeArea(
         child: SingleChildScrollView(
       // physics: const AlwaysScrollableScrollPhysics(),
@@ -58,7 +59,7 @@ class GoalDetailsPage
                 'Goal Details',
                 style: Theme.of(context).textTheme.displayMedium,
               ),
-              addHorizontalSpace(120.w),
+              addHorizontalSpace(110.w),
               SizedBox(
                 height: 35.h,
                 width: 35.w,
@@ -160,11 +161,18 @@ class GoalDetailsPage
                   ),
                 ),
                 addVerticalSpace(16.h),
-                ElevatedButton(
-                    onPressed: () {
-                      showNumberInputDialog(context, controller, amountRemaining);
-                    },
-                    child: const Text('Continue Saving'))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          showNumberInputDialog(
+                              context, controller, amountRemaining);
+                        },
+                        child: const Text('Add Money')),
+                    TextButton(onPressed: () {}, child: const Text('Withdraw'), )
+                  ],
+                )
               ],
             )),
           )

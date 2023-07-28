@@ -73,7 +73,8 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                       ),
                       addVerticalSpace(32.h),
                       DropdownButtonFormField(
-                        validator: (value) => controller.validate(value),
+                        validator: (value) =>
+                            controller.validateCategory(value),
                         value: controller.selectedCategory,
                         items: dropdownItems,
                         onChanged: (value) {
@@ -90,7 +91,8 @@ class AddSavingsGoalPage extends StatelessView<Home, HomePageController> {
                         },
                         child: AbsorbPointer(
                           child: TextFormField(
-                            validator: (value) => controller.validate(value),
+                            validator: (value) =>
+                                controller.validateCategory(value),
                             controller: controller.proposedEndDateController,
                             decoration: const InputDecoration(
                               labelText: 'Proposed Goal Completion Date',

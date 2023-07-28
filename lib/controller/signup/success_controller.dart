@@ -1,8 +1,9 @@
-import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/view/pages/success_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../bloc_folder/db_connectivity/connectivity_bloc.dart';
 
 class Success extends StatefulWidget {
   const Success(
@@ -22,7 +23,6 @@ class Success extends StatefulWidget {
   final String displaySubText;
   final Widget destination;
   final String? amount;
-  
 
   @override
   SuccessController createState() => SuccessController();
@@ -44,7 +44,7 @@ class SuccessController extends State<Success> {
   @override
   void deactivate() {
     // TODO: implement deactivate
-    context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
+     context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
     super.deactivate();
   }
 

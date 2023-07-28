@@ -59,9 +59,7 @@ class SuccessPage extends StatelessView<Success, SuccessController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 30, horizontal: 0),
+                Center(
                   child: Text(displayMessage,
                       style: const TextStyle(
                           color: Colors.white,
@@ -69,14 +67,17 @@ class SuccessPage extends StatelessView<Success, SuccessController> {
                           fontWeight: FontWeight.bold)),
                 ),
                 addVerticalSpace(20),
-                Text(displaySubText,
-                    style: Theme.of(context).textTheme.displayMedium),
+                Container(
+                  color: HINT_TEXT_COLOR,
+                  child: Text(displaySubText,
+                      style: Theme.of(context).textTheme.displayMedium),
+                ),
                 addVerticalSpace(32),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => destination));
-                   
+
                       // Navigator.pop(context, controller.widget.amount);
                     },
                     child: Text(buttonText)),

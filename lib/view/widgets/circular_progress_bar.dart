@@ -35,8 +35,8 @@ class _CircularProgressBarPainter extends CustomPainter {
       ..strokeWidth = strokeWidth;
 
     final progressPaint = Paint()
-      ..color = Colors
-          .blue // Change the color as per your preference for the progress
+      ..color = const Color.fromARGB(255, 29, 81,
+          124) // Change the color as per your preference for the progress
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 

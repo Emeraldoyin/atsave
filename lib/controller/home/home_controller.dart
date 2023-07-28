@@ -6,6 +6,7 @@ import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/model/savings_goals.dart';
+import 'package:easysave/model/savings_transactions.dart';
 import 'package:easysave/utils/helpers/double_parser.dart';
 import 'package:easysave/view/pages/add_savings_goal_page.dart';
 import 'package:easysave/view/pages/error_page.dart';
@@ -27,17 +28,16 @@ class Home extends StatefulWidget {
 }
 
 List<Category> categoryList = [
-  Category(name: 'Food', imagePath: 'assets/images/food.jpeg'),
-  Category(name: 'Auto & Gas', imagePath: 'assets/images/car.jpeg'),
-  Category(name: 'Events', imagePath: 'assets/images/events.jpeg'),
-  Category(name: 'Family Needs', imagePath: 'assets/images/family.jpeg'),
-  Category(name: 'Apartment', imagePath: 'assets/images/apartment.jpeg'),
-  Category(name: 'Utility Bills', imagePath: 'assets/images/bills.jpeg'),
-  Category(name: 'Travels', imagePath: 'assets/images/travels.jpeg'),
-  Category(name: 'Books', imagePath: ''),
-  Category(
-      name: 'Non-specified',
-      imagePath: 'assets/images/open home_safe_with_money.png'),
+  Category(name: 'Food', imagePath: 'assets/images/foody.png'),
+  Category(name: 'Auto & Gas', imagePath: 'assets/images/carr.png'),
+  Category(name: 'Events', imagePath: 'assets/images/event.png'),
+  Category(name: 'Family Needs', imagePath: 'assets/images/beauty.png'),
+  Category(name: 'Apartment', imagePath: 'assets/images/home.png'),
+  Category(name: 'Utility Bills', imagePath: 'assets/images/health.png'),
+  Category(name: 'Travels', imagePath: 'assets/images/others.png'),
+  Category(name: 'Books/Study', imagePath: 'assets/images/pp.png'),
+  Category(name: 'Personal needs', imagePath: 'assets/images/cloth.png'),
+  Category(name: 'Non-specified', imagePath: 'assets/images/others.png'),
 ];
 
 class HomePageController extends State<Home>
@@ -126,6 +126,16 @@ class HomePageController extends State<Home>
     }
   }
 
+  String? validateCategory(value) {
+    if (value == null) {
+      return 'Field cannot be empty';
+    } else if (value == 0) {
+      return 'Invalid amount to save';
+    } else {
+      return null;
+    }
+  }
+
   onSaveGoal() async {
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
@@ -157,6 +167,12 @@ class HomePageController extends State<Home>
         context
             .read<DatabaseBloc>()
             .add(AddSavingsGoalsEvent(goal: newlyAddedGoal));
+
+        SavingsTransactions newTxn = SavingsTransactions(
+            savingsId: newlyAddedGoal.id!,
+            amountExpended: 0,
+            timeStamp: DateTime.now(),
+            uid: user!.uid);
 
         Navigator.push(
             context,

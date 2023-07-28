@@ -24,7 +24,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     on<UpdateCurrentAmountEvent>(
       (event, emit) => _updateCurrentAmount(event, emit),
     );
-     on<EditGoalEvent>(
+    on<EditGoalEvent>(
       (event, emit) => _editGoal(event, emit),
     );
   }
@@ -34,12 +34,11 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     emit(DbLoadingState());
     try {
       final presentGoals = await dbRepo.iSavingsGoals();
-      final incomingGoals = await dbRepo.fSavingGoals(event.uid);
-      log(event.uid.toString(), name: 'event uid');
-      log(incomingGoals.toString(), name: 'from firebase');
-      if (presentGoals != incomingGoals) {
-        dbRepo.updateGoalsInLocalDB(incomingGoals);
-      }
+      // final incomingGoals = await dbRepo.fSavingGoals(event.uid);
+
+      // if (presentGoals != incomingGoals) {
+      //   dbRepo.updateGoalsInLocalDB(incomingGoals);
+      // }
       final presentCategories = await dbRepo.iCategories();
       final incomingCategories = await dbRepo.fCategories();
       // final presentTransactions = await dbRepo.iSavingsTransactions();
@@ -55,7 +54,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       // }
 
       emit(DbSuccessState(
-        availableSavingsGoals: incomingGoals,
+        availableSavingsGoals: presentGoals,
         availableCategories: incomingCategories,
         // availableExpenses: presentExpenses,
         // availableSavingsTransactions: presentTransactions
@@ -93,8 +92,20 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     }
   }
 
-  _editGoal(){
-    
+  _editGoal(EditGoalEvent event, Emitter<ConnectivityState> emit) async {
+    emit(DbLoadingState());
+
+    // try {
+    await dbRepo.updateSavingsGoalById(event.goal);
+    await dbRepo.addSavingsTxn(event.txn);
+    final List<Category> presentCategories = await dbRepo.iCategories();
+    final List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
+    emit(DbSuccessState(
+        availableCategories: presentCategories, availableSavingsGoals: goals));
+    // }
+    //  catch (e) {
+    //   log(e.toString(), name: 'error');
+    //   emit(DbErrorState(error: e.toString()));
+    // }
   }
 }
-

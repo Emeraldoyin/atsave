@@ -1,6 +1,7 @@
 import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/view/pages/my_expemses_page.dart';
 import 'package:easysave/view/pages/my_goals_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,41 +49,12 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
                   style: TextStyle(color: HEADING_COLOR1),
                 ),
               ),
-              // Tab(
-              //   child: Text(
-              //     'My Accounts',
-              //     style: TextStyle(color: HEADING_COLOR1),
-              //   ),
-              // ),
             ],
           ),
-
           actions: [
             BlocBuilder<AuthenticationBloc, AuthenticationState>(
               builder: (context, state2) {
-                return
-                    // AvatarGlow(
-                    //   glowColor:
-                    //       APPBAR_COLOR2, // Change this to your desired glow color
-                    //   endRadius: 80.0,
-                    //   duration: const Duration(milliseconds: 2000),
-                    //   repeat: true,
-                    //   showTwoGlows: true,
-                    //   repeatPauseDuration: const Duration(milliseconds: 100),
-                    //   child: Material(
-                    //     elevation: 8.0,
-                    //     shape: const CircleBorder(),
-                    //     child: CircleAvatar(
-                    //       backgroundColor: Colors.grey[100],
-                    //       radius: 30.0,
-                    //       child: Text(
-                    //         getInitials(controller.user!.displayName!),
-                    //         style: const TextStyle(fontSize: 20.0),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // );
-                    IconButton(
+                return IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
                     controller.onLogOut();
@@ -91,26 +63,15 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
               },
             ),
           ],
-          //leading: CircleAvatar()
           title: const Text('Dashboard'),
         ),
         drawer: const DropdownMenu(
           menuStyle: MenuStyle(),
           dropdownMenuEntries: [],
         ),
-
-        // drawer: const DropdownMenu(dropdownMenuEntries: []),
-        body:
-            //const SafeArea(
-            //     child: Column(
-            //   children: [Card(), Text('this is dashboard')],
-            // )),
-            TabBarView(
+        body: TabBarView(
           controller: controller.tabController,
-          children: [
-            MyGoalsPage(controller),
-            const Icon(Icons.directions_car, size: 350),
-          ],
+          children: [MyGoalsPage(controller), MyExpensesPage(controller)],
         ),
       ),
     );

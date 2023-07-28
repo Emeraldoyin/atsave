@@ -36,7 +36,7 @@ class AuthenticationBloc
 
       final datamap = data.value as Map<Object?, Object?>?;
       if (data.exists) {
-        log(data.value.toString(), name: 'data from remote');
+     
         newUser = ATSaveUser.fromJson(datamap!);
         String displayName = newUser.firstName;
         final user = FirebaseAuth.instance.currentUser;
@@ -45,10 +45,8 @@ class AuthenticationBloc
         await authRepo.saveUserToDb(newUser);
         userGoals = await dbRepo.fSavingGoals(userId);
 
-        //log(userGoals.toString(), name: 'incoming goals');
         await dbRepo.updateGoalsInLocalDB(userGoals);
       } else {
-        log('login user just added to realtime db', name: 'Admin');
         await FirebaseDatabase.instance.ref().child('User/$userId').set({});
       }
 

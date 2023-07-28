@@ -1,7 +1,5 @@
-import 'dart:developer';
-
 import 'package:easysave/model/savings_goals.dart';
-import 'package:easysave/model/savings_transactions.dart';
+import 'package:easysave/utils/helpers/date_formatter.dart';
 import 'package:easysave/view/pages/edit_savings_goals_page.dart';
 import 'package:easysave/view/pages/goal_details_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../bloc_folder/database_bloc/database_bloc.dart';
 import '../../bloc_folder/db_connectivity/connectivity_bloc.dart';
 import '../../consts/app_colors.dart';
 import '../../model/category.dart';
+import '../../model/savings_transactions.dart';
 import '../../utils/helpers/double_parser.dart';
 import '../signup/success_controller.dart';
 import 'home_controller.dart';
@@ -45,9 +43,14 @@ class GoalDetailsController extends State<GoalDetails> {
 
   @override
   void initState() {
+    targetAmountController.text = widget.goal.targetAmount.toString();
+    goalNotesController.text = widget.goal.goalNotes!;
+    currentAmountController.text = widget.goal.currentAmount.toString();
+    proposedEndDateController.text = formatDateTime(widget.goal.endDate);
+    newAmountController.text = widget.goal.currentAmount.toString();
     // context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
     super.initState();
-    log(pinnedGoals.toString(), name: 'pinnedGoals');
+    // log(pinnedGoals.toString(), name: 'pinnedGoals');
   }
 
   @override
@@ -59,11 +62,23 @@ class GoalDetailsController extends State<GoalDetails> {
     setState(() {
       if (pinnedGoals.contains(goal)) {
         pinnedGoals.remove(goal);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Goal unpinned.'),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+          backgroundColor: APPBAR_COLOR2,
+        ));
       } else {
         pinnedGoals.add(goal);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Goal pinned'),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+          backgroundColor: APPBAR_COLOR2,
+        ));
       }
     });
-    log(pinnedGoals.toString(), name: 'pinnedGoals');
+    // log(pinnedGoals.toString(), name: 'pinnedGoals');
   }
 
   int calculateDaysLeft(DateTime goalCompletionDate) {
@@ -74,7 +89,7 @@ class GoalDetailsController extends State<GoalDetails> {
   }
 
   String? validate(value) {
-    if (value.isEmpty) {
+    if (value == null) {
       return 'Field cannot be empty';
     } else {
       return null;
@@ -141,6 +156,7 @@ class GoalDetailsController extends State<GoalDetails> {
     } else {
       if (editGoalFormKey.currentState!.validate()) {
         SavingsGoals newlyAddedGoal = SavingsGoals(
+            id: widget.goal.id,
             uid: user!.uid,
             targetAmount: targetAmount,
             categoryId: widget.categories
@@ -150,45 +166,45 @@ class GoalDetailsController extends State<GoalDetails> {
             progressPercentage:
                 double.parse(progressPercentage.toStringAsFixed(2)),
             goalNotes: goalNotesController.text);
+        print(newlyAddedGoal.toString());
 
         SavingsTransactions newTxn = SavingsTransactions(
           amountExpended: 0,
-          amountSaved: double.parse(currentAmountController.text),
+          amountSaved: newlyAddedGoal.currentAmount,
           savingsId: newlyAddedGoal.id!,
           uid: user!.uid,
           timeStamp: DateTime.now(),
         );
         context
-            .read<DatabaseBloc>()
-            .add(EditGoalsEvent(goal: newlyAddedGoal, txn: newTxn));
+            .read<ConnectivityBloc>()
+            .add(EditGoalEvent(goal: newlyAddedGoal, txn: newTxn));
 
-        String amount = await Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => Success(
                       buttonText: 'Done',
-                      displayImageURL: 'assets/images/money and phone.png',
-                      displayMessage: 'Congratulations!!!',
+                      displayImageURL: 'assets/images/credit cards.png',
+                      displayMessage: 'Goal updated successfully.',
                       succcessful: true,
                       amount: currentAmountController.text,
-                      displaySubText: 'You just added a new savings goals.',
+                      displaySubText: 'Keep saving!.',
                       destination: Home(
                         categories: widget.categories,
                       ),
                     )));
-        log(amount, name: 'amount text');
+        //log(amount, name: 'amount text');
       }
     }
   }
 
   onEditCurrentAmount(double amount, double amountRemaining) {
-    
-      widget.goal.currentAmount +
-          parseStringToDouble(currentAmountController.text);
-      setState(() {});
-      context.read<ConnectivityBloc>().add(
-          UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
-    
+    widget.goal.currentAmount +
+        parseStringToDouble(currentAmountController.text);
+    setState(() {});
+    context
+        .read<ConnectivityBloc>()
+        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
   }
 
   @override

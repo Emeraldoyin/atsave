@@ -20,7 +20,7 @@ class RemoteDbManager {
     for (var element in snapshot.children) {
       if (element.value != null) {
         var data = element.value as Map<Object?, Object?>;
-        log(data.toString(), name: 'elements');
+       
         // Create a new SavingsGoals object and set its properties manually
         SavingsGoals goal = SavingsGoals(
           id: (data['id'] as int?),
@@ -35,9 +35,9 @@ class RemoteDbManager {
         );
 
         goals.add(goal);
-        log(goals.toString(), name: 'goals');
+      
       } else {
-        log('no data');
+      
       }
     }
 
@@ -135,7 +135,7 @@ class RemoteDbManager {
     for (var element in snapshot.children) {
       if (element.value != null) {
         var data = element.value as Map<Object?, Object?>;
-        log(data.toString(), name: 'category');
+       
         // Create a new SavingsGoals object and set its properties manually
         Category category = Category(
           name: (data['name'] as String),
@@ -144,9 +144,7 @@ class RemoteDbManager {
         );
 
         categories.add(category);
-      } else {
-        log('no data');
-      }
+      } 
     }
     return categories;
   }

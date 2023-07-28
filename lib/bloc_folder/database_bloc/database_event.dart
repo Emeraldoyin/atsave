@@ -9,11 +9,12 @@ abstract class DatabaseEvent extends Equatable {
 
 class AddSavingsGoalsEvent extends DatabaseEvent {
   final SavingsGoals goal;
+  final SavingsTransactions txn;
 
-  const AddSavingsGoalsEvent({required this.goal});
+  const AddSavingsGoalsEvent({required this.goal, required this.txn});
 
   @override
-  List<Object> get props => [goal];
+  List<Object> get props => [goal, txn];
 }
 
 class SaveTransactionEvent extends DatabaseEvent {

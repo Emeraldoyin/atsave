@@ -13,6 +13,9 @@ import '../../utils/helpers/input_formatter.dart';
 
 showNumberInputDialog(BuildContext context, GoalDetailsController controller,
     double amountRemaining) {
+  // Setting the text field controller to an empty string before showing the dialog
+  controller.newAmountController.text = '';
+
   // The user-inputted savings amount
   showDialog(
     context: context,

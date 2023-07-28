@@ -1,6 +1,5 @@
 import 'package:easysave/config/theme/app_theme.dart';
 import 'package:easysave/consts/app_colors.dart';
-import 'package:easysave/view/pages/add_transaction.dart';
 import 'package:easysave/view/pages/dashboard_page.dart';
 import 'package:easysave/view/pages/transactions_page.dart';
 import 'package:easysave/view/pages/wallet_page.dart';
@@ -52,12 +51,9 @@ class HomePage extends StatelessView<Home, HomePageController> {
             icon: Icons.account_balance_wallet,
             label: 'Wallet',
           ),
+
           controller.navbar(
-            icon: Icons.add_to_home_screen,
-            label: 'add',
-          ),
-          controller.navbar(
-            icon: Icons.inventory_rounded,
+            icon: Icons.monetization_on_outlined,
             label: 'Transactions',
           ),
           //  controller.navbar(icon: Icons.more, label: 'More'),
@@ -74,8 +70,8 @@ class HomePage extends StatelessView<Home, HomePageController> {
         index: controller.currentIndex,
         children: [
           DashBoardPage(controller),
-          const WalletPage(),
-          AddTransactionsPage(controller),
+          WalletPage(controller),
+
           TransactionsPage(controller),
           // const MorePage()
         ],

@@ -39,22 +39,22 @@ class SavingsGoalCard extends StatelessWidget {
                       categories: categories,
                     )));
       },
-      child: SizedBox(
-        height: 180.h,
-        width: double.infinity,
-        child: Card(
-            shape: CustomCardShape(),
-            elevation: 2,
-            child: Margin(
-              margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 16.w),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 140.h,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0.h),
+        child: SizedBox(
+          height: 150.h,
+          width: 350.w,
+          child: Card(
+              shape: CustomCardShape(),
+              elevation: 2,
+              child: Margin(
+                margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 16.w),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Stack(children: [
                           Align(
                             alignment: Alignment.topLeft,
@@ -63,12 +63,12 @@ class SavingsGoalCard extends StatelessWidget {
                                     Theme.of(context).textTheme.displayLarge),
                           ),
                           Positioned(
-                            top: 10,
+                            top: 20,
                             child: Text(
                                 '${goal.progressPercentage.toStringAsFixed(0)}%',
                                 style: const TextStyle(
                                   color: APPBAR_COLOR2,
-                                  fontSize: 50,
+                                  fontSize: 35,
                                   fontWeight: FontWeight.bold,
                                 )),
                           ),
@@ -79,11 +79,14 @@ class SavingsGoalCard extends StatelessWidget {
                               children: [
                                 Text(
                                     '\$${formatDoubleWithComma(amountRemaining)}',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium),
                                 const Text(
                                   ' LEFT',
-                                  style: TextStyle(color: Colors.blue),
+                                  style: TextStyle(
+                                      color:
+                                          Color.fromARGB(255, 29, 81, 124)),
                                 )
                               ],
                             ),
@@ -97,43 +100,35 @@ class SavingsGoalCard extends StatelessWidget {
                         ]),
                       ),
                     ),
-                  ),
-                  //  addHorizontalSpace(16.h),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: 16.h,
-                        right: 16.w,
-                      ),
-                      child: SizedBox(
-                        width: 120,
-                        height: 150,
+                    //  addHorizontalSpace(16.h),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: 8.h,
+                          right: 16.w,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 50.w),
+                              padding: EdgeInsets.only(left: 40.w, top: 0),
                               child: Text(
-                                '${daysLeft.toString()} days',
+                                '${daysLeft.toString()} days left',
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ),
-                            addVerticalSpace(16.h),
-                            SizedBox(
-                              width: 120.w,
-                              height: 90.h,
-                              child: CircularProgressBar(
-                                  progressPercentage: goal.progressPercentage),
-                            ),
+                            addVerticalSpace(12.h),
+                            CircularProgressBar(
+                                progressPercentage: goal.progressPercentage),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )),
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }

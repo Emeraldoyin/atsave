@@ -27,6 +27,14 @@ class DatabaseRepository {
     await ldbm.updateSavingsGoals(goals);
   }
 
+  updateSavingsGoalById(SavingsGoals goal) async {
+    await ldbm.updateSavingsGoalsById(goal);
+  }
+
+  addSavingsTxn(SavingsTransactions txn) async {
+    await ldbm.addSavingsTransactions(txn);
+  }
+
   updateCurrentAmount(double amount, int id) async {
     await ldbm.updateSavingsAmount(amount, id);
   }

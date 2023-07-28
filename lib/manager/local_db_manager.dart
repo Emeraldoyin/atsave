@@ -45,7 +45,7 @@ class LocalDbManager {
   //   final goals = await _isar!.savingsGoals.where().findAll();
   //   int len = goals.length + 1;
   //   goal.id = len;
-  //   log(len.toString(), name: 'goal');
+ 
   //   return await _isar?.writeTxn(() async {
   //     await _isar?.savingsGoals.put(goal);
   //     return goal.id!;
@@ -57,7 +57,6 @@ class LocalDbManager {
     // ignore: prefer_is_empty
     int len = goals.length != 0 ? goals.last.id! + 1 : 1;
     goal.id = len;
-    log(len.toString(), name: 'goal');
     return await _isar?.writeTxn(() async {
       await _isar?.savingsGoals.put(goal);
       return goal.id!;
@@ -103,13 +102,17 @@ class LocalDbManager {
   }
 
   Future updateSavingsGoalsById(SavingsGoals goal) async {
-    SavingsGoals? formerGoal =
-        await _isar!.savingsGoals.filter().idEqualTo(goal.id).findFirst();
-    if (formerGoal != null) {
-      formerGoal = goal;
-    }
-    await _isar!.savingsGoals.put(formerGoal!);
-    // await _isar!.close();
+    print(goal.toString());
+    SavingsGoals? formerGoal;
+    await _isar!.writeTxn(() async {
+      formerGoal =
+          await _isar!.savingsGoals.filter().idEqualTo(goal.id).findFirst();
+      if (formerGoal != null) {
+        formerGoal = goal;
+      }
+      await _isar!.savingsGoals.put(goal);
+      log(formerGoal.toString(), name: 'updated goal');
+    });
   }
 
   Future updateSavingsAmount(double amount, int id) async {
@@ -122,16 +125,12 @@ class LocalDbManager {
             formerGoal!.currentAmount / formerGoal!.targetAmount * 100;
       }
       await _isar!.savingsGoals.put(formerGoal!);
-      log(amount.toString(), name: 'amount');
-      log(formerGoal!.currentAmount.toString(), name: 'current amount');
-      log(formerGoal!.progressPercentage.toString(),
-          name: 'progress percentage');
+    
     });
   }
 
   Future deleteSavingsGoalsById(SavingsGoals goal) async {
-    log(goal.toString(), name: 'available goal');
-    log(goal.id.toString(), name: 'goal id');
+  
     await _isar!
         .writeTxn(() async => await _isar!.savingsGoals.delete(goal.id!));
     //await _isar!.close();
