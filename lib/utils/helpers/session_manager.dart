@@ -5,11 +5,6 @@ class SessionManager {
     return await SharedPreferences.getInstance();
   }
 
-  Future<void> saveIfUserHasSeenOnboardingScreen(bool status) async {
-    await getSharedPreferences().then(
-        (sharedPreferences) => sharedPreferences.setBool("onboard", status));
-  }
-
   Future<void> hasUserAddedGoal(bool status) async {
     await getSharedPreferences().then(
         (sharedPreferences) => sharedPreferences.setBool("hasGoal", status));
@@ -23,6 +18,11 @@ class SessionManager {
   Future<bool?> seenOnboardingScreen() async {
     return await getSharedPreferences()
         .then((sharedPreferences) => sharedPreferences.getBool("onboard"));
+  }
+
+  Future<void> saveIfUserHasSeenOnboardingScreen(bool status) async {
+    await getSharedPreferences().then(
+        (sharedPreferences) => sharedPreferences.setBool("onboard", status));
   }
 
   Future<void> loggedIn(bool status) async {
@@ -57,36 +57,24 @@ class SessionManager {
         .then((value) => value.setString('currentUserId', uid));
   }
 
-  Future<bool?> isLessonSelected() async {
+  Future retrieveMessagingToken() async {
     return await getSharedPreferences()
-        .then((sharedPreferences) => sharedPreferences.getBool("selected"));
+        .then((value) => value.getString('token'));
   }
 
-  Future<void> lessonSelected(bool status) async {
-    await getSharedPreferences().then(
-        (sharedPreferences) => sharedPreferences.setBool("selected", status));
+  Future saveMessagingToken(String token) async {
+    return await getSharedPreferences()
+        .then((value) => value.setString('token', token));
   }
+
+    Future getUsername() async {
+    return await getSharedPreferences()
+        .then((value) => value.getString('username'));
+  }
+
+  Future saveUsername(String username) async {
+    return await getSharedPreferences()
+        .then((value) => value.setString('username', username));
+  }
+
 }
-
-class SelectedLessonPrefs {
-  final int selectedLessonId;
-  final String selectedUserId;
-
-  const SelectedLessonPrefs({required this.selectedLessonId, required this.selectedUserId});
-//   // Check if the given lesson ID has already been selected by the given user ID
-//    Future<bool> isLessonAlreadySelected(
-//       int lessonId, String userId) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final selectedLesson = prefs.getInt(selectedLessonId);
-//     final selectedUser = prefs.getString(selectedUserId);
-
-//     return selectedLesson == lessonId && selectedUser == userId;
-//   }
-
-//   // Save the selected lesson ID and user ID to shared preferences
-//   static Future<void> saveSelectedLesson(String lessonId, String userId) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.setString(_selectedLessonKey, lessonId);
-//     await prefs.setString(_selectedUserKey, userId);
-//   }
- }

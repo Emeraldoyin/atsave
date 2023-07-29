@@ -23,15 +23,16 @@ class AuthErrorState extends AuthenticationState {
 class LoginSuccessState extends AuthenticationState {
   final ATSaveUser user;
   final List<SavingsGoals> availableGoals;
+  final List<Category> availableCategories;
+  final List<SavingsTransactions> availableTransactions;
+  final List<Expenses> availableExpenses;
 
-  const LoginSuccessState({required this.user, required this.availableGoals});
+  const LoginSuccessState({required this.user, required this.availableGoals, required this.availableCategories, required this.availableExpenses, required this.availableTransactions});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [user, availableCategories, availableExpenses, availableGoals, availableTransactions];
 }
 
-class LogoutSuccessState extends AuthenticationState {
-
-}
+class LogoutSuccessState extends AuthenticationState {}
 
 class SignupSuccessState extends AuthenticationState {}

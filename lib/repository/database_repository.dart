@@ -7,7 +7,6 @@ import '../manager/remote_db_manager.dart';
 import '../model/category.dart';
 import '../model/expenses.dart';
 
-
 ///this file contains a class that holds the declaration of functions
 ///these functions are called during any activity performed throughout the use of the application by a user
 ///it is a link between the database services and the state management of the application
@@ -69,9 +68,10 @@ class DatabaseRepository {
   }
 
   updateCurrentAmount(double amount, int id) async {
-    await ldbm.updateSavingsAmount(amount, id);
+    await ldbm.updateSavingsAmountById(amount, id);
   }
-    updateCurrentAmountWithDeduction(double amount, int id) async {
+
+  updateCurrentAmountWithDeduction(double amount, int id) async {
     await ldbm.updateSavingsAmountWithDeductions(amount, id);
   }
 
@@ -88,6 +88,15 @@ class DatabaseRepository {
     rdbm.updateSavingsTransactionsInServer(txn, uid);
   }
 
+  updateExpenses(List<Expenses> exp, String uid) async {
+    ldbm.updateExpenses(exp);
+  }
+
+  updateTransactions(List<SavingsTransactions> txns) async =>
+      ldbm.updateSavingsTransactions;
+
+  updateCategories(List<Category> cat) async => ldbm.saveCategories(cat);
+
   closeDB() async => await ldbm.clearDb();
 
   Future getCurrentUser(ATSaveUser user) async => await ldbm.saveUser(user);
@@ -95,8 +104,7 @@ class DatabaseRepository {
   Future<int?> saveGoal(SavingsGoals goal) async =>
       await ldbm.addSavingsGoal(goal);
 
-  Future<int?> saveExpenses(Expenses exp) async =>
-      await ldbm.saveExpenses(exp);
+  Future<int?> saveExpenses(Expenses exp) async => await ldbm.saveExpenses(exp);
 
   Future<int?> saveTransaction(SavingsTransactions txn) async =>
       await ldbm.addSavingsTransactions(txn);
@@ -109,5 +117,9 @@ class DatabaseRepository {
 
   saveExpensesToServer(Expenses exp) async {
     rdbm.saveExpensesToServer(exp);
+  }
+
+  sendNotification(String deviceToken, String title, String body) async {
+    await rdbm.sendPushNotification(deviceToken, title, body);
   }
 }

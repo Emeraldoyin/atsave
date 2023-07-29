@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:easysave/model/atsave_user.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
@@ -8,14 +9,12 @@ import 'package:path_provider/path_provider.dart';
 import '../model/category.dart';
 import '../model/expenses.dart';
 
-
 ///This is the class that contains functions and variables that handles services for storage in local database (isar database).
 class LocalDbManager {
-
   ///creates isar instance
   static Isar? _isar;
 
-///registering all schemas for collections of all objects
+  ///registering all schemas for collections of all objects
   static openDb() async {
     _isar = await Isar.open(
       [
@@ -29,7 +28,7 @@ class LocalDbManager {
     );
   }
 
-///clearing data from local db
+  ///clearing data from local db
   Future<void> clearDb() async {
     await _isar?.writeTxn(() async {
       _isar?.aTSaveUsers.clear();
@@ -39,7 +38,7 @@ class LocalDbManager {
     });
   }
 
-///function for adding a new [SavingsGoals] object to the isar collection
+  ///function for adding a new [SavingsGoals] object to the isar collection
   Future<int?> addSavingsGoal(SavingsGoals goal) async {
     final goals = await _isar!.savingsGoals.where().findAll();
     // ignore: prefer_is_empty
@@ -51,33 +50,40 @@ class LocalDbManager {
     });
   }
 
-///function for adding a new [SavingsTransactions] object to the isar collection
+  ///function for adding a new [SavingsTransactions] object to the isar collection
   Future<int?> addSavingsTransactions(SavingsTransactions txn) async {
     final transactions = await _isar!.savingsTransactions.where().findAll();
     // ignore: prefer_is_empty
     int length = transactions.length != 0 ? transactions.last.id! + 1 : 1;
     txn.id = length;
-   return await _isar?.writeTxn(() async {
+    return await _isar?.writeTxn(() async {
       await _isar?.savingsTransactions.put(txn);
       return txn.id!;
     });
   }
 
-///function for adding a new [Expenses] object to the isar collection
+  ///function for adding a new [Expenses] object to the isar collection
   Future saveExpenses(Expenses exp) async {
-     final expenses = await _isar!.expenses.where().findAll();
-      // ignore: prefer_is_empty
+    final expenses = await _isar!.expenses.where().findAll();
+    // ignore: prefer_is_empty
     int length = expenses.length != 0 ? expenses.last.id! + 1 : 1;
-  exp.id = length;
+    exp.id = length;
     return await _isar!.writeTxn(() async {
       return await _isar!.expenses.put(exp);
     });
   }
 
-///function for adding a new [ATSaveUser] object to the isar collection
+  ///function for adding a new [ATSaveUser] object to the isar collection
   Future saveUser(ATSaveUser newUser) async {
     return await _isar!.writeTxn(() async {
       return await _isar!.aTSaveUsers.put(newUser);
+    });
+  }
+
+  ///function for adding a new [ATSaveUser] object to the isar collection
+  Future saveCategories(List<Category> category) async {
+    return await _isar!.writeTxn(() async {
+      return _isar!.categorys.putAll(category);
     });
   }
 
@@ -88,63 +94,58 @@ class LocalDbManager {
     });
   }
 
-///fetching goals
+  ///fetching goals
   Future<List<SavingsGoals>> getSavingsGoal() async {
     return _isar!.writeTxn(() async {
       return _isar!.savingsGoals.where().findAll();
     });
   }
 
-///fetching categories
+  ///fetching categories
   Future<List<Category>> getCategories() async {
     return _isar!.writeTxn(() async {
       return _isar!.categorys.where().findAll();
     });
   }
 
-///fetchiing all transactions
+  ///fetchiing all transactions
   Future<List<SavingsTransactions>> getSavingsTransactions() async {
     return _isar!.writeTxn(() async {
       return _isar!.savingsTransactions.where().findAll();
     });
   }
 
-///fetching all expenses
+  ///fetching all expenses
   Future<List<Expenses>> getExpenses() async {
     return _isar!.writeTxn(() async {
       return _isar!.expenses.where().findAll();
     });
   }
 
-///deletes [SavingsTransactions] object by  id
+  ///deletes [SavingsTransactions] object by  id
   deleteTransactionById(SavingsTransactions txn) async {
     await _isar!
         .writeTxn(() async => await _isar!.savingsTransactions.delete(txn.id!));
   }
 
-///deletes [Expenses] object by  id
-    deleteExpenseById(Expenses exp) async {
-    await _isar!
-        .writeTxn(() async => await _isar!.expenses.delete(exp.id!));
+  ///deletes [Expenses] object by  id
+  deleteExpenseById(Expenses exp) async {
+    await _isar!.writeTxn(() async => await _isar!.expenses.delete(exp.id!));
   }
 
-///deletes [SavingsGoals] object by  id
+  ///deletes [SavingsGoals] object by  id
   Future deleteSavingsGoalsById(SavingsGoals goal) async {
     await _isar!
         .writeTxn(() async => await _isar!.savingsGoals.delete(goal.id!));
-   
   }
 
-
-///deletes all [SavingsTransactions] collections
+  ///deletes all [SavingsTransactions] collections
   Future clearTxnByUserId(String uid) async {
-    await _isar!
-        .writeTxn(() async =>
-    await _isar!.savingsTransactions.filter().uidEqualTo(uid).deleteAll());
-    
+    await _isar!.writeTxn(() async =>
+        await _isar!.savingsTransactions.filter().uidEqualTo(uid).deleteAll());
   }
 
-///deletes all [Expenses] and replaces
+  ///deletes all [Expenses] and replaces
   Future updateExpenses(List<Expenses> exp) async {
     return _isar!.writeTxn(() async {
       await _isar!.expenses.clear();
@@ -153,7 +154,7 @@ class LocalDbManager {
     });
   }
 
-///deletes all [SavingsGoals] and replaces
+  ///deletes all [SavingsGoals] and replaces
   Future updateSavingsGoals(List<SavingsGoals> goals) async {
     return _isar!.writeTxn(() async {
       await _isar!.savingsGoals.clear();
@@ -162,7 +163,7 @@ class LocalDbManager {
     });
   }
 
-///deletes all [SavingsTransactions] and replaces
+  ///deletes all [SavingsTransactions] and replaces
   Future updateSavingsTransactions(List<SavingsTransactions> txn) async {
     return _isar!.writeTxn(() async {
       await _isar!.savingsTransactions.clear();
@@ -171,7 +172,7 @@ class LocalDbManager {
     });
   }
 
-///deletes [SavingsGoals] object by id and replaces
+  ///deletes [SavingsGoals] object by id and replaces
   Future updateSavingsGoalsById(SavingsGoals goal) async {
     print(goal.toString());
     SavingsGoals? formerGoal;
@@ -185,8 +186,8 @@ class LocalDbManager {
     });
   }
 
-///adds new amount to current amount
-  Future updateSavingsAmount(double amount, int id) async {
+  ///adds new amount to current amount
+  Future updateSavingsAmountById(double amount, int id) async {
     SavingsGoals? formerGoal;
     await _isar!.writeTxn(() async {
       formerGoal = await _isar!.savingsGoals.filter().idEqualTo(id).findFirst();
@@ -200,7 +201,7 @@ class LocalDbManager {
   }
 
 //removes new amount from current amount
-   Future updateSavingsAmountWithDeductions(double amount, int id) async {
+  Future updateSavingsAmountWithDeductions(double amount, int id) async {
     SavingsGoals? formerGoal;
     await _isar!.writeTxn(() async {
       formerGoal = await _isar!.savingsGoals.filter().idEqualTo(id).findFirst();
@@ -212,5 +213,4 @@ class LocalDbManager {
       await _isar!.savingsGoals.put(formerGoal!);
     });
   }
-
 }

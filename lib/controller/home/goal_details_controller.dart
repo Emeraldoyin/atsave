@@ -252,9 +252,15 @@ class GoalDetailsController extends State<GoalDetails> {
     widget.goal.currentAmount +
         parseStringToDouble(currentAmountController.text);
     setState(() {});
+    SavingsTransactions newtxn = SavingsTransactions(
+        amountExpended: 0,
+        amountSaved: amount,
+        savingsId: widget.goal.id,
+        timeStamp: DateTime.now(),
+        uid: user!.uid);
     context
         .read<ConnectivityBloc>()
-        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount));
+        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount, txn: newtxn));
   }
 
   @override

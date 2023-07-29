@@ -7,8 +7,8 @@ import '../../consts/app_colors.dart';
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/design_helpers.dart';
 
-class majorCard extends StatelessWidget {
-  const majorCard({
+class MajorCard extends StatelessWidget {
+  const MajorCard({
     super.key,
     required this.username,
     required this.controller,
@@ -46,7 +46,7 @@ class majorCard extends StatelessWidget {
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                           Text(
-                            username!,
+                            username ?? 'f',
                             style: const TextStyle(
                                 color: APPBAR_COLOR2, fontSize: 25),
                           ),

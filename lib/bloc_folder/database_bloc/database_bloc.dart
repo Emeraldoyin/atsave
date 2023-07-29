@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:easysave/model/expenses.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/repository/database_repository.dart';
+import 'package:easysave/utils/helpers/session_manager.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,7 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
   }
 
   _addGoal(AddSavingsGoalsEvent event, emit) async {
+    SessionManager manager = SessionManager();
     emit(DatabaseLoadingState());
 
     try {
@@ -46,6 +48,11 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
       event.txn.savingsId = event.goal.id!;
       event.txn.id = txid ?? 1;
       await dbRepo.saveSavingsTransactionsToServer(event.txn);
+      String deviceToken = await manager.retrieveMessagingToken();
+      String title = 'Congratulations';
+      String body =
+          'You have successfully created a new savings goal of ${event.goal.targetAmount}';
+      await dbRepo.sendNotification(deviceToken, title, body);
 
       emit(SavingsGoalAddedState(goal: event.goal, txn: event.txn));
     } catch (e) {

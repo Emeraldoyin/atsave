@@ -48,10 +48,10 @@ class RetrieveDataEvent extends ConnectivityEvent {
 class UpdateCurrentAmountEvent extends ConnectivityEvent {
   final SavingsGoals goal;
   final double addedAmount;
-  //final SavingsTransactions txn;
+  final SavingsTransactions txn;
 
   const UpdateCurrentAmountEvent(
-      {required this.goal, required this.addedAmount});
+      {required this.goal, required this.addedAmount, required this.txn});
 
   @override
   List<Object> get props => [goal, addedAmount];

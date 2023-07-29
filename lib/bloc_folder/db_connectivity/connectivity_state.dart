@@ -13,7 +13,7 @@ class ConnectivityInitial extends ConnectivityState {}
 class DbLoadingState extends ConnectivityState {}
 
 class DbSuccessState extends ConnectivityState {
-   List<Expenses>? availableExpenses;
+  List<Expenses>? availableExpenses;
   final List<SavingsGoals> availableSavingsGoals;
   final List<Category> availableCategories;
   //final List<SavingsGoals>? pinnedGoals;
@@ -24,21 +24,19 @@ class DbSuccessState extends ConnectivityState {
     required this.availableSavingsGoals,
     required this.availableCategories,
     // this.pinnedGoals
-    this.availableExpenses,
+    this.availableExpenses, 
   });
 
   @override
   List<Object> get props => [
         availableSavingsGoals,
         availableCategories,
-        availableSavingsTransactions!
+        availableSavingsTransactions ?? [], 
       ];
 }
 
 class DbErrorState extends ConnectivityState {
   final String error;
 
-  const DbErrorState({
-    required this.error,
-  });
+  const DbErrorState({required this.error});
 }

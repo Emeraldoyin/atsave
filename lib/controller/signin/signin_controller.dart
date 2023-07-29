@@ -1,11 +1,15 @@
 import 'package:easysave/controller/home/home_controller.dart';
 import 'package:easysave/controller/signup/signup_controller.dart';
+import 'package:easysave/model/category.dart';
+import 'package:easysave/model/expenses.dart';
+import 'package:easysave/model/savings_transactions.dart';
 import 'package:easysave/view/pages/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc_folder/auth_bloc/authentication_bloc.dart';
 import '../../consts/app_colors.dart';
+import '../../model/savings_goals.dart';
 import '../../utils/helpers/session_manager.dart';
 
 ///controller for sign in
@@ -25,6 +29,10 @@ class SignInController extends State<SignIn> {
   final bool isChecked = false;
   String? email;
   String? password;
+  List<Category>? categories;
+  List<SavingsGoals>? allGoals;
+  List<Expenses>? allExpenses;
+  List<SavingsTransactions>? allTransactions;
 
   ///to validate email
   bool isValidEmail(String email) {
@@ -62,12 +70,22 @@ class SignInController extends State<SignIn> {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         SessionManager manager = SessionManager();
         manager.loggedIn(true);
+        categories = state.availableCategories;
+        allGoals = state.availableGoals;
+        allExpenses = state.availableExpenses;
+        allTransactions = state.availableTransactions;
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('you have been successfully logged in'),
       ));
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Home()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Home(
+                  categories: categories,
+                  allExpenses: allExpenses,
+                  allGoals: allGoals,
+                  allTransactions: allTransactions)));
     }
     if (state is AuthErrorState) {
       if (state.error ==
@@ -126,7 +144,7 @@ class SignInController extends State<SignIn> {
     super.initState();
   }
 
-///disposes controllers
+  ///disposes controllers
   @override
   void dispose() {
     super.dispose();

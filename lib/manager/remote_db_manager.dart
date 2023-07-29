@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:easysave/model/expenses.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:http/http.dart' as http;
 
 import '../model/category.dart';
 
@@ -12,17 +15,16 @@ class RemoteDbManager {
   final FirebaseDatabase db = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
 
-   ///this is called when a user wants to login. 
-   ///it verifies that the user has details in firebase and is authentic
-   Future<String> login(String email, String password) async {
+  ///this is called when a user wants to login.
+  ///it verifies that the user has details in firebase and is authentic
+  Future<String> login(String email, String password) async {
     final user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     return user.user!.uid;
   }
 
-
-   ///this is called when a user wants to sign up. 
-   ///it saves the users credentials in the realtime database and creates a new user in the firebase authentication system
+  ///this is called when a user wants to sign up.
+  ///it saves the users credentials in the realtime database and creates a new user in the firebase authentication system
   Future<UserCredential> signUp(String email, String? password,
       String createdAt, String firstName, String lastName) async {
     final UserCredential credential = await FirebaseAuth.instance
@@ -39,7 +41,7 @@ class RemoteDbManager {
     return credential;
   }
 
-///fetches all collections [SavingsGoals] from firebase
+  ///fetches all collections [SavingsGoals] from firebase
   Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
     List<SavingsGoals> goals = [];
 
@@ -69,7 +71,7 @@ class RemoteDbManager {
     return goals;
   }
 
-///fetches all collections [SavingsTransactions] from firebase
+  ///fetches all collections [SavingsTransactions] from firebase
   Future<List<SavingsTransactions>> fetchRemoteSavingsTransactions(
       String uid) async {
     List<SavingsTransactions> savingsTransactions = [];
@@ -97,7 +99,7 @@ class RemoteDbManager {
     return savingsTransactions;
   }
 
-///fetches all collections [Categories] from firebase
+  ///fetches all collections [Categories] from firebase
   Future<List<Category>> getCategories() async {
     List<Category> categories = [];
     final snapshot = await db.ref().child('Category').get();
@@ -119,7 +121,7 @@ class RemoteDbManager {
     return categories;
   }
 
-///fetches all collections [Expenses] from firebase
+  ///fetches all collections [Expenses] from firebase
   Future<List<Expenses>> fetchRemoteExpenses(String uid) async {
     List<Expenses> expenses = [];
 
@@ -144,7 +146,7 @@ class RemoteDbManager {
     return expenses;
   }
 
-///saves a new goal to server
+  ///saves a new goal to server
   Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
     await db
         .ref()
@@ -179,7 +181,7 @@ class RemoteDbManager {
     });
   }
 
-///saves a new expense to server
+  ///saves a new expense to server
   Future<void> saveExpensesToServer(Expenses exp) async {
     await db
         .ref()
@@ -217,7 +219,7 @@ class RemoteDbManager {
     }
   }
 
-///updates server with new list of transactions
+  ///updates server with new list of transactions
   Future<void> updateSavingsTransactionsInServer(
       List<SavingsTransactions> transactions, String uid) async {
     await db.ref().child('SavingsTransactions/$uid').remove();
@@ -238,7 +240,7 @@ class RemoteDbManager {
     }
   }
 
-///updates server with new list of expenses
+  ///updates server with new list of expenses
   Future<void> updateExpensesInServer(
       List<Expenses> expenses, String uid) async {
     await db.ref().child('Expenses/$uid').remove();
@@ -253,12 +255,12 @@ class RemoteDbManager {
         "uid": expense.uid,
         "savingsId": expense.savingsId,
         "amountSpent": expense.amountSpent,
-        "date": expense.date,
+        "date": expense.date.toIso8601String(),
       });
     }
   }
 
-///deletes goal
+  ///deletes goal
   deleteSavingsGoals(SavingsGoals goal) async {
     // deleting SavingsGoal object from server
     await db
@@ -289,10 +291,39 @@ class RemoteDbManager {
         .remove();
   }
 
-///logs out a user
- Future<String> logout(String email, String password) async {
+  ///logs out a user
+  Future<String> logout(String email, String password) async {
     final user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     return user.user!.uid;
+  }
+
+  ///called when a push notification is to be sent to user device
+  Future<void> sendPushNotification(
+      String deviceToken, String title, String body) async {
+    const url =
+        'https://fcm.googleapis.com/v1/projects/atsave-2db27/messages:send';
+//holds the auth token to be refreshed
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'Bearer ya29.a0AbVbY6OB6qf0ihjO9n7vQSKboAa1xJh4CjqXDW40fIJtvheKIiXvsCjhj_qiuBAmgRLVfIMUXLDCln5MOKTydazm1H07LVpzZiPqL3xyyrnOLMUy3fAGELkdpdOag3XRY9MLkij9neQ2pRBAoqZbW6TAmsIOcgQaCgYKAZkSARESFQFWKvPlP55Hp14OB1GRfcrOfP1gyQ0166',
+    };
+
+    final message = {
+      'message': {
+        'token': deviceToken,
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+      },
+    };
+
+    final response = await http.post(Uri.parse(url),
+        headers: headers, body: jsonEncode(message));
+
+    if (response.statusCode == 200) {
+    } else {}
   }
 }

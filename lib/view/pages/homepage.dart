@@ -4,9 +4,11 @@ import 'package:easysave/view/pages/dashboard_page.dart';
 import 'package:easysave/view/pages/transactions_page.dart';
 import 'package:easysave/view/pages/wallet_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
+import 'add_savings_goal_page.dart';
 
 class HomePage extends StatelessView<Home, HomePageController> {
   const HomePage(HomePageController controller, {Key? key})
@@ -16,19 +18,19 @@ class HomePage extends StatelessView<Home, HomePageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: body(context),
-      // floatingActionButton: SizedBox(
-      //   height: 70.h,
-      //   width: 70.w,
-      //   child: FloatingActionButton(
-      //       onPressed: () {
-      //         Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => AddSavingsGoalPage(controller)));
-      //       },
-      //       child: const Icon(Icons.add)),
-      // ),
-      //  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: SizedBox(
+        height: 70.h,
+        width: 70.w,
+        child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddSavingsGoalPage(controller)));
+            },
+            child: const Icon(Icons.add)),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,
         useLegacyColorScheme: false,
@@ -42,21 +44,14 @@ class HomePage extends StatelessView<Home, HomePageController> {
             icon: Icons.dashboard,
             label: 'Dashboard',
           ),
-
-          // controller.navbar(
-          //   icon: Icons.attach_money,
-          //   label: 'Add',
-          // ),
           controller.navbar(
             icon: Icons.account_balance_wallet,
             label: 'Wallet',
           ),
-
           controller.navbar(
             icon: Icons.monetization_on_outlined,
             label: 'Transactions',
           ),
-          //  controller.navbar(icon: Icons.more, label: 'More'),
         ],
         currentIndex: controller.currentIndex,
         type: BottomNavigationBarType.fixed,
@@ -71,9 +66,7 @@ class HomePage extends StatelessView<Home, HomePageController> {
         children: [
           DashBoardPage(controller),
           WalletPage(controller),
-
           TransactionsPage(controller),
-          // const MorePage()
         ],
       ),
     );

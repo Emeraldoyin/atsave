@@ -27,7 +27,7 @@
 //   }
 
 //   @override
-//   Widget build(BuildContext context) => majorCard(username: username, controller: controller);
+//   Widget build(BuildContext context) => MajorCard(username: username, controller: controller);
 
 
 // }
