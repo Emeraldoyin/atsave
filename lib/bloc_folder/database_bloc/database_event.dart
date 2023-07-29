@@ -1,5 +1,7 @@
 part of 'database_bloc.dart';
 
+
+/// these classes state the posible events of the [DatabaseBloc] explicitly
 abstract class DatabaseEvent extends Equatable {
   const DatabaseEvent();
 

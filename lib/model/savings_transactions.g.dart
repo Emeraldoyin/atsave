@@ -90,11 +90,11 @@ SavingsTransactions _savingsTransactionsDeserialize(
   final object = SavingsTransactions(
     amountExpended: reader.readDoubleOrNull(offsets[0]),
     amountSaved: reader.readDoubleOrNull(offsets[1]),
-    savingsId: reader.readLong(offsets[2]),
+    id: id,
+    savingsId: reader.readLongOrNull(offsets[2]),
     timeStamp: reader.readDateTime(offsets[3]),
     uid: reader.readString(offsets[4]),
   );
-  object.id = id;
   return object;
 }
 
@@ -110,7 +110,7 @@ P _savingsTransactionsDeserializeProp<P>(
     case 1:
       return (reader.readDoubleOrNull(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readDateTime(offset)) as P;
     case 4:
@@ -459,7 +459,25 @@ extension SavingsTransactionsQueryFilter on QueryBuilder<SavingsTransactions,
   }
 
   QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
-      savingsIdEqualTo(int value) {
+      savingsIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'savingsId',
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      savingsIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'savingsId',
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
+      savingsIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'savingsId',
@@ -470,7 +488,7 @@ extension SavingsTransactionsQueryFilter on QueryBuilder<SavingsTransactions,
 
   QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -484,7 +502,7 @@ extension SavingsTransactionsQueryFilter on QueryBuilder<SavingsTransactions,
 
   QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -498,8 +516,8 @@ extension SavingsTransactionsQueryFilter on QueryBuilder<SavingsTransactions,
 
   QueryBuilder<SavingsTransactions, SavingsTransactions, QAfterFilterCondition>
       savingsIdBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -933,7 +951,8 @@ extension SavingsTransactionsQueryProperty
     });
   }
 
-  QueryBuilder<SavingsTransactions, int, QQueryOperations> savingsIdProperty() {
+  QueryBuilder<SavingsTransactions, int?, QQueryOperations>
+      savingsIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'savingsId');
     });
@@ -959,12 +978,13 @@ extension SavingsTransactionsQueryProperty
 
 SavingsTransactions _$SavingsTransactionsFromJson(Map<Object?, Object?> json) =>
     SavingsTransactions(
-      savingsId: json['savingsId'] as int,
+      id: json['id'] as int?,
+      savingsId: json['savingsId'] as int?,
       amountExpended: (json['amountExpended'] as num?)?.toDouble(),
       amountSaved: (json['amountSaved'] as num?)?.toDouble(),
       timeStamp: DateTime.parse(json['timeStamp'] as String),
       uid: json['uid'] as String,
-    )..id = json['id'] as int?;
+    );
 
 Map<String, dynamic> _$SavingsTransactionsToJson(
         SavingsTransactions instance) =>

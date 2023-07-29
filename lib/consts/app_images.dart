@@ -1,0 +1,30 @@
+/// defines all images used
+
+const image1 = 'assets/images/onboard_img1.png';
+const image2 = 'assets/images/onboard_img2.png';
+const image3 = 'assets/images/onboard_img3.png';
+const image4 = 'assets/images/onboard_img4.png';
+const image5 = 'assets/images/credit cards.png';
+const image6 = 'assets/images/foody.png';
+const image7 = 'assets/images/carr.png';
+const image8 = 'assets/images/give.png';
+const image9 = 'assets/images/beauty.png';
+const image10 = 'assets/images/home.png';
+const image11 = 'assets/images/health.png';
+const image12 = 'assets/images/others.png';
+const image13 = 'assets/images/pp.png';
+const image14 = 'assets/images/cloth.png';
+const image15 = 'assets/images/others.png';
+const image16 = 'assets/images/money and phone.png';
+const image17 = 'assets/images/success.png';
+const image18 = 'assets/images/error.png';
+const image19 = 'assets/images/fill_pin.png';
+const image20 = 'assets/images/pin.png';
+const image21 = 'assets/images/edit.png';
+const image22 = 'assets/images/trash.png';
+const image23 = 'assets/images/Piggy bank with coins.png';
+const image24 = 'assets/images/icon-google.png';
+const image25 = 'assets/images/icon-facebook.png';
+const image26 = 'assets/images/icon-twitter.png';
+const image27 = 'assets/images/logo.png';
+const image28 = 'assets/images/icon-visa.png';

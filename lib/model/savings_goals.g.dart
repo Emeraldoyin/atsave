@@ -22,24 +22,24 @@ const SavingsGoalsSchema = CollectionSchema(
       name: r'categoryId',
       type: IsarType.long,
     ),
-    r'endDate': PropertySchema(
+    r'currentAmount': PropertySchema(
       id: 1,
+      name: r'currentAmount',
+      type: IsarType.double,
+    ),
+    r'endDate': PropertySchema(
+      id: 2,
       name: r'endDate',
       type: IsarType.dateTime,
     ),
     r'goalNotes': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'goalNotes',
       type: IsarType.string,
     ),
     r'progressPercentage': PropertySchema(
-      id: 3,
-      name: r'progressPercentage',
-      type: IsarType.double,
-    ),
-    r'startAmount': PropertySchema(
       id: 4,
-      name: r'startAmount',
+      name: r'progressPercentage',
       type: IsarType.double,
     ),
     r'targetAmount': PropertySchema(
@@ -90,10 +90,10 @@ void _savingsGoalsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.categoryId);
-  writer.writeDateTime(offsets[1], object.endDate);
-  writer.writeString(offsets[2], object.goalNotes);
-  writer.writeDouble(offsets[3], object.progressPercentage);
-  writer.writeDouble(offsets[4], object.currentAmount);
+  writer.writeDouble(offsets[1], object.currentAmount);
+  writer.writeDateTime(offsets[2], object.endDate);
+  writer.writeString(offsets[3], object.goalNotes);
+  writer.writeDouble(offsets[4], object.progressPercentage);
   writer.writeDouble(offsets[5], object.targetAmount);
   writer.writeString(offsets[6], object.uid);
 }
@@ -106,14 +106,14 @@ SavingsGoals _savingsGoalsDeserialize(
 ) {
   final object = SavingsGoals(
     categoryId: reader.readLong(offsets[0]),
-    endDate: reader.readDateTime(offsets[1]),
-    goalNotes: reader.readStringOrNull(offsets[2]),
-    progressPercentage: reader.readDouble(offsets[3]),
-    currentAmount: reader.readDouble(offsets[4]),
+    currentAmount: reader.readDouble(offsets[1]),
+    endDate: reader.readDateTime(offsets[2]),
+    goalNotes: reader.readStringOrNull(offsets[3]),
+    id: id,
+    progressPercentage: reader.readDouble(offsets[4]),
     targetAmount: reader.readDouble(offsets[5]),
     uid: reader.readString(offsets[6]),
   );
-  object.id = id;
   return object;
 }
 
@@ -127,11 +127,11 @@ P _savingsGoalsDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
-    case 2:
-      return (reader.readStringOrNull(offset)) as P;
-    case 3:
       return (reader.readDouble(offset)) as P;
+    case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readDouble(offset)) as P;
     case 5:
@@ -289,6 +289,72 @@ extension SavingsGoalsQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
+      currentAmountEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
+      currentAmountGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currentAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
+      currentAmountLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currentAmount',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
+      currentAmountBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currentAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -640,72 +706,6 @@ extension SavingsGoalsQueryFilter
   }
 
   QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
-      startAmountEqualTo(
-    double value, {
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startAmount',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
-      startAmountGreaterThan(
-    double value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'startAmount',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
-      startAmountLessThan(
-    double value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'startAmount',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
-      startAmountBetween(
-    double lower,
-    double upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'startAmount',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterFilterCondition>
       targetAmountEqualTo(
     double value, {
     double epsilon = Query.epsilon,
@@ -925,6 +925,19 @@ extension SavingsGoalsQuerySortBy
     });
   }
 
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> sortByCurrentAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy>
+      sortByCurrentAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentAmount', Sort.desc);
+    });
+  }
+
   QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> sortByEndDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endDate', Sort.asc);
@@ -960,19 +973,6 @@ extension SavingsGoalsQuerySortBy
       sortByProgressPercentageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'progressPercentage', Sort.desc);
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> sortByStartAmount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startAmount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy>
-      sortByStartAmountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startAmount', Sort.desc);
     });
   }
 
@@ -1014,6 +1014,19 @@ extension SavingsGoalsQuerySortThenBy
       thenByCategoryIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'categoryId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> thenByCurrentAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy>
+      thenByCurrentAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentAmount', Sort.desc);
     });
   }
 
@@ -1067,19 +1080,6 @@ extension SavingsGoalsQuerySortThenBy
     });
   }
 
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> thenByStartAmount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startAmount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy>
-      thenByStartAmountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startAmount', Sort.desc);
-    });
-  }
-
   QueryBuilder<SavingsGoals, SavingsGoals, QAfterSortBy> thenByTargetAmount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'targetAmount', Sort.asc);
@@ -1114,6 +1114,13 @@ extension SavingsGoalsQueryWhereDistinct
     });
   }
 
+  QueryBuilder<SavingsGoals, SavingsGoals, QDistinct>
+      distinctByCurrentAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'currentAmount');
+    });
+  }
+
   QueryBuilder<SavingsGoals, SavingsGoals, QDistinct> distinctByEndDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'endDate');
@@ -1131,12 +1138,6 @@ extension SavingsGoalsQueryWhereDistinct
       distinctByProgressPercentage() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'progressPercentage');
-    });
-  }
-
-  QueryBuilder<SavingsGoals, SavingsGoals, QDistinct> distinctByStartAmount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startAmount');
     });
   }
 
@@ -1168,6 +1169,12 @@ extension SavingsGoalsQueryProperty
     });
   }
 
+  QueryBuilder<SavingsGoals, double, QQueryOperations> currentAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'currentAmount');
+    });
+  }
+
   QueryBuilder<SavingsGoals, DateTime, QQueryOperations> endDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endDate');
@@ -1184,12 +1191,6 @@ extension SavingsGoalsQueryProperty
       progressPercentageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'progressPercentage');
-    });
-  }
-
-  QueryBuilder<SavingsGoals, double, QQueryOperations> startAmountProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startAmount');
     });
   }
 
@@ -1211,14 +1212,15 @@ extension SavingsGoalsQueryProperty
 // **************************************************************************
 
 SavingsGoals _$SavingsGoalsFromJson(Map<Object?, Object?> json) => SavingsGoals(
+      id: json['id'] as int?,
       uid: json['uid'] as String,
       targetAmount: (json['targetAmount'] as num).toDouble(),
       goalNotes: json['goalNotes'] as String?,
       categoryId: json['categoryId'] as int,
-      currentAmount: (json['startAmount'] as num).toDouble(),
+      currentAmount: (json['currentAmount'] as num).toDouble(),
       endDate: DateTime.parse(json['endDate'] as String),
       progressPercentage: (json['progressPercentage'] as num).toDouble(),
-    )..id = json['id'] as int?;
+    );
 
 Map<String, dynamic> _$SavingsGoalsToJson(SavingsGoals instance) =>
     <String, dynamic>{
@@ -1227,7 +1229,7 @@ Map<String, dynamic> _$SavingsGoalsToJson(SavingsGoals instance) =>
       'targetAmount': instance.targetAmount,
       'goalNotes': instance.goalNotes,
       'categoryId': instance.categoryId,
-      'startAmount': instance.currentAmount,
+      'currentAmount': instance.currentAmount,
       'endDate': instance.endDate.toIso8601String(),
       'progressPercentage': instance.progressPercentage,
     };

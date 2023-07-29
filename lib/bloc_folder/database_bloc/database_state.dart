@@ -1,5 +1,7 @@
 part of 'database_bloc.dart';
 
+
+///These classes express all the states that can be emitted on various events of the [DatabaseBloc]
 abstract class DatabaseState extends Equatable {
   const DatabaseState();
 
@@ -13,14 +15,15 @@ class DatabaseLoadingState extends DatabaseState {}
 
 class SavingsGoalAddedState extends DatabaseState {
   final SavingsGoals goal;
-  const SavingsGoalAddedState({required this.goal});
+   SavingsTransactions? txn;
+ SavingsGoalAddedState({required this.goal, this.txn});
 
   @override
   List<Object> get props => [goal];
 }
 
 class SavingsGoalDeletedState extends DatabaseState {
- final List<SavingsGoals> goals;
+  final List<SavingsGoals> goals;
   const SavingsGoalDeletedState({required this.goals});
 
   @override
@@ -28,16 +31,13 @@ class SavingsGoalDeletedState extends DatabaseState {
 }
 
 class SaveTransactionsSuccessState extends DatabaseState {
-   final SavingsTransactions txn;
-  
+  final SavingsTransactions txn;
 
   const SaveTransactionsSuccessState({required this.txn});
 
   @override
   List<Object> get props => [txn];
 }
- 
-
 
 class SpendFromSavingsState extends DatabaseState {
   final SavingsGoals goal;

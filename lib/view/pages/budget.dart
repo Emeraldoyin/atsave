@@ -1,3 +1,4 @@
+import 'package:easysave/consts/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +18,7 @@ class BudgetPage extends StatelessWidget {
                 width: 500.h,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/images/error.png'))),
+                        image: AssetImage(image18))),
                 child: const Text('this is Budget page')),
           ],
         ),

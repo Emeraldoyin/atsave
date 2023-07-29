@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import '../../utils/helpers/session_manager.dart';
 
 class MyGoals extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
-
   const MyGoals({Key? key}) : super(key: key);
 
   @override

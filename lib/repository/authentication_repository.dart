@@ -1,3 +1,4 @@
+import 'package:easysave/manager/remote_db_manager.dart';
 import 'package:easysave/model/atsave_user.dart';
 import 'package:easysave/repository/database_repository.dart';
 
@@ -6,37 +7,26 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../manager/local_db_manager.dart';
 
+///this file contains a class that holds the declaration of functions
+///this functions are used during the authentication of a user
 class AuthenticationRepository {
   DatabaseRepository dbRepo = DatabaseRepository();
+
   Future<String> login(String email, String password) async {
-    final user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    return user.user!.uid;
+    return await RemoteDbManager().login(email, password);  ///called on login
   }
 
   Future<String> logout(String email, String password) async {
-    final user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    return user.user!.uid;
+    return await RemoteDbManager().logout(email, password); ///called on logout
   }
 
   Future<UserCredential> signUp(String email, String? password,
       String createdAt, String firstName, String lastName) async {
-    final UserCredential credential = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password!);
-    final databaseReference = FirebaseDatabase.instance.ref();
-    // await FirebaseAuth.instance.currentUser!.updateDisplayName(displayName);
-    await databaseReference.child('User').child(credential.user!.uid).set({
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      "uid": credential.user!.uid,
-      'createdAt': DateTime.now().toIso8601String(),
-    });
-    return credential;
+    return await RemoteDbManager()
+        .signUp(email, password, createdAt, firstName, lastName); ///called on signup
   }
 
   saveUserToDb(ATSaveUser user) async {
-    return await LocalDbManager().saveUser(user);
+    return await LocalDbManager().saveUser(user); ///saves a new user to isar
   }
 }

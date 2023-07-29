@@ -1,5 +1,7 @@
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
+import 'package:easysave/controller/home/goal_details_controller.dart';
 import 'package:easysave/controller/home/home_controller.dart';
+import 'package:easysave/view/widgets/number_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -41,6 +43,47 @@ Future<void> showDeleteDialog(SavingsGoals goal, BuildContext context) async {
               // ));
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const Home()));
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> showWithdrawDialog(
+  SavingsGoals goal,
+  GoalDetailsController controller,
+  BuildContext context,
+) async {
+  String? name = goal.goalNotes;
+  // int id = widget.eachTask.id!;
+
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Withdraw Money'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                  'Are you sure you want to withdraw the money you saved for "$name"?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () {
+              showNumberInputDialogForExpense(context, controller);
             },
           ),
         ],

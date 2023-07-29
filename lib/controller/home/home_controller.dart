@@ -4,6 +4,7 @@ import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/database_bloc/database_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
@@ -11,15 +12,19 @@ import 'package:easysave/utils/helpers/double_parser.dart';
 import 'package:easysave/view/pages/add_savings_goal_page.dart';
 import 'package:easysave/view/pages/error_page.dart';
 import 'package:easysave/view/pages/homepage.dart';
+import 'package:easysave/view/pages/my_expenses_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../consts/app_texts.dart';
 import '../../model/category.dart';
 import '../../utils/helpers/session_manager.dart';
 import '../signin/signin_controller.dart';
 
+///This is the controller class for the Home screen.
+///It controlls the homepage which includes the dashboard and its two pages[MyGoalsPage] and [MyExpenses], the other pages in the navbar.
 class Home extends StatefulWidget {
   const Home({Key? key, this.categories}) : super(key: key);
   final List<Category>? categories;
@@ -27,22 +32,9 @@ class Home extends StatefulWidget {
   HomePageController createState() => HomePageController();
 }
 
-List<Category> categoryList = [
-  Category(name: 'Food', imagePath: 'assets/images/foody.png'),
-  Category(name: 'Auto & Gas', imagePath: 'assets/images/carr.png'),
-  Category(name: 'Events', imagePath: 'assets/images/event.png'),
-  Category(name: 'Family Needs', imagePath: 'assets/images/beauty.png'),
-  Category(name: 'Apartment', imagePath: 'assets/images/home.png'),
-  Category(name: 'Utility Bills', imagePath: 'assets/images/health.png'),
-  Category(name: 'Travels', imagePath: 'assets/images/others.png'),
-  Category(name: 'Books/Study', imagePath: 'assets/images/pp.png'),
-  Category(name: 'Personal needs', imagePath: 'assets/images/cloth.png'),
-  Category(name: 'Non-specified', imagePath: 'assets/images/others.png'),
-];
-
 class HomePageController extends State<Home>
     with SingleTickerProviderStateMixin {
-  //... //Initialization code, state vars etc, all go here
+  //... //Initialization code, state vars etc,
   int currentIndex = 0;
   final addGoalFormKey = GlobalKey<FormState>();
   TabController? tabController;
@@ -51,6 +43,7 @@ class HomePageController extends State<Home>
   String? username;
   late DateTime date;
   List<SavingsGoals> allGoals = [];
+  List<SavingsTransactions> allTransactions = [];
   SavingsGoals? newlyAddedGoal;
   RegExp decimalRegex = RegExp(r'^-?\d+\.?\d*$');
   final user = FirebaseAuth.instance.currentUser;
@@ -65,6 +58,7 @@ class HomePageController extends State<Home>
     });
   }
 
+  ///returns the items of bottom navbar with a default
   BottomNavigationBarItem navbar({
     required IconData icon,
     required String label,
@@ -89,6 +83,7 @@ class HomePageController extends State<Home>
     WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
+//returns displayName of user
   String? getUsername() {
     username = user!.displayName;
     if (username == null) {
@@ -98,16 +93,23 @@ class HomePageController extends State<Home>
     }
   }
 
+///disposing all controller used
   @override
   void dispose() {
     super.dispose();
     tabController!.dispose();
+    targetAmountController.dispose();
+    startAmountController.dispose();
+    proposedEndDateController.dispose();
+    goalNotesController.dispose();
   }
 
+///changes tab view
   onClick() {
     tabController!.animateTo(selectedIndex += 1);
   }
 
+///validators for text field
   String? validate(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -136,6 +138,7 @@ class HomePageController extends State<Home>
     }
   }
 
+///handles the event called on add new goal
   onSaveGoal() async {
     String inputText = proposedEndDateController.text;
     DateFormat inputFormat = DateFormat("EEEE, MMM d, y");
@@ -153,6 +156,8 @@ class HomePageController extends State<Home>
       ));
     } else {
       if (addGoalFormKey.currentState!.validate()) {
+
+        ///creating a savingsgoal instance that will be used to save the object in database
         SavingsGoals newlyAddedGoal = SavingsGoals(
             uid: user!.uid,
             targetAmount: targetAmount,
@@ -164,22 +169,26 @@ class HomePageController extends State<Home>
                 double.parse(progressPercentage.toStringAsFixed(2)),
             goalNotes: goalNotesController.text);
 
-        context
-            .read<DatabaseBloc>()
-            .add(AddSavingsGoalsEvent(goal: newlyAddedGoal));
 
+        ///creating a savingstransaction instance that will be saved in database
         SavingsTransactions newTxn = SavingsTransactions(
-            savingsId: newlyAddedGoal.id!,
+            savingsId: newlyAddedGoal.id,
             amountExpended: 0,
+            amountSaved: newlyAddedGoal.currentAmount,
             timeStamp: DateTime.now(),
             uid: user!.uid);
+        context
+            .read<DatabaseBloc>()
+            .add(AddSavingsGoalsEvent(goal: newlyAddedGoal, txn: newTxn));
+
+        context.read<DatabaseBloc>().add(SaveTransactionEvent(txn: newTxn));
 
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => const Success(
                       buttonText: 'Done',
-                      displayImageURL: 'assets/images/money and phone.png',
+                      displayImageURL: image17,
                       displayMessage: 'Congratulations!!!',
                       succcessful: true,
                       displaySubText: 'You just added a new savings goals.',
@@ -189,6 +198,7 @@ class HomePageController extends State<Home>
     }
   }
 
+///listeners for bloc states emitted
   firstListener(state) {
     if (state is AuthLoadingState) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -234,53 +244,18 @@ class HomePageController extends State<Home>
     }
   }
 
+///called on logout action
   onLogOut() {
     log('pressing logout', name: 'admin');
     context.read<AuthenticationBloc>().add(LogoutEvent(uid: user!.uid));
   }
 
+///navigates to add page
   gotoAdd() {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => AddSavingsGoalPage(this)));
   }
 
-  listener(state) {
-    if (state is DbLoadingState) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Waiting for network...'),
-      ));
-    }
-    if (state is DbSuccessState) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        SessionManager manager = SessionManager();
-        manager.loggedIn(false);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('you have been successfully logged out'),
-        behavior: SnackBarBehavior.floating,
-      ));
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const SignIn()));
-      // try {
-
-      // } catch (e) {
-      //   showSnackBar(
-      //     context,
-      //     e.toString(), Colors.red
-      //   );
-      // }
-    }
-    if (state is DbErrorState) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const ErrorPage()));
-    }
-
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //       content: Text('Login Error. Kindly try again.'),
-    //       backgroundColor: ICON_COLOR5),
-    // );
-  }
 
   onTap() async {
     date = (await showDatePicker(
@@ -298,6 +273,73 @@ class HomePageController extends State<Home>
           formattedDate; //setting output date to TextField value.
     });
   }
+
+  onDropDownItemSelected(BuildContext context, String item){
+  switch (item) {
+    case 'Display Name':
+      // Show the display name in a dialog or any other way you prefer
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Display Name'),
+            content: Text('Your Display Name'), // Replace with the user's display name
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      break;
+
+    case 'Initials':
+      // Show the initials in a CircleAvatar or any other way you prefer
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Initials'),
+            content: CircleAvatar(
+              backgroundColor: Colors.blue, // Replace with desired background color
+              child: Text(
+                'JD', // Replace with the user's initials
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      break;
+
+    case 'Logout':
+      // Handle logout action here
+      // For example, you can navigate to the login page and clear the user session
+      Navigator.pushReplacementNamed(context, '/login'); // Replace with your login route
+      break;
+
+    case 'Dark Mode':
+      // Toggle dark mode here using a state management solution (e.g., Provider, BLoC, etc.)
+      // For example, you can use a boolean variable to control the app's theme and change it.
+      break;
+
+    default:
+      break;
+  }
+}
+
 
   @override
   Widget build(BuildContext context) => HomePage(

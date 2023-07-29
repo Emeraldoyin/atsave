@@ -1,3 +1,4 @@
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,7 +21,7 @@ class ErrorPage extends StatelessWidget {
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       alignment: Alignment.center,
-                      image: AssetImage('assets/images/error.png'))),
+                      image: AssetImage(image18))),
               child: Padding(
                 padding: const EdgeInsets.only(top: 150),
                 child: Column(

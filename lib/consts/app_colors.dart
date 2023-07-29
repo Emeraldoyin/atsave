@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///all colrs used in the app are stated here
+
 const BACKGROUND_COLOR1 = Color.fromARGB(255, 247, 250, 246);
 const BACKGROUND_COLOR2 = Color.fromARGB(255, 0, 26, 18);
 const APPBAR_COLOR1 = Color.fromARGB(255, 194, 245, 220);

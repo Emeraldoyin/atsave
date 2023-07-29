@@ -12,6 +12,7 @@ import '../../model/savings_transactions.dart';
 part 'database_event.dart';
 part 'database_state.dart';
 
+///the class is used to manage states for adding new objects into the collections like [SavingsGoals] and [Expenses]
 class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
   DatabaseRepository dbRepo = DatabaseRepository();
 
@@ -20,7 +21,6 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
     on<SaveTransactionEvent>(
       (event, emit) => _addTxn(event, emit),
     );
-  
   }
 
   _addTxn(SaveTransactionEvent event, emit) async {
@@ -41,15 +41,16 @@ class DatabaseBloc extends Bloc<DatabaseEvent, DatabaseState> {
       int? id = await dbRepo.saveGoal(event.goal);
       event.goal.id = id ?? 1;
       await dbRepo.saveSavingsGoalsToServer(event.goal);
+      event.txn.savingsId = event.goal.id!;
+      int? txid = await dbRepo.saveTransaction(event.txn);
+      event.txn.savingsId = event.goal.id!;
+      event.txn.id = txid ?? 1;
+      await dbRepo.saveSavingsTransactionsToServer(event.txn);
 
-      emit(SavingsGoalAddedState(
-        goal: event.goal,
-      ));
-    } on FirebaseAuthException catch (e) {
-      log(e.message.toString(), name: 'auth error');
-      emit(ErrorState(error: e.message.toString()));
+      emit(SavingsGoalAddedState(goal: event.goal, txn: event.txn));
+    } catch (e) {
+      log(e.toString(), name: 'auth error');
+      emit(ErrorState(error: e.toString()));
     }
   }
-
- 
 }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/theme/app_theme.dart';
+import '../../consts/app_images.dart';
+import '../../consts/app_texts.dart';
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
 import '../../utils/helpers/design_helpers.dart';
@@ -34,7 +36,7 @@ class WalletPage extends StatelessView<Home, HomePageController> {
             Container(
                 padding:
                     EdgeInsets.symmetric(vertical: 24.0.h, horizontal: 16.w),
-                height: 133.h,
+                height: 138.h,
                 width: 284.w,
                 decoration: const BoxDecoration(boxShadow: [
                   BoxShadow(color: Colors.grey, blurRadius: 10, spreadRadius: 1)
@@ -45,7 +47,7 @@ class WalletPage extends StatelessView<Home, HomePageController> {
                     SizedBox(
                         width: 50.w,
                         height: 15.21.h,
-                        child: Image.asset('assets/images/icon-visa.png')),
+                        child: Image.asset(image28)),
                     addVerticalSpace(4.h),
                     Text(
                       '**** **** **** 3478',
@@ -81,7 +83,7 @@ class WalletPage extends StatelessView<Home, HomePageController> {
                     true, // Set shrinkWrap to true to avoid height conflicts
                 physics:
                     const NeverScrollableScrollPhysics(), // Disable scroll in ListView
-                itemCount: categoryList.length-1,
+                itemCount: categoryList.length - 1,
                 itemBuilder: (BuildContext context, int index) {
                   Category category = categoryList[index];
                   return Padding(

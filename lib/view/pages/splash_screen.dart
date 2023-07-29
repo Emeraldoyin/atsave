@@ -1,4 +1,5 @@
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:flutter/material.dart';
 
 import '/controller/splash_screen/splash_controller.dart';
@@ -12,7 +13,7 @@ class SplashScreen extends StatelessView<Splash, SplashController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ONBOARD_COLOR,
-      body: Center(child: Image.asset('assets/images/logo.png')),
+      body: Center(child: Image.asset(image27)),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easysave/config/theme/app_theme.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:easysave/view/widgets/savings_goals_card.dart';
@@ -68,8 +69,8 @@ class GoalDetailsPage
                     controller.onPinGoal(widget.goal);
                   },
                   icon: controller.pinnedGoals.contains(widget.goal)
-                      ? Image.asset('assets/images/fill_pin.png')
-                      : Image.asset('assets/images/pin.png'),
+                      ? Image.asset(image19)
+                      : Image.asset(image20),
                   color: controller.pinnedGoals.contains(widget.goal)
                       ? Colors.orange
                       : Colors.grey,
@@ -82,7 +83,7 @@ class GoalDetailsPage
                     onPressed: () {
                       controller.onClickEdit();
                     },
-                    icon: Image.asset('assets/images/edit.png')),
+                    icon: Image.asset(image21)),
               ),
               SizedBox(
                 height: 35.h,
@@ -91,7 +92,7 @@ class GoalDetailsPage
                     onPressed: () {
                       showDeleteDialog(widget.goal, context);
                     },
-                    icon: Image.asset('assets/images/trash.png')),
+                    icon: Image.asset(image22)),
               ),
             ],
           ),
@@ -170,7 +171,13 @@ class GoalDetailsPage
                               context, controller, amountRemaining);
                         },
                         child: const Text('Add Money')),
-                    TextButton(onPressed: () {}, child: const Text('Withdraw'), )
+                    TextButton(
+                      onPressed: () {
+                        showWithdrawDialog(widget.goal,  controller, context,);
+                      },
+                      child: const Text('Withdraw',
+                          style: TextStyle(color: ICON_COLOR5)),
+                    )
                   ],
                 )
               ],

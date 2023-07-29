@@ -1,5 +1,6 @@
 part of 'authentication_bloc.dart';
 
+///this file contains the expressions of states to be emitted on each event of the authentication bloc
 abstract class AuthenticationState extends Equatable {
   const AuthenticationState();
 

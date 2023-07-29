@@ -70,10 +70,10 @@ Category _categoryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Category(
+    id: id,
     imagePath: reader.readString(offsets[0]),
     name: reader.readString(offsets[1]),
   );
-  object.id = id;
   return object;
 }
 
@@ -628,7 +628,8 @@ extension CategoryQueryProperty
 Category _$CategoryFromJson(Map<Object?, Object?> json) => Category(
       name: json['name'] as String,
       imagePath: json['imagePath'] as String,
-    )..id = json['id'] as int?;
+      id: json['id'] as int?,
+    );
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,

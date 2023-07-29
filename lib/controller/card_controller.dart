@@ -4,7 +4,7 @@
 
 
 // class Card extends StatefulWidget {
-//   //static const routeName = Strings.SCREEN_BLANK;
+//  
 
 //   const Card({Key? key}) : super(key: key);
 

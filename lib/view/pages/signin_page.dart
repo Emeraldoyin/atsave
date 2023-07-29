@@ -1,5 +1,6 @@
 import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -155,7 +156,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                         radius: 22.r,
                         backgroundColor: Colors.white,
                         child: Image.asset(
-                          'assets/images/icon-google.png',
+                          image24,
                           fit: BoxFit.scaleDown,
                           scale: 5,
                         ),
@@ -165,7 +166,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                         radius: 22.r,
                         backgroundColor: Colors.white,
                         child: Image.asset(
-                          'assets/images/icon-facebook.png',
+                          image25,
                           fit: BoxFit.scaleDown,
                           scale: 5,
                         ),
@@ -175,7 +176,7 @@ class SignInPage extends StatelessView<SignIn, SignInController> {
                         radius: 22.r,
                         backgroundColor: Colors.white,
                         child: Image.asset(
-                          'assets/images/icon-twitter.png',
+                          image26,
                           fit: BoxFit.scaleDown,
                           scale: 5,
                         ),

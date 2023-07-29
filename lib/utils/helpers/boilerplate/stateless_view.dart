@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///the major class used by other screens to implement their controller 
 abstract class StatelessView<T1, T2> extends StatelessWidget {
   final T2 controller;
 

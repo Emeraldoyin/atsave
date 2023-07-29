@@ -1,6 +1,7 @@
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/config/theme/app_theme.dart';
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/utils/helpers/design_helpers.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_margin_widget/flutter_margin_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../consts/app_texts.dart';
 import '../../controller/home/home_controller.dart';
 import '../../model/category.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
@@ -58,7 +60,7 @@ class MyGoals extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 40.w, top: 100.h),
-                child: Image.asset('assets/images/Piggy bank with coins.png'),
+                child: Image.asset(image23),
               ),
               const CircularProgressIndicator(),
             ],
@@ -291,7 +293,7 @@ class MyGoals extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      child: Image.asset('assets/images/onboard_img2.png'),
+                      child: Image.asset(image2),
                     )
                   ],
                 ),
@@ -303,7 +305,7 @@ class MyGoals extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/Piggy bank with coins.png'),
+              Image.asset(image23),
               const CircularProgressIndicator(),
             ],
           ),

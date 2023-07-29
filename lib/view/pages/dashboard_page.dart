@@ -1,7 +1,7 @@
 import 'package:easysave/bloc_folder/auth_bloc/authentication_bloc.dart';
 import 'package:easysave/bloc_folder/db_connectivity/connectivity_bloc.dart';
 import 'package:easysave/consts/app_colors.dart';
-import 'package:easysave/view/pages/my_expemses_page.dart';
+import 'package:easysave/view/pages/my_expenses_page.dart';
 import 'package:easysave/view/pages/my_goals_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

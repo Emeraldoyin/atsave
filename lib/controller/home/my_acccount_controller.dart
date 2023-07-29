@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'home_controller.dart';
 
 class MyAccount extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
-
   const MyAccount({Key? key}) : super(key: key);
 
   @override

@@ -8,9 +8,8 @@ import '../../bloc_folder/auth_bloc/authentication_bloc.dart';
 import '../../consts/app_colors.dart';
 import '../../utils/helpers/session_manager.dart';
 
+///controller for sign in
 class SignIn extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
-
   const SignIn({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +17,7 @@ class SignIn extends StatefulWidget {
 }
 
 class SignInController extends State<SignIn> {
-  //... //Initialization code, state vars etc, all go here
+  //... //Initialization code, state vars etc
   final TextEditingController? txtController = TextEditingController();
   final TextEditingController? passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -27,35 +26,34 @@ class SignInController extends State<SignIn> {
   String? email;
   String? password;
 
+  ///to validate email
   bool isValidEmail(String email) {
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return emailRegex.hasMatch(email);
   }
 
+  ///clears content of input field
   clearContent() {
     setState(() {
       txtController!.clear();
     });
   }
 
+  ///obsures or shows password when button is clicked
   changePasswordView() {
     setState(() {
       obscureText = !obscureText; // toggle the visibility of the text input
     });
   }
 
-  checked() {
-    setState(() {
-      // isChecked = value;
-    });
-  }
-
+  ///navigar=tor tove to sign up page
   void pushSignUp() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const SignUp(),
     ));
   }
 
+  ///listens for emiited states and reacts accordingly
   listener(state) {
     if (state is AuthLoadingState) {
       const CircularProgressIndicator();
@@ -115,6 +113,7 @@ class SignInController extends State<SignIn> {
     }
   }
 
+  ///function that handles login event by ensuring user is validated.
   login(formkey) async {
     if (formKey.currentState!.validate()) {
       context.read<AuthenticationBloc>().add(SignInEvent(
@@ -127,6 +126,7 @@ class SignInController extends State<SignIn> {
     super.initState();
   }
 
+///disposes controllers
   @override
   void dispose() {
     super.dispose();

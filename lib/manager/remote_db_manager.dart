@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easysave/model/expenses.dart';
 import 'package:easysave/model/savings_goals.dart';
 import 'package:easysave/model/savings_transactions.dart';
@@ -8,10 +6,40 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../model/category.dart';
 
+///This is the class that contains functions and variables that handles remote services to and from the remote server (Firebase realtime database).
 class RemoteDbManager {
+  /// The reference to the Firebase RealTime Database collection.
   final FirebaseDatabase db = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
 
+   ///this is called when a user wants to login. 
+   ///it verifies that the user has details in firebase and is authentic
+   Future<String> login(String email, String password) async {
+    final user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    return user.user!.uid;
+  }
+
+
+   ///this is called when a user wants to sign up. 
+   ///it saves the users credentials in the realtime database and creates a new user in the firebase authentication system
+  Future<UserCredential> signUp(String email, String? password,
+      String createdAt, String firstName, String lastName) async {
+    final UserCredential credential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password!);
+    final databaseReference = FirebaseDatabase.instance.ref();
+    // await FirebaseAuth.instance.currentUser!.updateDisplayName(displayName);
+    await databaseReference.child('User').child(credential.user!.uid).set({
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      "uid": credential.user!.uid,
+      'createdAt': DateTime.now().toIso8601String(),
+    });
+    return credential;
+  }
+
+///fetches all collections [SavingsGoals] from firebase
   Future<List<SavingsGoals>> fetchRemoteSavingsGoals(String uid) async {
     List<SavingsGoals> goals = [];
 
@@ -20,8 +48,8 @@ class RemoteDbManager {
     for (var element in snapshot.children) {
       if (element.value != null) {
         var data = element.value as Map<Object?, Object?>;
-       
-        // Create a new SavingsGoals object and set its properties manually
+
+        // Create a new SavingsGoals object and setting its properties manually
         SavingsGoals goal = SavingsGoals(
           id: (data['id'] as int?),
           uid: uid,
@@ -35,71 +63,88 @@ class RemoteDbManager {
         );
 
         goals.add(goal);
-      
-      } else {
-      
       }
     }
 
     return goals;
   }
 
-  Future<List<SavingsTransactions>> fetchRemoteSavingsTransactions() async {
+///fetches all collections [SavingsTransactions] from firebase
+  Future<List<SavingsTransactions>> fetchRemoteSavingsTransactions(
+      String uid) async {
     List<SavingsTransactions> savingsTransactions = [];
 
     final snapshot =
-        await db.ref().child('SavingsTransactions').child('id').get();
-    try {
-      if (snapshot.exists) {
-        Map<String, dynamic> isarData = {};
-        for (var element in snapshot.children) {
-          String? convertedKey = element.key.toString();
-          dynamic convertedValue = element.value;
+        await db.ref().child('SavingsTransactions').child(uid).get();
 
-          // Store the converted key-value pair in the isarData map
-          isarData[convertedKey] = convertedValue;
+    for (var element in snapshot.children) {
+      if (element.value != null) {
+        var data = element.value as Map<Object?, Object?>;
 
-          savingsTransactions.add(SavingsTransactions.fromJson(isarData));
-        }
+        // Create a new SavingsTransaction object and setting its properties manually
+        SavingsTransactions txn = SavingsTransactions(
+          id: (data['id'] as int?),
+          uid: uid,
+          timeStamp: DateTime.parse(data['timeStamp'] as String),
+          amountSaved: double.parse(data['amountSaved'].toString()),
+          amountExpended: (data['amountExpended'] as num).toDouble(),
+        );
+
+        savingsTransactions.add(txn);
       }
-    } on FirebaseAuthException catch (e) {
-      log(e.message.toString(), name: 'Firebase');
     }
+
     return savingsTransactions;
   }
 
-  deleteSavingsGoals(SavingsGoals goal) async {
-    await db
-        .ref()
-        .child('SavingsGoals')
-        .child(goal.uid)
-        .child(goal.id.toString())
-        .remove();
+///fetches all collections [Categories] from firebase
+  Future<List<Category>> getCategories() async {
+    List<Category> categories = [];
+    final snapshot = await db.ref().child('Category').get();
+
+    for (var element in snapshot.children) {
+      if (element.value != null) {
+        var data = element.value as Map<Object?, Object?>;
+
+        // Create a new Category object and setting its properties manually
+        Category category = Category(
+          name: (data['name'] as String),
+          imagePath: (data['imagePath'] as String),
+          id: data['id'] as int,
+        );
+
+        categories.add(category);
+      }
+    }
+    return categories;
   }
 
-  Future<List<Expenses>> fetchRemoteExpenses() async {
+///fetches all collections [Expenses] from firebase
+  Future<List<Expenses>> fetchRemoteExpenses(String uid) async {
     List<Expenses> expenses = [];
 
-    final snapshot = await db.ref().child('Expenses').child('id').get();
-    try {
-      if (snapshot.exists) {
-        Map<String, dynamic> isarData = {};
-        for (var element in snapshot.children) {
-          String? convertedKey = element.key.toString();
-          dynamic convertedValue = element.value;
+    final snapshot = await db.ref().child('Expenses').child(uid).get();
 
-          // Store the converted key-value pair in the isarData map
-          isarData[convertedKey] = convertedValue;
+    for (var element in snapshot.children) {
+      if (element.value != null) {
+        var data = element.value as Map<Object?, Object?>;
 
-          expenses.add(Expenses.fromJson(isarData));
-        }
+        // Create a new Expenses object and setting its properties manually
+        Expenses expense = Expenses(
+          id: (data['id'] as int?),
+          uid: uid,
+          date: DateTime.parse(data['date'] as String),
+          amountSpent: double.parse(data['amountSpent'].toString()),
+          savingsId: (data['savingsId'] as int),
+        );
+
+        expenses.add(expense);
       }
-    } on FirebaseAuthException catch (e) {
-      log(e.message.toString(), name: 'Firebase');
     }
     return expenses;
   }
 
+///saves a new goal to server
   Future<void> saveSavingsGoalToServer(SavingsGoals goal) async {
     await db
         .ref()
@@ -118,8 +163,14 @@ class RemoteDbManager {
     });
   }
 
+//saves a new transaction to server
   Future<void> saveSavingsTransactionsToServer(SavingsTransactions txn) async {
-    await db.ref().child('SavingsTransactions').child(txn.id.toString()).set({
+    await db
+        .ref()
+        .child('SavingsTransactions')
+        .child(txn.uid)
+        .child(txn.id.toString())
+        .set({
       "uid": txn.uid,
       "savingsId": txn.savingsId,
       "amountSaved": txn.amountSaved,
@@ -128,27 +179,22 @@ class RemoteDbManager {
     });
   }
 
-  Future<List<Category>> getCategories() async {
-    List<Category> categories = [];
-    final snapshot = await db.ref().child('Category').get();
-
-    for (var element in snapshot.children) {
-      if (element.value != null) {
-        var data = element.value as Map<Object?, Object?>;
-       
-        // Create a new SavingsGoals object and set its properties manually
-        Category category = Category(
-          name: (data['name'] as String),
-          imagePath: (data['imagePath'] as String),
-          id: data['id'] as int,
-        );
-
-        categories.add(category);
-      } 
-    }
-    return categories;
+///saves a new expense to server
+  Future<void> saveExpensesToServer(Expenses exp) async {
+    await db
+        .ref()
+        .child('Expenses')
+        .child(exp.uid)
+        .child(exp.id.toString())
+        .set({
+      "uid": exp.uid,
+      "savingsId": exp.savingsId,
+      "amountSpent": exp.amountSpent,
+      "date": exp.date.toIso8601String(),
+    });
   }
 
+//updateds server with new list of goals
   Future<void> updateSavingsGoalInServer(
       List<SavingsGoals> goals, String uid) async {
     await db.ref().child('SavingsGoals/$uid').remove();
@@ -169,5 +215,84 @@ class RemoteDbManager {
         "progressPercentage": goal.progressPercentage.toStringAsFixed(2)
       });
     }
+  }
+
+///updates server with new list of transactions
+  Future<void> updateSavingsTransactionsInServer(
+      List<SavingsTransactions> transactions, String uid) async {
+    await db.ref().child('SavingsTransactions/$uid').remove();
+
+    for (var transaction in transactions) {
+      await db
+          .ref()
+          .child('SavingsTransactions')
+          .child(transaction.uid.toString())
+          .child(transaction.id.toString())
+          .set({
+        "uid": transaction.uid,
+        "savingsId": transaction.savingsId,
+        "amountSaved": transaction.amountSaved,
+        "amountExpended": transaction.amountExpended,
+        "timeStamp": transaction.timeStamp,
+      });
+    }
+  }
+
+///updates server with new list of expenses
+  Future<void> updateExpensesInServer(
+      List<Expenses> expenses, String uid) async {
+    await db.ref().child('Expenses/$uid').remove();
+
+    for (var expense in expenses) {
+      await db
+          .ref()
+          .child('Expenses')
+          .child(expense.uid.toString())
+          .child(expense.id.toString())
+          .set({
+        "uid": expense.uid,
+        "savingsId": expense.savingsId,
+        "amountSpent": expense.amountSpent,
+        "date": expense.date,
+      });
+    }
+  }
+
+///deletes goal
+  deleteSavingsGoals(SavingsGoals goal) async {
+    // deleting SavingsGoal object from server
+    await db
+        .ref()
+        .child('SavingsGoals')
+        .child(goal.uid)
+        .child(goal.id.toString())
+        .remove();
+  }
+
+  deleteExpenses(Expenses expense) async {
+    // deleting Expenses object from server
+    await db
+        .ref()
+        .child('Expenses')
+        .child(expense.uid)
+        .child(expense.id.toString())
+        .remove();
+  }
+
+  deleteSavingsTransaction(SavingsTransactions txn) async {
+    // deleting SavingsTransactions object from server
+    await db
+        .ref()
+        .child('SavingsTransactions')
+        .child(txn.uid)
+        .child(txn.id.toString())
+        .remove();
+  }
+
+///logs out a user
+ Future<String> logout(String email, String password) async {
+    final user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    return user.user!.uid;
   }
 }

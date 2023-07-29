@@ -1,5 +1,6 @@
 part of 'connectivity_bloc.dart';
 
+///the classes that represents events in the connectivity bloc
 abstract class ConnectivityEvent extends Equatable {
   const ConnectivityEvent();
 
@@ -14,6 +15,17 @@ class DeleteSavingsGoalsEvent extends ConnectivityEvent {
 
   @override
   List<Object> get props => [goal];
+}
+
+class WithdrawEvent extends ConnectivityEvent {
+  final SavingsGoals goal;
+  final Expenses expense;
+  final SavingsTransactions txn;
+
+  const WithdrawEvent({required this.goal, required this.expense, required this.txn});
+
+  @override
+  List<Object> get props => [goal, expense, txn];
 }
 
 class PinSavingsGoalEvent extends ConnectivityEvent {
@@ -32,7 +44,6 @@ class RetrieveDataEvent extends ConnectivityEvent {
   @override
   List<Object> get props => [uid];
 }
-
 
 class UpdateCurrentAmountEvent extends ConnectivityEvent {
   final SavingsGoals goal;
@@ -53,5 +64,5 @@ class EditGoalEvent extends ConnectivityEvent {
   const EditGoalEvent({required this.goal, required this.txn});
 
   @override
-  List<Object> get props => [goal,txn];
+  List<Object> get props => [goal, txn];
 }

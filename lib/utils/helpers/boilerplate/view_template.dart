@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'controller_template.dart';
 import 'stateless_view.dart';
 
+///template for screens
 class BlankView extends StatelessView<Blank, BlankController> {
   const BlankView(BlankController controller, {Key? key}) : super(controller, key: key);
 

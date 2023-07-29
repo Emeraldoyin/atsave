@@ -1,5 +1,6 @@
 part of 'authentication_bloc.dart';
 
+///The classes are used to state the events that can occur during user authentication and log out
 abstract class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
 
@@ -7,6 +8,7 @@ abstract class AuthenticationEvent extends Equatable {
   List<Object> get props => [];
 }
 
+//for sign in
 class SignInEvent extends AuthenticationEvent {
   final String email;
   final String password;
@@ -17,6 +19,7 @@ class SignInEvent extends AuthenticationEvent {
   List<Object> get props => [email, password];
 }
 
+//for log out
 class LogoutEvent extends AuthenticationEvent {
  final String uid;
 
@@ -25,6 +28,8 @@ class LogoutEvent extends AuthenticationEvent {
   @override
   List<Object> get props => [uid];
 }
+
+///this is on an event of error
 class ErrorEvent extends AuthenticationEvent {
  final String error;
 
@@ -34,6 +39,7 @@ class ErrorEvent extends AuthenticationEvent {
   List<Object> get props => [error];
 }
 
+///for sign up
 class SignUpEvent extends AuthenticationEvent {
   final String email;
   final String firstName;

@@ -1,4 +1,5 @@
 import 'package:easysave/consts/app_colors.dart';
+import 'package:easysave/consts/app_images.dart';
 import 'package:easysave/controller/signup/success_controller.dart';
 import 'package:easysave/view/pages/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc_folder/auth_bloc/authentication_bloc.dart';
 import '../signin/signin_controller.dart';
 
+//controller for signup page
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -16,6 +18,8 @@ class SignUp extends StatefulWidget {
 }
 
 class SignUpController extends State<SignUp> {
+
+  ///stating all state variables
   GlobalKey<FormState> signUpFormKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
@@ -26,6 +30,9 @@ class SignUpController extends State<SignUp> {
   String? password;
   late String uid;
   late String displayName = firstNameController.text;
+
+
+  ///validates email
   bool isValidEmail(String email) {
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return emailRegex.hasMatch(email);
@@ -34,9 +41,10 @@ class SignUpController extends State<SignUp> {
   @override
   void initState() {
     super.initState();
-    obscureText == true;
+    obscureText == true; ///ensuring password is hidden until user clicks the button to unhide it
   }
 
+///disposes controllers
   @override
   void dispose() {
     emailController.dispose();
@@ -46,15 +54,8 @@ class SignUpController extends State<SignUp> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) => SignUpPage(this);
 
-  void changeVisibility() {
-    setState(() {
-      obscureText = !obscureText;
-    });
-  }
-
+///listeners for states emitted
   listener(state) {
     if (state is AuthLoadingState) {
       CircularProgressIndicator;
@@ -69,7 +70,7 @@ class SignUpController extends State<SignUp> {
               builder: (BuildContext context) => const Success(
                   succcessful: true,
                   displayMessage: 'Congratulations!!!',
-                  displayImageURL: 'assets/images/success.png',
+                  displayImageURL: image17,
                   buttonText: 'Go to login',
                   displaySubText:
                       'Your account has been created. \n We\'re happy to have you onboard', destination: SignIn(),)));
@@ -106,6 +107,8 @@ class SignUpController extends State<SignUp> {
     }
   }
 
+
+ ///validates email
   validateForEmail(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -116,6 +119,7 @@ class SignUpController extends State<SignUp> {
     }
   }
 
+//ensures field is not left empty
   validateForName(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -124,6 +128,7 @@ class SignUpController extends State<SignUp> {
     }
   }
 
+//ensuring password field is not empty
   validateForPassword(value) {
     if (value.isEmpty) {
       return 'Field cannot be empty';
@@ -134,45 +139,24 @@ class SignUpController extends State<SignUp> {
     }
   }
 
+//saving name for user in firebase auth as display name
   saveDisplayName() async {
     final user = FirebaseAuth.instance.currentUser;
     await user!.updateDisplayName(displayName);
   }
 
+
+///obsure and reveals password
   changePasswordView() {
     setState(() {
       obscureText = !obscureText; // toggle the visibility of the text input
     });
   }
 
-  // void showAlertDialog(BuildContext context, String title, String content) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       // return object of type AlertDialog
-  //       return AlertDialog(
-  //         title: Text(title),
-  //         content: Text(content),
-  //         actions: <Widget>[
-  //           // usually buttons at the bottom of the dialog
-  //           TextButton(
-  //             child: const Text(
-  //               "Close",
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
+///acts on sign up
   void signup(signUpFormKey) async {
     if (signUpFormKey.currentState.validate()) {
-      context.read<AuthenticationBloc>().add(SignUpEvent(
+      context.read<AuthenticationBloc>().add(SignUpEvent( //calling bloc event for signup
             createdAt: DateTime.now().toIso8601String(),
             email: emailController.text,
             firstName: firstNameController.text,
@@ -182,9 +166,13 @@ class SignUpController extends State<SignUp> {
     } 
   }
 
+///navigates to signin page
   void pushSignIn() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const SignIn(),
     ));
   }
+
+  @override
+  Widget build(BuildContext context) => SignUpPage(this);
 }

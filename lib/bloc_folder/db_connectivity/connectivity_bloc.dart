@@ -4,14 +4,16 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../model/savings_transactions.dart';
+import '../../model/expenses.dart';
 import '/repository/database_repository.dart';
 import '../../model/category.dart';
 import '../../model/savings_goals.dart';
+import '../../model/savings_transactions.dart';
 
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
+///This is file that contains the bloc that handles all the connectivity of the application to remote and local database...ensuring proper synchronisation
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   DatabaseRepository dbRepo = DatabaseRepository();
   ConnectivityBloc() : super(ConnectivityInitial()) {
@@ -27,6 +29,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     on<EditGoalEvent>(
       (event, emit) => _editGoal(event, emit),
     );
+    on<WithdrawEvent>((event, emit) => _withdraw(event, emit));
   }
 
   _retrieveData(
@@ -92,16 +95,42 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     }
   }
 
+  _withdraw(WithdrawEvent event, Emitter<ConnectivityState> emit) async {
+    emit(DbLoadingState());
+    await dbRepo.saveExpenses(event.expense);
+    await dbRepo.updateCurrentAmountWithDeduction(
+        event.expense.amountSpent, event.goal.id!);
+    await dbRepo.saveExpensesToServer(event.expense);
+    int? id = await dbRepo.saveTransaction(event.txn);
+    event.txn.id = id ?? 1;
+    await dbRepo.saveSavingsTransactionsToServer(event.txn);
+    final List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
+    final List<Category> presentCategories = await dbRepo.iCategories();
+    final List<SavingsTransactions> transactions =
+        await dbRepo.iSavingsTransactions();
+    final List<Expenses> exp = await dbRepo.iExpenses();
+    emit(DbSuccessState(
+        availableSavingsGoals: goals,
+        availableCategories: presentCategories,
+        availableSavingsTransactions: transactions, availableExpenses: exp));
+  }
+
   _editGoal(EditGoalEvent event, Emitter<ConnectivityState> emit) async {
     emit(DbLoadingState());
 
     // try {
     await dbRepo.updateSavingsGoalById(event.goal);
-    await dbRepo.addSavingsTxn(event.txn);
+    int? id = await dbRepo.saveTransaction(event.txn);
+    event.txn.id = id ?? 1;
+    await dbRepo.saveSavingsTransactionsToServer(event.txn);
     final List<Category> presentCategories = await dbRepo.iCategories();
     final List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
+    final List<SavingsTransactions> transactions =
+        await dbRepo.iSavingsTransactions();
     emit(DbSuccessState(
-        availableCategories: presentCategories, availableSavingsGoals: goals));
+        availableCategories: presentCategories,
+        availableSavingsGoals: goals,
+        availableSavingsTransactions: transactions));
     // }
     //  catch (e) {
     //   log(e.toString(), name: 'error');

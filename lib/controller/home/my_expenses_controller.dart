@@ -2,8 +2,6 @@ import 'package:easysave/controller/home/home_controller.dart';
 import 'package:flutter/material.dart';
 
 class MyExpenses extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
-
   const MyExpenses({Key? key}) : super(key: key);
 
   @override

@@ -25,7 +25,7 @@ const ExpensesSchema = CollectionSchema(
     r'date': PropertySchema(
       id: 1,
       name: r'date',
-      type: IsarType.string,
+      type: IsarType.dateTime,
     ),
     r'savingsId': PropertySchema(
       id: 2,
@@ -58,7 +58,6 @@ int _expensesEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.date.length * 3;
   bytesCount += 3 + object.uid.length * 3;
   return bytesCount;
 }
@@ -70,7 +69,7 @@ void _expensesSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.amountSpent);
-  writer.writeString(offsets[1], object.date);
+  writer.writeDateTime(offsets[1], object.date);
   writer.writeLong(offsets[2], object.savingsId);
   writer.writeString(offsets[3], object.uid);
 }
@@ -83,11 +82,11 @@ Expenses _expensesDeserialize(
 ) {
   final object = Expenses(
     amountSpent: reader.readDouble(offsets[0]),
-    date: reader.readString(offsets[1]),
+    date: reader.readDateTime(offsets[1]),
+    id: id,
     savingsId: reader.readLong(offsets[2]),
     uid: reader.readString(offsets[3]),
   );
-  object.id = id;
   return object;
 }
 
@@ -101,7 +100,7 @@ P _expensesDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
@@ -264,54 +263,46 @@ extension ExpensesQueryFilter
   }
 
   QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'date',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateGreaterThan(
-    String value, {
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'date',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateLessThan(
-    String value, {
+    DateTime value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'date',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateBetween(
-    String lower,
-    String upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -320,75 +311,6 @@ extension ExpensesQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'date',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'date',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'date',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'date',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'date',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Expenses, Expenses, QAfterFilterCondition> dateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'date',
-        value: '',
       ));
     });
   }
@@ -772,10 +694,9 @@ extension ExpensesQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Expenses, Expenses, QDistinct> distinctByDate(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Expenses, Expenses, QDistinct> distinctByDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'date', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'date');
     });
   }
 
@@ -807,7 +728,7 @@ extension ExpensesQueryProperty
     });
   }
 
-  QueryBuilder<Expenses, String, QQueryOperations> dateProperty() {
+  QueryBuilder<Expenses, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
     });
@@ -831,15 +752,16 @@ extension ExpensesQueryProperty
 // **************************************************************************
 
 Expenses _$ExpensesFromJson(Map<Object?, Object?> json) => Expenses(
+      id: json['id'] as int?,
       amountSpent: (json['amountSpent'] as num).toDouble(),
-      date: json['date'] as String,
+      date: DateTime.parse(json['date'] as String),
       savingsId: json['savingsId'] as int,
       uid: json['uid'] as String,
-    )..id = json['id'] as int?;
+    );
 
 Map<String, dynamic> _$ExpensesToJson(Expenses instance) => <String, dynamic>{
       'id': instance.id,
-      'date': instance.date,
+      'date': instance.date.toIso8601String(),
       'amountSpent': instance.amountSpent,
       'savingsId': instance.savingsId,
       'uid': instance.uid,

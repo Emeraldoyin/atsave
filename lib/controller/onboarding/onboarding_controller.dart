@@ -4,8 +4,8 @@ import '/utils/helpers/session_manager.dart';
 import '/view/pages/onboarding_view.dart';
 import '../signin/signin_controller.dart';
 
+///controller class for onboarding screen
 class Onboarding extends StatefulWidget {
-  //static const routeName = Strings.SCREEN_BLANK;
 
   const Onboarding({Key? key}) : super(key: key);
 
@@ -14,11 +14,13 @@ class Onboarding extends StatefulWidget {
 }
 
 class OnboardingController extends State<Onboarding> {
-  //... //Initialization code, state vars etc, all go here
+  //... //Initialization code, state vars are stated here
 
   PageController onboardCtrl = PageController();
   bool onboardLastpage = false;
   int currentIndex = 0;
+
+  ///stating shared preference when screen is opened to ensure users sign in once
   @override
   void initState() {
     super.initState();
