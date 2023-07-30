@@ -12,12 +12,12 @@ class MajorCard extends StatelessWidget {
     super.key,
     required this.username,
     required this.controller,
-    // required this.actionWord,
+    required this.actionWord,
   });
 
   final String? username;
   final HomePageController controller;
-  //final String actionWord;
+  final String actionWord;
   // final Widget action;
 
   @override
@@ -46,14 +46,14 @@ class MajorCard extends StatelessWidget {
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
                           Text(
-                            username ?? 'f',
+                            username ?? '',
                             style: const TextStyle(
                                 color: APPBAR_COLOR2, fontSize: 25),
                           ),
                           addVerticalSpace(5.h),
                           //SecondWidget,
                           Text(
-                            'You do not have any savings goals yet.',
+                            actionWord,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

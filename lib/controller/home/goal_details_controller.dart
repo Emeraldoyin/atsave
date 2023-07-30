@@ -207,7 +207,7 @@ class GoalDetailsController extends State<GoalDetails> {
             .read<ConnectivityBloc>()
             .add(EditGoalEvent(goal: newlyAddedGoal, txn: newTxn));
 
-        await Navigator.push(
+        await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => Success(
@@ -258,9 +258,8 @@ class GoalDetailsController extends State<GoalDetails> {
         savingsId: widget.goal.id,
         timeStamp: DateTime.now(),
         uid: user!.uid);
-    context
-        .read<ConnectivityBloc>()
-        .add(UpdateCurrentAmountEvent(goal: widget.goal, addedAmount: amount, txn: newtxn));
+    context.read<ConnectivityBloc>().add(UpdateCurrentAmountEvent(
+        goal: widget.goal, addedAmount: amount, txn: newtxn));
   }
 
   @override

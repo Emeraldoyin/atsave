@@ -22,7 +22,9 @@ import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import '../../consts/app_texts.dart';
 import '../../model/category.dart';
 import '../../model/expenses.dart';
+import '../../utils/helpers/comma_formatter.dart';
 import '../../utils/helpers/session_manager.dart';
+import '../../view/pages/my_goals_page.dart';
 import '../signin/signin_controller.dart';
 
 ///This is the controller class for the Home screen.
@@ -64,6 +66,18 @@ class HomePageController extends State<Home>
   TextEditingController startAmountController = TextEditingController();
   TextEditingController proposedEndDateController = TextEditingController();
   SessionManager manager = SessionManager();
+  double alreadySaved = 0;
+  double totalAmount = 0;
+  double remainingAmount = 0;
+  // List<PieData> getPieData() {
+  // // double remainingAmount = totalTarget - totalSaved;
+  //           return [
+  //             PieData('Already Saved', totalSaved),
+  //             PieData('Remaining', remainingAmount),
+  //           ];
+  //         }
+
+  //         List<PieData> data = getPieData();
 
   onCategoryClicked(value) {
     setState(() {
@@ -92,9 +106,7 @@ class HomePageController extends State<Home>
     super.initState();
     currentIndex = 0;
     allTransactions = widget.allTransactions ?? [];
-    context
-        .read<ConnectivityBloc>()
-        .add(RetrieveDataEvent(uid: user?.uid ?? '0'));
+    context.read<ConnectivityBloc>().add(RetrieveDataEvent(uid: user!.uid));
     tabController = TabController(length: 2, vsync: this);
     getUsername();
   }
@@ -154,6 +166,40 @@ class HomePageController extends State<Home>
     }
   }
 
+  String getTotalTargetAmount(List<SavingsGoals> goals) {
+    List<double> targetAmounts =
+        goals.map((goal) => goal.targetAmount.toDouble()).toList();
+    totalAmount = targetAmounts.reduce((value, element) => value + element);
+
+    return formatDoubleWithComma(totalAmount);
+  }
+
+  String getAlreadySaved(List<SavingsGoals> goals) {
+    List<double> currentAmounts =
+        goals.map((goal) => goal.currentAmount.toDouble()).toList();
+    alreadySaved = currentAmounts.reduce((value, element) => value + element);
+
+    return formatDoubleWithComma(alreadySaved);
+  }
+
+  List<PieData> getPieData() {
+    remainingAmount = totalAmount - alreadySaved;
+    return [
+      PieData('Already Saved', alreadySaved),
+      PieData('Remaining', remainingAmount),
+    ];
+  }
+
+  String getProgressMade(List<SavingsGoals> goals) {
+    List<double> progressPercentages =
+        goals.map((goal) => goal.progressPercentage).toList();
+    double totalProgressSum =
+        progressPercentages.reduce((value, element) => value + element);
+    double totalProgress =
+        totalProgressSum / (progressPercentages.length * 100) * 100;
+    return totalProgress.toStringAsFixed(1);
+  }
+
   ///handles the event called on add new goal
   onSaveGoal() async {
     String inputText = proposedEndDateController.text;
@@ -197,7 +243,7 @@ class HomePageController extends State<Home>
 
         //  context.read<DatabaseBloc>().add(SaveTransactionEvent(txn: newTxn));
 
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => Success(
@@ -260,8 +306,39 @@ class HomePageController extends State<Home>
 
   ///called on logout action
   onLogOut() {
-    log('pressing logout', name: 'admin');
-    context.read<AuthenticationBloc>().add(LogoutEvent(uid: user?.uid ?? '0'));
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Sign Out'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to log out?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                log('pressing logout', name: 'admin');
+                context
+                    .read<AuthenticationBloc>()
+                    .add(LogoutEvent(uid: user?.uid ?? '0'));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   ///navigates to add page
@@ -287,73 +364,17 @@ class HomePageController extends State<Home>
     });
   }
 
-  onDropDownItemSelected(BuildContext context, String item) {
-    switch (item) {
-      case 'Display Name':
-        // Show the display name in a dialog or any other way you prefer
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Display Name'),
-              content: const Text(
-                  'Your Display Name'), // Replace with the user's display name
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        break;
-
-      case 'Initials':
-        // Show the initials in a CircleAvatar or any other way you prefer
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Initials'),
-              content: const CircleAvatar(
-                backgroundColor:
-                    Colors.blue, // Replace with desired background color
-                child: Text(
-                  'JD', // Replace with the user's initials
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        break;
-
-      case 'Logout':
-        // Handle logout action here
-        // For example, you can navigate to the login page and clear the user session
-        Navigator.pushReplacementNamed(
-            context, '/login'); // Replace with your login route
-        break;
-
-      case 'Dark Mode':
-        // Toggle dark mode here using a state management solution (e.g., Provider, BLoC, etc.)
-        // For example, you can use a boolean variable to control the app's theme and change it.
-        break;
-
-      default:
-        break;
-    }
+  Widget buildGroupSeparatorFoeExpense(Expenses groupItem) {
+    // Build the header for each group (i.e., date)
+    DateTime date = groupItem.date; // Get the timestamp from the group item
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      color: Colors.grey[300],
+      child: Text(
+        '${date.year}-${date.month}-${date.day}',
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   Widget buildTransactionList() {
@@ -380,17 +401,64 @@ class HomePageController extends State<Home>
                 date2.compareTo(date1), // For DESC order
             itemBuilder: (context, transaction) {
               // SavingsGoals goal = state.availableSavingsGoals
-              //     .firstWhere((element) => element.id == transaction.savingsId);
+              //     .lasttWhere((element) => element.id == transaction.savingsId);
               // String title = goal.goalNotes ?? '';
               return ListTile(
-                title: const Text(
-                    "something"), //title), // Change to the appropriate title property
-                subtitle: Text(
-                    'Amount Expended: ${transaction.amountExpended} - Amount Saved: ${transaction.amountSaved}'),
+                trailing: transaction.amountExpended == 0
+                    ? const Text('credit')
+                    : const Text(
+                        'debit'), //title), // Change to the appropriate title property
+                leading: transaction.amountExpended == 0
+                    ? Text(
+                        'Amount Saved: \$${formatDoubleWithComma(transaction.amountSaved!)}')
+                    : Text(
+                        'Amount Withdrawn: \$${formatDoubleWithComma(transaction.amountExpended!)}'),
                 // Add other details as needed
               );
             },
             groupSeparatorBuilder: buildGroupSeparator,
+          );
+        }
+        return const CircularProgressIndicator();
+      },
+    );
+  }
+
+  Widget buildExpensesList() {
+    // Group the transactions by date
+    Map<DateTime, List<Expenses>> groupedExpenses = {};
+    for (var expense in allExpenses) {
+      final date =
+          DateTime(expense.date.year, expense.date.month, expense.date.day);
+      groupedExpenses.putIfAbsent(date, () => []).add(expense);
+    }
+    // Create the list view builder for grouped transactions
+    return BlocBuilder<ConnectivityBloc, ConnectivityState>(
+      builder: (context, state) {
+        if (state is DbSuccessState &&
+            state.availableExpenses != null &&
+            state.availableExpenses!.isNotEmpty) {
+          return StickyGroupedListView<Expenses, DateTime>(
+            elements: state.availableExpenses!,
+            shrinkWrap: true,
+            order: StickyGroupedListOrder.DESC,
+            groupBy: (expense) => DateTime(
+                expense.date.year, expense.date.month, expense.date.day),
+            groupComparator: (date1, date2) =>
+                date2.compareTo(date1), // For DESC order
+            itemBuilder: (context, expense) {
+              SavingsGoals goal = state.availableSavingsGoals
+                  .firstWhere((element) => element.id == expense.savingsId);
+              String title = goal.goalNotes ?? '';
+              return ListTile(
+                title: Text(
+                    'expense for $title'), //title), // Change to the appropriate title property
+                subtitle: Text(
+                    'Amount Spent: \$${formatDoubleWithComma(expense.amountSpent)}'),
+                // Add other details as needed
+              );
+            },
+            groupSeparatorBuilder: buildGroupSeparatorFoeExpense,
           );
         }
         return const CircularProgressIndicator();

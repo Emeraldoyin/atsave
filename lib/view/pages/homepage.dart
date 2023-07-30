@@ -18,19 +18,7 @@ class HomePage extends StatelessView<Home, HomePageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: body(context),
-      floatingActionButton: SizedBox(
-        height: 70.h,
-        width: 70.w,
-        child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddSavingsGoalPage(controller)));
-            },
-            child: const Icon(Icons.add)),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,
         useLegacyColorScheme: false,

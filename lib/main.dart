@@ -92,9 +92,9 @@ class EasySaveApp extends StatelessWidget {
               title: 'ATSave App',
               navigatorKey: navigatorKey,
               theme: AppTheme.lightTheme,
-              darkTheme:
-                  AppTheme.darkTheme, // ThemeData(primarySwatch: Colors.blue),
-              //themeMode: ThemeMode.dark,
+              // darkTheme:
+              //    AppTheme.darkTheme, // ThemeData(primarySwatch: Colors.blue),
+              themeMode: ThemeMode.light,
               //themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
               home: child);
         },

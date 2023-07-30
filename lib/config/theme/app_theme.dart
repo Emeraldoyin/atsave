@@ -150,14 +150,46 @@ class AppTheme {
       color: CARD_COLOR1,
     ),
     textTheme: const TextTheme(
-      titleLarge: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-      ),
-      titleSmall: TextStyle(
-        color: Colors.white70,
-        fontSize: 18.0,
-      ),
+        titleLarge: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+        ),
+        titleSmall: TextStyle(
+          color: Colors.white70,
+          fontSize: 18.0,
+        ),
+        headlineMedium: TextStyle(
+            fontFamily:
+                'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-BoldItalic.ttf',
+            fontStyle: FontStyle.italic,
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(
+            fontFamily:
+                'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-BoldItalic.ttf',
+            fontStyle: FontStyle.italic,
+            fontSize: 20,
+            fontWeight: FontWeight.w800),
+        displayLarge: TextStyle(
+          //color: HEADING_COLOR1,
+          fontFamily:
+              'ibm-plex-sans/assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.ttf',
+          fontSize: 20.0,
+          fontWeight: FontWeight.w600,
+        ),
+        bodyMedium: TextStyle(
+          height: 1.5,
+          fontWeight: FontWeight.w600,
+          //  color: HEADING_COLOR1,
+          fontSize: 16.0,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 14,
+          height: 1.5,
+        )),
+
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Colors.black, // Change the cursor color here
     ),
     switchTheme: SwitchThemeData(
       trackColor: MaterialStateProperty.all<Color>(Colors.grey),
@@ -176,7 +208,7 @@ class AppTheme {
             shape: MaterialStateProperty.all<OutlinedBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0))),
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
             overlayColor: MaterialStateProperty.all<Color>(Colors.black26))),
   );

@@ -5,9 +5,11 @@ import 'package:easysave/view/pages/my_expenses_page.dart';
 import 'package:easysave/view/pages/my_goals_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/home/home_controller.dart';
 import '../../utils/helpers/boilerplate/stateless_view.dart';
+import 'add_savings_goal_page.dart';
 
 class DashBoardPage extends StatelessView<Home, HomePageController> {
   const DashBoardPage(HomePageController controller, {Key? key})
@@ -63,12 +65,24 @@ class DashBoardPage extends StatelessView<Home, HomePageController> {
               },
             ),
           ],
-          title: const Text('Dashboard'),
+          title: Padding(
+            padding: EdgeInsets.only(left: 20.w),
+            child: const Text('Dashboard'),
+          ),
         ),
-        drawer: const DropdownMenu(
-          menuStyle: MenuStyle(),
-          dropdownMenuEntries: [],
+        floatingActionButton: SizedBox(
+          height: 70.h,
+          width: 70.w,
+          child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddSavingsGoalPage(controller)));
+              },
+              child: const Icon(Icons.add)),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: TabBarView(
           controller: controller.tabController,
           children: [MyGoalsPage(controller), MyExpensesPage(controller)],

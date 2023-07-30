@@ -28,3 +28,5 @@ const image25 = 'assets/images/icon-facebook.png';
 const image26 = 'assets/images/icon-twitter.png';
 const image27 = 'assets/images/logo.png';
 const image28 = 'assets/images/icon-visa.png';
+const image29 = 'assets/images/Wad of money.png';
+const image30 = 'assets/images/open home_safe_with_money.png';

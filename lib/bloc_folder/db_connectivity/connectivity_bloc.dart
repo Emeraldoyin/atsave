@@ -52,19 +52,29 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       if (presentTransactions != incomingTransactions) {
         dbRepo.updateTransactions(incomingTransactions);
       }
-      // final presentExpenses = await dbRepo.iExpenses();
-      // final incomingExpenses = await dbRepo.fExpenses();
+      final presentExpenses = await dbRepo.iExpenses();
+      final incomingExpenses = await dbRepo.fExpenses(event.uid);
 
-      // if (presentExpenses != incomingExpenses) {
-      //   await dbRepo.updateExpenses(presentExpenses);
-      // }
+      if (presentExpenses != incomingExpenses) {
+        await dbRepo.updateExpenses(incomingExpenses, event.uid);
+      }
 
-      emit(DbSuccessState(
-        availableSavingsGoals: presentGoals,
-        availableCategories: incomingCategories,
-        // availableExpenses: presentExpenses,
-        availableSavingsTransactions: incomingTransactions, 
-      ),);
+      if (presentCategories != incomingCategories) {
+        await dbRepo.updateCategories(incomingCategories);
+      }
+
+      emit(
+        DbSuccessState(
+          availableSavingsGoals: presentGoals,
+          availableCategories: presentCategories,
+          availableExpenses: presentExpenses,
+          availableSavingsTransactions: incomingTransactions,
+        ),
+      );
+      log(presentExpenses.toString(), name: 'expenses');
+      log(presentCategories.toString(), name: 'categories');
+      log(presentGoals.toString(), name: 'all goals!');
+      log(incomingTransactions.toString(), name: 'incoming transactions');
     } on FirebaseAuthException catch (e) {
       emit(DbErrorState(error: e.toString()));
     }
@@ -85,13 +95,15 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
         'Dear $username, you just deleted your savings of \'${event.goal.currentAmount}\' for \'${event.goal.goalNotes}\'. We hope it\'s for a greater good';
     await dbRepo.sendNotification(deviceToken, title, body);
     emit(DbSuccessState(
-        availableSavingsGoals: goals, availableCategories: presentCategories,));
+      availableSavingsGoals: goals,
+      availableCategories: presentCategories,
+    ));
   }
 
   _updateCurrentAmount(UpdateCurrentAmountEvent event, emit) async {
     emit(DbLoadingState());
     final presentCategories = await dbRepo.iCategories();
-    
+
     try {
       List<SavingsGoals> goals = await dbRepo.iSavingsGoals();
       await dbRepo.updateCurrentAmount(event.addedAmount, event.goal.id!);

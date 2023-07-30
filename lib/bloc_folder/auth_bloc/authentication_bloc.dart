@@ -99,7 +99,7 @@ class AuthenticationBloc
     try {
       await authRepo.signUp(event.email, event.password, event.createdAt,
           event.firstName, event.lastName);
-
+      manager.saveUsername(event.firstName);
       String deviceToken = await manager.retrieveMessagingToken();
       String username = await manager.getUsername();
       String title = 'WELCOME TO ATSave, \'$username\'';

@@ -158,7 +158,6 @@ class LocalDbManager {
   Future updateSavingsGoals(List<SavingsGoals> goals) async {
     return _isar!.writeTxn(() async {
       await _isar!.savingsGoals.clear();
-
       return _isar!.savingsGoals.putAll(goals);
     });
   }
@@ -167,7 +166,6 @@ class LocalDbManager {
   Future updateSavingsTransactions(List<SavingsTransactions> txn) async {
     return _isar!.writeTxn(() async {
       await _isar!.savingsTransactions.clear();
-
       return _isar!.savingsTransactions.putAll(txn);
     });
   }

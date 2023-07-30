@@ -120,6 +120,7 @@ showNumberInputDialogForExpense(
         content: Form(
           key: controller.spendAmountFormKey,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
                 decoration: InputDecoration(

@@ -48,7 +48,7 @@ class EditSavingsGoalPage
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(right: 190.w),
+                padding: EdgeInsets.only(right: 170.w),
                 child: Text(
                   'Goal Details',
                   style: Theme.of(context).textTheme.displayMedium,
